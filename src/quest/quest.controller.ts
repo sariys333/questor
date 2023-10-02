@@ -8,8 +8,10 @@ export class QuestController {
     constructor(private readonly questService: QuestService) {}
 
     @Get("list") // /quest/list GET
-    getQuestList(): Quest[] {
-        return this.questService.getList();
+    async getQuestList(): Promise<Quest[]> {
+        this.questService.getAll(1, 5)
+        //this.questService.putQuest(new Quest())
+        return await this.questService.getList();
     }
 
     // @Get() // /quest?id={questId}

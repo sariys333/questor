@@ -1,6 +1,6 @@
 export class Quest {
 
-    constructor(obj?: any) {
+    constructor(obj?: any) {// = getSe(string i) getSe(undefined i) i가 없어도 있으면 있는데로, undefined = 선언X
         this.questId = obj?.quest_id
         this.userId = obj?.user_id
         this.content = obj?.content
@@ -11,8 +11,8 @@ export class Quest {
     }
     
 
-    content: string = "say hello"
-    completed: boolean = false
+    private content: string = "say hello"
+    protected completed: boolean = false
     completedAt: Date = new Date()
     createdAt: Date = new Date()
     userId: number = 0

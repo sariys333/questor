@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Quest } from './types/quest.type';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand, DynamoDBDocumentClient, GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, DynamoDBDocumentClient, GetCommand, QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -47,7 +47,7 @@ export class QuestService {
     }
 
     async getAll(n1: number, n2: number): Promise<Quest[]> {
-        const command = new QueryCommand({
+        const commandInput: QueryCommandInput = {
             TableName: "quests",
             KeyConditionExpression:
                 "user_id = :user_id",
@@ -61,7 +61,12 @@ export class QuestService {
                 "user_id": 0,
                 "quest_id": 3
             }
-        });
+            
+        }
+
+
+
+        const command = new QueryCommand(commandInput);
         
         const response = await docClient.send(command);
         console.log(response);

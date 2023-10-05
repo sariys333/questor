@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Quest } from './types/quest.type';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutCommand, DynamoDBDocumentClient, GetCommand, QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
+import { error } from 'console';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -9,12 +10,11 @@ const docClient = DynamoDBDocumentClient.from(client);
 @Injectable()
 export class QuestService {
 
-    async getList(): Promise<Quest[]> {
+    async getList(uesrId: number): Promise<Quest[]> {
         const command = new GetCommand({
             TableName: "quests",
             Key: {
-                user_id: 0,
-                quest_id: 1
+                user_id: uesrId
             }
           });
         
@@ -32,13 +32,13 @@ export class QuestService {
         const command = new PutCommand({
             TableName: "quests",
             Item: {
-                quest_id: 5,
-                user_id: 0,
-                content:  "여섯번째 퀘스트",
+                quest_id: 8,
+                user_id: 1,
+                content:  "1-0 퀘스트",
                 completed: false,
-                completedAt: null,//date.getTime()
+                completedAt: null,
                 from: date.getTime(),
-                to: date.getTime()+106400
+                to: date.getTime()+86400
             }
         })
 
@@ -46,31 +46,26 @@ export class QuestService {
         return 
     }
 
-    async getAll(n1: number, n2: number): Promise<Quest[]> {
-        const commandInput: QueryCommandInput = {
+    async getAll(userId: number, limit: number): Promise<Quest[]> {
+
+        const command = new QueryCommand ({
             TableName: "quests",
             KeyConditionExpression:
                 "user_id = :user_id",
             ExpressionAttributeValues: {
-                ":user_id": 0,
+                ":user_id": userId,
             },
             ConsistentRead: true,
             ScanIndexForward: false,
-            Limit: 4,
-            ExclusiveStartKey: {
-                "user_id": 0,
-                "quest_id": 3
-            }
-            
-        }
+            Limit: limit
+        });
 
-
-
-        const command = new QueryCommand(commandInput);
-        
         const response = await docClient.send(command);
-        console.log(response);
-        return null;
+        console.log(response)
+        const quests = response.Items.map((item: Quest) => new Quest(item));
+        console.log(quests);
+        return quests;
+
     }
     
 }

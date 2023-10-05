@@ -7,8 +7,7 @@ import { QuestPage } from './quest/Quest.Page';
 function App() {
   return (
     <div className="App">
-      <QuestPage />
-      
+      <QuestPage id={0}/>
     </div>
   );
 }

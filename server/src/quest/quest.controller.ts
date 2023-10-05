@@ -7,27 +7,11 @@ export class QuestController {
 
     constructor(private readonly questService: QuestService) {}
 
-    @Get("list") // /quest/list GET
-    async getQuestList(): Promise<Quest[]> {
-        this.questService.getAll(1, 5)
-        //this.questService.putQuest(new Quest())
-        return await this.questService.getList();
+    @Get(":id/list") // /quest/{id}/list GET
+    async getQuestList(@Param("id") userId, @Query("limit") limit): Promise<Quest[]> {
+        console.log("limit - "+limit)
+        // this.questService.getList(userId)
+        // this.questService.putQuest(new Quest())
+        return await this.questService.getAll(parseInt(userId, 10), parseInt(limit, 10));
     }
-
-    // @Get() // /quest?id={questId}
-    // getQuestByIdQuery(@Query("id") questId: string): string {
-    //     return this.questService.getHello();
-    // }
-
-    // @Get(":questId") // /quest/{questId}
-    // getQuestByIdParam(@Param("questId") questId: string): string {
-    //     return this.questService.getHello();
-    // }
-
-    // @Post("create")
-    // getQuestCreate(@Body() body: any): boolean {
-
-
-    //     return true
-    // }
 }

@@ -10,13 +10,13 @@ export class Quest {
         this.to = obj?.to
     }
     
+    questId: number
+    userId: number
+    content: string
+    completed: boolean
+    completedAt: Date
+    createdAt: Date
+    from: Date
+    to: Date
 
-    private content: string = "say hello"
-    protected completed: boolean = false
-    completedAt: Date = new Date()
-    createdAt: Date = new Date()
-    userId: number = 0
-    from: Date = new Date()
-    to: Date = new Date()
-    questId: number = 0
 }

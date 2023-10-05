@@ -7,7 +7,7 @@
   xhttp.onload = function() {
     document.getElementById("demo").innerHTML = this.responseText;
     }
-  xhttp.open("GET", "localhost:3000/quest/list", true);
+  xhttp.open("GET", "localhost:3001/quest/*/list", true);
   xhttp.send();
 }
 

@@ -1,26 +1,31 @@
 import React from 'react'
-import { QuestItemComponent } from './Quest.Item.Component';
-import { Quest } from './Quest.Item.Props';
+import { Button, Table } from 'antd';
+import { Quest } from './types/Quest.types';
 
-export function QuestListComponent({quest} : QuestProps) {
+export function QuestListComponent({ quests }: { quests: Quest[] }) {
 
     return (
         <div>
-            {quest.map((item: Quest, index: number) => (
-                <QuestItemComponent 
-                    key={index}
-                    userId={item.userId}
-                    questId={item.questId}
-                    content={item.content}
-                    completed={item.completed}
-                    completedAt={item.completedAt}
-                    from={item.from}
-                    to={item.to}/>
-            ))}
+            <Table
+                columns={[{
+                    key: "questId",
+                    title: "내용",
+                    dataIndex: "content"
+                }, {
+                    key: "questId",
+                    title: "",
+                    dataIndex: "completed",
+                    render: (v, r, i) => {
+                        console.log(v)
+                        console.log(r)
+                        return v ? <>{r.completedAt}</> : <>진행중</>
+                    }
+                }]}
+                dataSource={quests}
+                pagination={{
+                    defaultPageSize: 5
+                }}
+            />
         </div>
     )
-}
-
-type QuestProps = {
-    quest: Quest[]
 }

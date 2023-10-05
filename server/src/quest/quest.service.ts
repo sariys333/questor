@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Quest } from './types/quest.type';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand, DynamoDBDocumentClient, GetCommand, QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
-import { error } from 'console';
+import { PutCommand, DynamoDBDocumentClient, GetCommand, QueryCommand, QueryCommandInput, ScanCommand } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -16,10 +15,10 @@ export class QuestService {
             Key: {
                 user_id: uesrId
             }
-          });
-        
-          const response = await docClient.send(command);
-          console.log(response);
+        });
+
+        const response = await docClient.send(command);
+        console.log(response);
 
 
         //   return response
@@ -34,38 +33,44 @@ export class QuestService {
             Item: {
                 quest_id: 8,
                 user_id: 1,
-                content:  "1-0 퀘스트",
+                content: "1-0 퀘스트",
                 completed: false,
                 completedAt: null,
                 from: date.getTime(),
-                to: date.getTime()+86400
+                to: date.getTime() + 86400
             }
         })
 
         //const response = await docClient.send(command);
-        return 
+        return
     }
 
-    async getAll(userId: number, limit: number): Promise<Quest[]> {
+    async getAll(
+        // { page, pageSize }: { page: number, pageSize: number }
+    ): Promise<Quest[]> {
 
-        const command = new QueryCommand ({
+        // pageSize = 30
+        // page = 2
+        // 150
+        // exclusiveStartKey
+
+        const command = new ScanCommand({
             TableName: "quests",
-            KeyConditionExpression:
-                "user_id = :user_id",
-            ExpressionAttributeValues: {
-                ":user_id": userId,
-            },
-            ConsistentRead: true,
-            ScanIndexForward: false,
-            Limit: limit
-        });
+            // KeyConditionExpression:
+            //     "user_id = :user_id",
+            // ExpressionAttributeValues: {
+            //     ":user_id": userId,
+            // },
+            ConsistentRead: true
+            // Limit: pageSize
+        })
 
-        const response = await docClient.send(command);
+        const response = await docClient.send(command)
         console.log(response)
-        const quests = response.Items.map((item: Quest) => new Quest(item));
-        console.log(quests);
-        return quests;
+        const quests = response.Items.map((item: Quest) => new Quest(item))
+        console.log(quests)
+        return quests
 
     }
-    
+
 }

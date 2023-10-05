@@ -5,13 +5,14 @@ import { Quest } from './types/quest.type';
 @Controller('quest') // /quest 로 시작하는 uri 를 처리
 export class QuestController {
 
-    constructor(private readonly questService: QuestService) {}
+    constructor(private readonly questService: QuestService) { }
 
-    @Get(":id/list") // /quest/{id}/list GET
-    async getQuestList(@Param("id") userId, @Query("limit") limit): Promise<Quest[]> {
-        console.log("limit - "+limit)
+    @Get("/list") // /quest/{id}/list GET
+    async getQuestList(@Query("page") page, @Query("pageSize") pageSize): Promise<Quest[]> {
+        // console.log("limit - "+limit)]
+        console.log(page, pageSize)
         // this.questService.getList(userId)
         // this.questService.putQuest(new Quest())
-        return await this.questService.getAll(parseInt(userId, 10), parseInt(limit, 10));
+        return await this.questService.getAll();
     }
 }

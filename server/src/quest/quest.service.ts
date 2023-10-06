@@ -56,13 +56,7 @@ export class QuestService {
 
         const command = new ScanCommand({
             TableName: "quests",
-            // KeyConditionExpression:
-            //     "user_id = :user_id",
-            // ExpressionAttributeValues: {
-            //     ":user_id": userId,
-            // },
             ConsistentRead: true
-            // Limit: pageSize
         })
 
         const response = await docClient.send(command)

@@ -8,7 +8,6 @@ class QuestRepository {
     }
 
     async getAll(): Promise<Quest[]> {
-        // 'http://localhost:3001/quest/'+id+'/list?limit='
         const response = await fetch(`${this.url}/list`, {
             method: 'get',
             headers: { 'Content-Type': 'application/json' },

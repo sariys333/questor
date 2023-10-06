@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { QuestPage } from './quest/Quest.Page';
 import { Button, ConfigProvider, Layout, Menu, theme } from 'antd';

@@ -15,4 +15,7 @@ export class QuestController {
         // this.questService.putQuest(new Quest())
         return await this.questService.getAll();
     }
+
+    
+
 }

@@ -15,8 +15,7 @@ export class UserController {
     @Post("/login")
     @UseGuards(LoggerGuard)
     async postLogin() {
-        const result = await this.userService.login('user@quest.com','znptmxm')
-        return result
+        return null
     }
 
 

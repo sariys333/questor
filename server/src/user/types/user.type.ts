@@ -9,7 +9,7 @@ export class User {
         this.tel = obj?.tel
         this.regDate = obj?.regDate
     }
-    
+
     userId: number
     email: string
     password: string
@@ -17,5 +17,4 @@ export class User {
     nickname: string
     tel: string
     regDate: Date
-
 }

@@ -9,47 +9,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 @Injectable()
 export class UserService {
 
-    async signup(): Promise<boolean> {
-        const date = new Date();
-        const command = new PutCommand({
-            TableName: "users",
-            Item: {
-                user_id: 0,
-                email: "user@quest.com",
-                password: "znptmxm",
-                name: "홍길동",
-                nickname: "의적",
-                tel: "01094651351",
-                regDate: date.getTime()
-            }
-        })
-
-        const response = await docClient.send(command)
-        return
-    }
-    
-
-    async login(email: string, password: string): Promise<User[]> {
-        const command = new QueryCommand({
-            TableName: "users",
-            KeyConditionExpression:
-                "email = :email",
-            ExpressionAttributeValues: {
-                ":email": email
-            },
-            ConsistentRead: true
-        })
-
-        const response = await docClient.send(command)
-
-        if(response) {
-            return response.Items.map((item: User) => new User(item))
-        }
-        return 
-    }
-
-
-    async getUserById(userId: number): Promise<User[]> {
+    async getUserById(userId: number): Promise<User> {
         const command = new GetCommand({
             TableName: 'users',
             Key: {
@@ -61,8 +21,22 @@ export class UserService {
 
         console.log(response)
 
-        return [new User(response.Item)]
+        return new User(response.Item)
 
     }
 
+    async getUserByEmail(email: string): Promise<User> {
+        const command = new GetCommand({
+            TableName: 'users',
+            Key: {
+                email: email
+            }
+        })
+
+        const response = await docClient.send(command)
+
+        console.log(response)
+
+        return new User(response.Item)
+    }
 }

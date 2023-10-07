@@ -1,5 +1,5 @@
 import { API_URL } from "../Constants";
-import { User } from "./types/User.typs";
+import { User } from "../login/types/User.typs";
 
 class UserRepository {
     private readonly url: string
@@ -7,12 +7,15 @@ class UserRepository {
         this.url = API_URL + apiName
     }
 
+
+
     async getInfoById(): Promise<User[]> {
         const response = await fetch(`${this.url}/info`, {
             method: 'post',
-            headers: { 
-                
-                'Content-Type': 'application/json' },
+            headers: {
+
+                'Content-Type': 'application/json'
+            },
         })
 
         const data = await response.json()

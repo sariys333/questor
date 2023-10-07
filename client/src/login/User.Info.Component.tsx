@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import UserRepository from './User.Repository';
+import UserRepository from '../repositories/Auth.Repository';
 import { User } from './types/User.typs';
 
 export function UserLoginComponent() {

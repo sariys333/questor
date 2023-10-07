@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { QuestListComponent } from './Quest.List.Component'
-import QuestRepository from './Quest.Repository';
+import QuestRepository from '../repositories/Quest.Repository';
 import { Quest } from './types/Quest.types';
 // import { Quest } from './Quest.Item.Props';
 
-export function QuestPage({ id }: { id: number }) {
+export function QuestPage() {
 
     const [quests, setQuests] = useState<Quest[]>([]);
 

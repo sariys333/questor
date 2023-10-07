@@ -4,8 +4,8 @@ import { AppService } from './app.service';
 import { QuestModule } from './quest/quest.module';
 import { UserModule } from './user/user.module';
 import { LoggerModule } from './logger/logger.module';
-import { LoggerMiddleware } from './logger/logger.middleware';
 import { LoggerService } from './logger/logger.service';
+import { UserMiddleware } from './user/user.middleware';
 
 @Module({
   imports: [QuestModule, UserModule, LoggerModule],
@@ -13,10 +13,4 @@ import { LoggerService } from './logger/logger.service';
   providers: [AppService, LoggerService],
 })
 
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-	consumer
-	.apply(LoggerMiddleware)
-	.forRoutes({ path: 'user/login', method: RequestMethod.POST})
-  }
-}
+export class AppModule {}

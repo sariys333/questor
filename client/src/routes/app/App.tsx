@@ -1,24 +1,42 @@
 
-import { Button, Layout, Menu, Space } from "antd"
+import { Layout, Menu, Space, theme } from "antd"
 import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
 } from '@ant-design/icons';
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
-import { QuestPage } from "../../quest/Quest.Page";
+import { useEffect, useState } from "react";
+import UserRepository from "../../repositories/User.Repository";
+import { User } from "../login/types/User.typs";
 
 const { Header, Sider, Content } = Layout;
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
+    const [user, setUser] = useState<User>();
 
-    return <Layout>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+    const {
+        token: { colorBgContainer },
+    } = theme.useToken();
+
+    const getCurrentUser = async () => {
+        const currentUser = await UserRepository.findCurrentUser()
+        setUser(currentUser)
+    }
+    
+    if(user) {
+        console.log(user.name)
+    }
+    console.log(user)
+
+    useEffect(() => {
+        getCurrentUser()
+    }, [])
+
+    return <Layout style={{ height: "100vh"}}>
+        <Sider trigger={null} collapsible collapsed={collapsed} style={{ background: colorBgContainer}}>
             <div className="demo-logo-vertical" />
             <Menu
+                style={{height: "100%"}}
                 // theme="dark"
                 mode="inline"
                 defaultSelectedKeys={['1']}
@@ -42,7 +60,7 @@ export function App() {
             />
         </Sider>
         <Layout>
-            <Header style={{ padding: 0 }}>
+            <Header  style={{ padding: 0, background: colorBgContainer }}>
                 <Space style={{ justifyContent: "space-between" }}>
                     {/* <Button
                         type="text"
@@ -54,10 +72,8 @@ export function App() {
                             height: 64,
                         }}
                     /> */}
-                    <a href="/login">LOGIN</a>
+                    {user ? <a>{user.name}</a> : <a href="/login">LOGIN</a>}
                 </Space>
-
-
             </Header>
             <Content
                 style={{
@@ -70,7 +86,6 @@ export function App() {
                 {/* <Routes>
                     <Route path="login" element={<QuestPage />} />
                 </Routes> */}
-                <Outlet />
             </Content>
         </Layout>
     </Layout>

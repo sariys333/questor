@@ -5,8 +5,10 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ConfigProvider, Layout, theme } from 'antd';
 import { QuestPage } from './quest/Quest.Page';
-import { Login } from './login/Login.Page';
+import { Login } from './routes/login/Login.Page';
 import App from './routes/app/App';
+import { Signup } from './routes/signup/Signup.Page';
+import { StartPage } from './routes/start/Start.Page';
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
@@ -15,6 +17,11 @@ root.render(
 	<React.StrictMode>
 		<ConfigProvider
 			theme={{
+				"components": {
+					"Button": {
+						borderRadius: 0
+					}
+				},
 				"token": {
 					"colorPrimary": "#FA8C16",
 					"colorInfo": "#FA8C16",
@@ -34,6 +41,8 @@ root.render(
 					</Route>
 					<Route path="login" element={<Login />}>
 					</Route>
+					<Route path="signup" element={<Signup />}></Route>
+					<Route path="start" element={<StartPage />}></Route>
 				</Routes>
 			</Router>
 		</ConfigProvider>

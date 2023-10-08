@@ -1,8 +1,10 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Response, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
+import { Public } from './public.decorator';
+import { Credentials } from './types/auth.types';
+import { Response as Res } from 'express';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -15,10 +17,19 @@ export class AuthController {
     // 로그인 요청 signIn
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    signIn(@Body() signInDto: Record<string, any>) {
-        return this.authService.signIn(signInDto.username, signInDto.password);
+    @Public()
+    async signIn(@Body() cred: Credentials, @Response() res: Res) {
+        console.log(cred)
+        const {user, token} = await this.authService.signIn(cred)
+        console.log(token)
+        res.cookie("JWT", token, {
+            secure: false,
+            httpOnly: true,
+            sameSite: true,
+            expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+        }).json(user)
+        return
     }
-
 
     async signup(): Promise<boolean> {
         const date = new Date();

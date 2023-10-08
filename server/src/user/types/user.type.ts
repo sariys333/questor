@@ -18,3 +18,11 @@ export class User {
     tel: string
     regDate: Date
 }
+
+export type UserCredentials = {
+    email: string,
+    password: string,
+    name: string,
+    username: string,
+    regDate: Date
+}

@@ -11,7 +11,10 @@ class QuestRepository {
         try {
             const response = await fetch(`${this.url}/list`, {
                 method: 'get',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    "Content-Type": "application/json",
+                    // "Authorization": `Bearer ${}` 
+                },
             })
 
             const data = await response.json()

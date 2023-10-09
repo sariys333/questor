@@ -20,6 +20,9 @@ root.render(
 				"components": {
 					"Button": {
 						borderRadius: 0
+					},
+					"Input": {
+						borderRadius: 0
 					}
 				},
 				"token": {

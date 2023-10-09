@@ -1,13 +1,8 @@
-import { Button, Card, Input, Space, Form, Checkbox } from 'antd'
-import React, { useState } from 'react'
-import {
-    UserOutlined,
-    LockOutlined,
-} from '@ant-design/icons';
-import AuthRepository, { Credentials } from '../../repositories/Auth.Repository';
-import { Navigate } from 'react-router-dom';
-import { Signup } from './Signup.Page';
-import UserRepository from '../../repositories/User.Repository';
+
+import React, { Ref, RefObject, useEffect, useRef, useState } from 'react'
+import { Button, Card, ConfigProvider, Input, Layout, Row, Space, Typography, theme, Form } from 'antd'
+import UserRepository from '../../repositories/User.Repository'
+import { Credentials } from '../../repositories/Auth.Repository';
 
 type FieldType = {
     email?: string;
@@ -17,8 +12,11 @@ type FieldType = {
     username?: string;
 };
 
+const { Title } = Typography
 
-export function SignupComponent() {
+export function StartContentThird() {
+    const { token } = theme.useToken();
+
     const [bool, setBool] = useState()
 
     const signup = async (cred: Credentials) => {
@@ -42,16 +40,13 @@ export function SignupComponent() {
     };
 
     return (
-        
-        <Card title="회원가입" extra={<a href="/login">LOGIN</a>} style={{maxWidth: 500}}>
-            {bool && (
-                <Navigate to="/login" replace={true} />
-            )}
+        <Layout style={{alignItems: 'center', background: 'none'}}>
+            <Title level={2}>계정 생성</Title>
             <Form
                 name="basic"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 24 }}
-                style={{ maxWidth: 600 }}
+                style={{ width: '40%' }}
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -59,9 +54,8 @@ export function SignupComponent() {
             >
                 <Form.Item<FieldType>
                     name="email"
-                    rules={[{ required: true, message: '이메일을 입력해주세요.' }]}
                 >
-                    <Input placeholder='이메일' />
+                    <Input disabled/>
                 </Form.Item>
 
                 <Form.Item<FieldType>
@@ -98,7 +92,7 @@ export function SignupComponent() {
                     </Button>
                 </Form.Item>
             </Form>
-        </Card>
+        </Layout>
     )
 }
 

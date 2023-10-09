@@ -19,13 +19,13 @@ export function StartPage() {
                     <Title level={5}>QUESTOR</Title>
                     <Space>
                         <Typography>이미 진행중인 QUEST가 있다면?</Typography>
-                        <Button ><Link to={"/login"}>로그인</Link></Button>
+                        <Button><Link to={"/login"}>로그인</Link></Button>
                     </Space>
                 </Row>
             </Header>U
             <Content
                 style={{
-                    margin: '24px 16px',
+                    margin: '24px',
                     padding: '24px, 300px',
                     height: "100%",
                 }}

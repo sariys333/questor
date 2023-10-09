@@ -1,12 +1,6 @@
 import { API_URL } from "../Constants";
 import { User } from "../routes/login/types/User.typs";
-
-export type UserCredentials = {
-    email: string,
-    password: string,
-    name: string,
-    username: string
-} 
+import { Credentials } from "./Auth.Repository";
 
 class UserRepository {
     private readonly url: string
@@ -34,8 +28,21 @@ class UserRepository {
         }
     }
 
-    async signup(cred: UserCredentials) {
+    async signup(cred: Credentials) {
         const response = await fetch(`${this.url}/signup`, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cred)
+        })
+        const data = await response.json()
+        console.log(data)
+        return data
+    }
+
+    async checkEmail(cred: Credentials): Promise<boolean | undefined> {
+        const response = await fetch(`${this.url}/email`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'

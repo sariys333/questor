@@ -1,9 +1,11 @@
 import { Controller, Get, Post, UseGuards, Body } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User, UserCredentials } from './types/user.type';
+import { User} from './types/user.type';
 import { User as ReqUser} from "src/user/user.decorator"
 import { Public } from 'src/auth/public.decorator';
 import { SECRET_KEY } from 'src/Constants';
+import { get } from 'http';
+import { Credentials } from 'src/auth/types/auth.types';
 
 @Controller('api/user')
 export class UserController {
@@ -16,13 +18,25 @@ export class UserController {
 
     @Public()
     @Post("/signup")
-    async signup(@Body() cred: UserCredentials): Promise<boolean> {
+    async signup(@Body() cred: Credentials): Promise<boolean> {
         const encryptpwd = require('encrypt-with-password');
         const encoded = encryptpwd.encrypt(SECRET_KEY, cred.password)
         console.log(encoded)
         cred.password = encoded
         console.log(cred)
         return await this.userService.signup(cred);
+    }
+
+    @Public()
+    @Post("/email")
+    async checkEmail(@Body() cred: Credentials): Promise<boolean> {
+        console.log(cred)
+        const user = await this.userService.getUserByEmail(cred.email)
+        console.log(user)
+        if(user.email == cred.email) {
+            return false
+        }
+        return true
     }
 
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutCommand, DynamoDBDocumentClient, GetCommand, QueryCommand, QueryCommandInput, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { User, UserCredentials } from './types/user.type';
+import { User } from './types/user.type';
+import { Credentials } from 'src/auth/types/auth.types';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -41,10 +42,10 @@ export class UserService {
             return new User(response.Items[0])
         } else {
             return undefined
-        }
+        } 
     }
 
-    async signup(cred: UserCredentials): Promise<boolean> {
+    async signup(cred: Credentials): Promise<boolean> {
         const command = new PutCommand({
             TableName: "users",
             Item: {
@@ -64,5 +65,6 @@ export class UserService {
         }
         return 
     }
+
 
 }

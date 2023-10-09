@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { LoginComponent } from '../login/Login.Component'
-import { Button, Carousel, ConfigProvider, FloatButton, Grid, Layout, Row, Space, Steps, Typography, message, theme } from 'antd'
+import { Button, Carousel, ConfigProvider, FloatButton, Grid, Input, Layout, Row, Space, Steps, Typography, message, theme } from 'antd'
 import { Content, Header } from 'antd/es/layout/layout'
 import { Link, Outlet } from 'react-router-dom'
 import { StartContentFirst } from './Start.Content.First'

@@ -23,7 +23,7 @@ root.render(
 					},
 					"Input": {
 						borderRadius: 0
-					}
+					},
 				},
 				"token": {
 					"colorPrimary": "#FA8C16",

@@ -16,7 +16,7 @@ export function StartContentFirst() {
             <Title level={1}><span style={{color: token.colorLink}}>QUEST</span>를 지금 생성해 보세요.</Title>
             <Title level={3}>나는 이번주에 </Title>
             <Row align={"middle"} justify={"center"}>
-                <Input style={{width: '30%', maxHeight: "30px", marginTop: 13}}/>
+                <Input style={{width: '30%', maxHeight: "30px", marginTop: 13, maxWidth: 400}}/>
                 <Title level={3}>&nbsp; 을(를)</Title>
             </Row>
             <Title level={3}>하고 싶다.</Title>

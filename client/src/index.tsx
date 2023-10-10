@@ -9,10 +9,12 @@ import { Login } from './routes/login/Login.Page';
 import App from './routes/app/App';
 import { Signup } from './routes/signup/Signup.Page';
 import { StartPage } from './routes/start/Start.Page';
+import { QuestCreateComponent } from './quest/Quest.Create.Component';
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
 );
+
 root.render(
 	<React.StrictMode>
 		<ConfigProvider
@@ -24,6 +26,9 @@ root.render(
 					"Input": {
 						borderRadius: 0
 					},
+					"Radio": {
+						borderRadius: 0
+					}
 				},
 				"token": {
 					"colorPrimary": "#FA8C16",
@@ -39,13 +44,12 @@ root.render(
 					<Route element={<App />}>
 						<Route index element={<QuestPage />} />
 						<Route path="quest" >
-							<Route path="create" element={<>this is quest creation page</>}></Route>
+							<Route path="create" element={<></>} />
 						</Route>
 					</Route>
-					<Route path="login" element={<Login />}>
-					</Route>
-					<Route path="signup" element={<Signup />}></Route>
-					<Route path="start" element={<StartPage />}></Route>
+					<Route path="login" element={<Login />} />
+					<Route path="signup" element={<Signup />} />
+					<Route path="start" element={<StartPage />} />
 				</Routes>
 			</Router>
 		</ConfigProvider>

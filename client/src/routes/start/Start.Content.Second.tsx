@@ -51,7 +51,7 @@ export function StartContentSecond() {
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
-                <Space.Compact style={{width: '100%', justifyContent: 'center'}}>
+                <Space.Compact style={{width: '100%', justifyContent: 'center', maxWidth: 1000}}>
                     <Form.Item<string>
                         name="email"
                         rules={[{ required: true, message: '이메일을 입력해주세요.' }]}
@@ -61,7 +61,8 @@ export function StartContentSecond() {
                         : <Input size='large' placeholder='이메일' style={{borderRadius: 0}} disabled/> }
                     </Form.Item>
                     {!bool ? <Button type="primary" size='large' htmlType='submit' style={{borderRadius: 0}}>중복 확인</Button>
-                    : <><Button type="default" size='large' htmlType='submit' style={{borderRadius: 0}} disabled><CheckOutlined/></Button><Button type='primary' size='large' htmlType='button' style={{borderRadius: 0}} onClick={rename}>재입력</Button></>}
+                    : <><Button type="default" size='large' htmlType='submit' style={{borderRadius: 0}} disabled><CheckOutlined/></Button>
+                        <Button type='primary' size='large' htmlType='button' style={{borderRadius: 0}} onClick={rename}>재입력</Button></>}
                 </Space.Compact>
             </Form>
         </div>

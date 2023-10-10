@@ -43,7 +43,7 @@ export function SignupComponent() {
 
     return (
         
-        <Card title="회원가입" extra={<a href="/login">LOGIN</a>} style={{maxWidth: 500}}>
+        <Card title="회원가입" extra={<a href="/login">LOGIN</a>} style={{width: "100%"}}>
             {bool && (
                 <Navigate to="/login" replace={true} />
             )}
@@ -92,7 +92,7 @@ export function SignupComponent() {
                     <Input placeholder='닉네임' />
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 19, span: 16 }}>
+                <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
                     <Button type="primary" htmlType="submit">
                         회원가입
                     </Button>

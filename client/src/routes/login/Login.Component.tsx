@@ -37,7 +37,7 @@ export function LoginComponent() {
     };
 
     return (
-        <Card title="로그인" extra={<a href="/signup">SIGNUP</a>} style={{minWidth: 500}}>
+        <Card title="로그인" extra={<a href="/signup">SIGNUP</a>} style={{width: "100%"}}>
             {user && (
                 <Navigate to="/" replace={true} />
             )}
@@ -73,7 +73,7 @@ export function LoginComponent() {
                     <Checkbox>로그인 상태 유지</Checkbox>
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 19, span: 16 }}>
+                <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
                     <Button type="primary" htmlType="submit">
                         로그인
                     </Button>

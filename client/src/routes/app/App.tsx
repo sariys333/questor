@@ -8,6 +8,8 @@ import {
 import { useEffect, useState } from "react";
 import UserRepository from "../../repositories/User.Repository";
 import { User } from "../login/types/User.typs";
+import { Link } from "react-router-dom";
+import { QuestPage } from '../../quest/Quest.Page';
 
 const { Header, Sider, Content } = Layout;
 export function App() {
@@ -82,10 +84,8 @@ export function App() {
                     minHeight: 280,
                 }}
             >
-                {/* <QuestPage id={0} /> */}
-                {/* <Routes>
-                    <Route path="login" element={<QuestPage />} />
-                </Routes> */}
+                <QuestPage />
+
             </Content>
         </Layout>
     </Layout>

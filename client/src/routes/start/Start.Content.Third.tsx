@@ -28,7 +28,7 @@ export function StartContentThird() {
 
     const onFinish = async (values: any) => {
         console.log(values.password)
-        if(values.password === values.pwCheck) {
+        if(values.password == values.pwCheck) {
             console.log("true")
             await signup(values)
         }
@@ -41,12 +41,12 @@ export function StartContentThird() {
 
     return (
         <Layout style={{alignItems: 'center', background: 'none'}}>
-            <Title level={2}>계정 생성</Title>
+            <Title level={2}>회원 가입</Title>
             <Form
                 name="basic"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 24 }}
-                style={{ width: '40%' }}
+                style={{ width: '40%', maxWidth: 450}}
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}

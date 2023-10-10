@@ -16,13 +16,13 @@ export function StartPage() {
         <Layout style={{ height: "100vh"}}>
             <Header style={{ backgroundColor: colorBgBase }}>
                 <Row justify={"space-between"}>
-                    <Title level={5}>QUESTOR</Title>
+                    <Title level={5}><Link to={"/quest"}>QUESTOR</Link></Title>
                     <Space>
                         <Typography>이미 진행중인 QUEST가 있다면?</Typography>
                         <Button><Link to={"/login"}>로그인</Link></Button>
                     </Space>
                 </Row>
-            </Header>U
+            </Header>
             <Content
                 style={{
                     margin: '24px',

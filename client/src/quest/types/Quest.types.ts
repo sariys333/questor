@@ -10,3 +10,22 @@ export type Quest = {
 }
 
 export type GetQuestListQuery = Pick<Quest, "userId">
+
+export class Category {
+
+    constructor() {
+        this.walk = "🚶🏻"
+        this.run = "🏃🏿"
+        this.gym = "🏋🏽"
+        this.study = "📝"
+        this.read = "📖"
+    }
+    
+    walk: string
+    run: string
+    gym: string
+    study: string
+    read: string
+
+}
+

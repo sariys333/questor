@@ -23,6 +23,7 @@ const steps = [
         content: 'Last-content',
     },
 ];
+
 export function StartContent() {
     const { token } = theme.useToken();
     const [current, setCurrent] = useState(0);
@@ -42,7 +43,9 @@ export function StartContent() {
     };
 
     const items = steps.map((item) => ({ key: item.title, title: item.title }));
-  
+
+    const [ email, setEmail ] = useState("");
+
     const contentStyle: React.CSSProperties = {
         //lineHeight: '260px',
         margin: "24px",
@@ -56,6 +59,7 @@ export function StartContent() {
         display: 'grid',
         alignContent: 'center'
     };
+
 
     return (
         <>

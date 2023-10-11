@@ -1,14 +1,9 @@
 
-import React, { Ref, RefObject, useEffect, useRef, useState } from 'react'
-import { LoginComponent } from '../login/Login.Component'
-import { Button, ConfigProvider, Input, Layout, Row, Space, Typography, theme, Form } from 'antd'
-import { Content, Header } from 'antd/es/layout/layout'
-import { Link, Outlet } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Button, Input, Space, Typography, theme, Form } from 'antd'
 import UserRepository from '../../repositories/User.Repository'
-import { User } from '../login/types/User.typs'
 import { Credentials } from '../../repositories/Auth.Repository'
 import { CheckOutlined } from '@ant-design/icons';
-import Item from 'antd/es/list/Item';
 
 const { Title } = Typography
 

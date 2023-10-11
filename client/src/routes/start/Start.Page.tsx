@@ -4,14 +4,16 @@ import { Button, ConfigProvider, Layout, Row, Space, Typography, theme } from 'a
 import { Content, Header } from 'antd/es/layout/layout'
 import { Link, Outlet } from 'react-router-dom'
 import { StartContent } from './Start.Content'
-const { Title } = Typography 
+
+const { Title } = Typography
+
 
 export function StartPage() {
 
     const {
         token: { colorBgBase },
     } = theme.useToken();
-    console.log(colorBgBase)
+
     return (
         <Layout style={{ height: "100vh"}}>
             <Header style={{ backgroundColor: colorBgBase }}>

@@ -9,6 +9,7 @@ import { Login } from './routes/login/Login.Page';
 import App from './routes/app/App';
 import { Signup } from './routes/signup/Signup.Page';
 import { StartPage } from './routes/start/Start.Page';
+import {UserSettingPage} from "./routes/user/User.Setting.Page";
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
@@ -46,6 +47,7 @@ root.render(
 					</Route>
 					<Route path="signup" element={<Signup />}></Route>
 					<Route path="start" element={<StartPage />}></Route>
+					<Route path="setting" element={<UserSettingPage />}/>
 				</Routes>
 			</Router>
 		</ConfigProvider>

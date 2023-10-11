@@ -5,8 +5,7 @@ export class User {
         this.email = obj?.email
         this.password = obj?.password
         this.name = obj?.name
-        this.nickname = obj?.nickname
-        this.tel = obj?.tel
+        this.username = obj?.username
         this.regDate = obj?.regDate
     }
 
@@ -14,8 +13,7 @@ export class User {
     email: string
     password: string
     name: string
-    nickname: string
-    tel: string
+    username: string
     regDate: Date
 }
 

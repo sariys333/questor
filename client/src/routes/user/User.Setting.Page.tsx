@@ -13,13 +13,13 @@ export function UserSettingPage() {
     } = theme.useToken();
 
     return (
-        <Layout style={{ height: "100vh"}}>
+        <Layout style={{ height: "100vh", width: "100%"}}>
             <Header style={{ backgroundColor: colorBgBase }}>
                 <Title level={5}><Link to="/">QUESTOR</Link></Title>
             </Header>
             <Content
                 style={{
-                    margin: '24px auto',
+                    margin: '24px',
                     padding: '24px',
                     minHeight: 280,
                 }}

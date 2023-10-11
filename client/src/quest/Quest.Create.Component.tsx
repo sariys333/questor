@@ -24,6 +24,11 @@ export function QuestCreateComponent() {
         console.log(e[1].$d.getTime())
         setFrom(e[0].$d.getTime())
         setTo(e[1].$d.getTime())
+        if(from && to) {
+            setCreateStep(2)
+        } else {
+            setCreateStep(1)
+        }
     }
 
 
@@ -47,10 +52,11 @@ export function QuestCreateComponent() {
                     <Form.Item label="수행 시간" name="timeValue">
                         <TimePicker.RangePicker format="HH:mm" minuteStep={5} size="large" onChange={timeChange} />
                     </Form.Item>
-                 : <></>}
+                : <></>}
 
                 {createStep > 1 ?
-                    <></> : <></>}
+                    <>new step</>
+                : <></>}
                 
                 
             </Form>

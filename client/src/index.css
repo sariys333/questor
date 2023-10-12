@@ -12,6 +12,6 @@ code {
     monospace;
 }
 
-.ant-radio-button-wrapper span {
+.ant-radio-group-large .ant-radio-button-wrapper span {
   font-size: 25px;
 }

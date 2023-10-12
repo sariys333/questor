@@ -1,4 +1,5 @@
 import { API_URL } from "../Constants";
+import { CreateCred } from "../quest/Quest.Create.Component";
 import { Quest } from "../quest/types/Quest.types";
 
 class QuestRepository {
@@ -23,6 +24,26 @@ class QuestRepository {
             // throw e
             return []
         }
+    }
+
+    async create(cred: CreateCred): Promise<boolean> {
+        try {
+            const response = await fetch(`${this.url}/create`, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(cred)
+            })
+
+            const data = await response.json()
+            if(data) {
+                return true
+            }
+        } catch (error) {
+            console.error(error)
+        }
+        return false
     }
 
 }

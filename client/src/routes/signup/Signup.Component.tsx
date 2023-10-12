@@ -1,12 +1,7 @@
-import { Button, Card, Input, Space, Form, Checkbox } from 'antd'
-import React, { useState } from 'react'
-import {
-    UserOutlined,
-    LockOutlined,
-} from '@ant-design/icons';
-import AuthRepository, { Credentials } from '../../repositories/Auth.Repository';
+import { Button, Card, Form, Input } from 'antd';
+import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Signup } from './Signup.Page';
+import { Credentials } from '../../repositories/Auth.Repository';
 import UserRepository from '../../repositories/User.Repository';
 
 type FieldType = {

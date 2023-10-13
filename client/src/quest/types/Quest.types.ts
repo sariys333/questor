@@ -19,13 +19,15 @@ export class Category {
         this.gym = "🏋🏽"
         this.study = "📝"
         this.read = "📖"
+        this.etc = "❔"
     }
-    
+
     walk: string
     run: string
     gym: string
     study: string
     read: string
+    etc: string
 
 }
 

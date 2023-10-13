@@ -1,7 +1,7 @@
 import { Controller, Get, Post, UseGuards, Body } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User} from './types/user.type';
-import { User as ReqUser} from "src/user/user.decorator"
+import { User } from './types/user.type';
+import { User as ReqUser } from "src/user/user.decorator"
 import { Public } from 'src/auth/public.decorator';
 import { SECRET_KEY } from 'src/Constants';
 import { get } from 'http';
@@ -10,7 +10,7 @@ import { Credentials } from 'src/auth/types/auth.types';
 @Controller('api/user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
-    
+
     @Get("")
     async findCurrentUser(@ReqUser() user: User): Promise<User> {
         return await this.userService.getUserById(user.userId);
@@ -33,14 +33,14 @@ export class UserController {
         console.log(cred)
         const user = await this.userService.getUserByEmail(cred.email)
         console.log(user)
-        if(user.email == cred.email) {
+        if (user.email == cred.email) {
             return false
         }
         return true
     }
 
 }
-// 토큰 유효기간있잖아 
+// 토큰 유효기간있잖아
 
 // 토큰을 리프레쉬하는 기능
 // 일정시간이 지났어도 다시 새로운걸 발급해줄수있는

@@ -6,10 +6,10 @@ export class User {
         this.password = obj?.password
         this.name = obj?.name
         this.username = obj?.username
-        this.regDate = obj?.regDate
+        this.regDate = obj?.reg_date
     }
 
-    userId: number
+    userId: string
     email: string
     password: string
     name: string

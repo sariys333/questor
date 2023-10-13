@@ -1,7 +1,5 @@
 import { API_URL } from "../Constants";
-import { CreateForm } from "../quest/Quest.Create.Component";
-import { EditForm } from "../quest/Quest.Edit.Component";
-import { Quest } from "../quest/types/Quest.types";
+import { CreateQuestParams, EditQuestParams, Quest } from "../quest/types/Quest.types";
 
 class QuestRepository {
     private readonly url: string;
@@ -15,29 +13,30 @@ class QuestRepository {
                 method: "get",
                 headers: {
                     "Content-Type": "application/json",
-                    // "Authorization": `Bearer ${}`
                 },
             });
-
             const data = await response.json();
             return data;
         } catch (e) {
-            // throw e
             return [];
         }
     }
 
-    async create(form: CreateForm): Promise<boolean> {
+    async create(params: CreateQuestParams): Promise<boolean> {
         try {
             const response = await fetch(`${this.url}/create`, {
                 method: "post",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(params),
             });
 
             const data = await response.json();
+            if (data.statusCode == 401) {
+                return false;
+            }
             if (data) {
                 return true;
             }
@@ -47,7 +46,7 @@ class QuestRepository {
         return false;
     }
 
-    async getQuestById(questId: number): Promise<Quest | undefined> {
+    async getQuestById(questId: string): Promise<Quest | undefined> {
         try {
             const response = await fetch(`${this.url}/detail/${questId}`, {
                 method: "get",
@@ -64,11 +63,10 @@ class QuestRepository {
         } catch (error) {
             console.error(error);
         }
-        return;
     }
 
-    async edit(form: EditForm): Promise<boolean> {
-        console.log(form)
+    async edit(params: EditQuestParams): Promise<boolean> {
+        console.log(params)
         try {
             const response = await fetch(`${this.url}/edit`, {
                 method: "post",
@@ -76,7 +74,7 @@ class QuestRepository {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(params),
             });
 
             const data = await response.json();

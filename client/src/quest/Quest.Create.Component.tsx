@@ -2,17 +2,22 @@ import {
     Button,
     Checkbox,
     DatePicker,
+    Flex,
     Form,
     Input,
     Radio,
     Space,
     TimePicker,
+    Typography,
 } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
-import { useState } from "react";
-import { Category, Quest } from "./types/Quest.types";
 import { Dayjs } from "dayjs";
+import { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import QuestRepository from "../repositories/Quest.Repository";
+import { CategoryEmojiMap, Quest } from "./types/Quest.types";
+
+const { Title } = Typography;
 
 const range = (value: number) => {
     const result = [];
@@ -30,33 +35,23 @@ const disabledRangeTime: RangePickerProps["disabledTime"] = (_, type) => {
     };
 };
 
-export class CreateForm {
-    quest: Quest;
-    time: Date[] = [];
-
-    constructor(form: FormValues) {
-        this.quest = form.quest;
-        this.time = form.time.map((item) => item.toDate());
-        console.log(this.time);
-    }
-}
-
-type FormValues = {
-    quest: Quest;
+type FormValues = Pick<Quest, "content" | "category"> & {
     time: Dayjs[];
 };
 
 export function QuestCreateComponent() {
-    const [category] = useState<Category>(new Category());
     const [categoryLabel, setCategoryLabel] = useState<string>("선택");
     const [createStep, setCreateStep] = useState<number>(0);
     const [timeLabel, setTimeLabel] = useState<string>("");
     const [timeValue, setTimeValue] = useState();
     const [day, setDay] = useState<boolean>(false);
+    const [result, setResult] = useState<boolean>(false);
 
     const onCategoryChange = (e: any) => {
         setCategoryLabel(e.target.value);
-        setCreateStep(1);
+        if (createStep < 1) {
+            setCreateStep(1);
+        }
         if (timeLabel === "") {
             setTimeLabel("기간 선택");
         }
@@ -86,47 +81,52 @@ export function QuestCreateComponent() {
 
     const onFinish = async (e: any) => {
         // console.log(timeValue)
-        // console.log(e)
+
         if (e.time.length == 2) {
             await createQuest(e);
         }
     };
 
-    const createQuest = async (data: FormValues) => {
-        const res = await QuestRepository.create(new CreateForm(data));
+    const createQuest = async ({ content, category, time }: FormValues) => {
+        console.log(time);
+        const res = await QuestRepository.create({
+            content,
+            category,
+            from: time[0].toDate(),
+            to: time[1].toDate(),
+        });
         console.log(res);
+        if (res) {
+            setResult(res);
+        }
     };
 
     return (
         <div>
+            <Flex justify="flex-end" style={{ margin: 5 }}>
+                <Title level={3}>
+                    <Link to={"/"}>CANCEL</Link>
+                </Title>
+            </Flex>
+
             <Form name="quest" layout="vertical" onFinish={onFinish}>
-                <Form.Item label={categoryLabel} name={["quest", "category"]}>
+                <Form.Item label={categoryLabel} name={"category"}>
                     <Radio.Group
                         onChange={onCategoryChange}
                         size="large"
                         style={{ borderRadius: 0 }}
                     >
-                        <Radio.Button value="걷기">
-                            {category.walk} 걷기
-                        </Radio.Button>
-                        <Radio.Button value="달리기">
-                            {category.run} 달리기
-                        </Radio.Button>
-                        <Radio.Button value="헬스">
-                            {category.gym} 헬스
-                        </Radio.Button>
-                        <Radio.Button value="공부">
-                            {category.study} 공부
-                        </Radio.Button>
-                        <Radio.Button value="독서">
-                            {category.read} 독서
-                        </Radio.Button>
-                        <Radio.Button value="기타">
-                            {category.etc} ETC
-                        </Radio.Button>
+                        {Array.from(CategoryEmojiMap.entries()).map(
+                            ([category, value]) => {
+                                return (
+                                    <Radio.Button value={category}>
+                                        <>{value}</>
+                                    </Radio.Button>
+                                );
+                            }
+                        )}
                     </Radio.Group>
                 </Form.Item>
-
                 <Space direction="vertical">
                     {createStep > 0 ? (
                         <Checkbox onChange={onCheck} name="today">
@@ -135,7 +135,7 @@ export function QuestCreateComponent() {
                     ) : (
                         <></>
                     )}
-                    <Form.Item label={timeLabel} name="time">
+                    <Form.Item label={timeLabel} name={"time"}>
                         {createStep > 0 && day ? (
                             <TimePicker.RangePicker
                                 format="HH:mm"
@@ -162,7 +162,7 @@ export function QuestCreateComponent() {
                     </Form.Item>
                 </Space>
 
-                <Form.Item name={["quest", "content"]} label="내용">
+                <Form.Item name={"content"} label="내용">
                     <Input.TextArea />
                 </Form.Item>
 
@@ -177,6 +177,8 @@ export function QuestCreateComponent() {
                 ) : (
                     <></>
                 )}
+
+                {result && <Navigate to="/" replace={true} />}
             </Form>
         </div>
     );

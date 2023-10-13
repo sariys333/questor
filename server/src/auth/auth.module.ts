@@ -6,6 +6,7 @@ import { SECRET_KEY } from "src/Constants";
 import { JwtModule } from "@nestjs/jwt";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth.guard";
+import { UtilsModule } from "src/utils/utils.module";
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { AuthGuard } from "./auth.guard";
             secret: SECRET_KEY,
             signOptions: { expiresIn: "30m" },
         }),
+        UtilsModule
     ],
     controllers: [AuthController],
     providers: [

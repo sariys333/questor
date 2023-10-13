@@ -1,17 +1,7 @@
-import {
-    Checkbox,
-    DatePicker,
-    Form,
-    Input,
-    Radio,
-    Space,
-    TimePicker,
-} from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
-import QuestRepository from "../repositories/Quest.Repository";
-import { Category, Quest } from "./types/Quest.types";
+import { Quest } from "./types/Quest.types";
 
 const range = (value: number) => {
     const result = [];
@@ -29,26 +19,11 @@ const disabledRangeTime: RangePickerProps["disabledTime"] = (_, type) => {
     };
 };
 
-export class EditForm {
-    questId: number;
-    quest: Quest;
-    time: Date[] = [];
-
-    constructor(form: FormValues) {
-        this.questId = form.questId;
-        this.quest = form.quest;
-        this.time = form.time.map((item) => item.toDate());
-    }
+type FormValues = Pick<Quest, "content" |"category"> & {
+    time: Dayjs[]
 }
 
-type FormValues = {
-    questId: number;
-    quest: Quest;
-    time: Dayjs[];
-};
-
 export function QuestEditComponent({ questId }: { questId: number }) {
-    const [category] = useState<Category>(new Category());
     const [categoryLabel, setCategoryLabel] = useState<string>("선택");
     const [timeLabel, setTimeLabel] = useState<string>("기간 선택");
     const [timeValue, setTimeValue] = useState();
@@ -80,8 +55,8 @@ export function QuestEditComponent({ questId }: { questId: number }) {
     };
 
     const editQuest = async (data: FormValues) => {
-        const res = await QuestRepository.edit(new EditForm(data));
-        console.log(res);
+        // const res = await QuestRepository.edit(data);
+        // console.log(res);
     };
 
     return <div></div>;

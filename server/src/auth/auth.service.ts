@@ -3,12 +3,14 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 import { Credentials } from "./types/auth.types";
 import { JwtService } from "@nestjs/jwt";
+import { BcryptService } from "src/utils/bcrypt.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
+        private readonly bcryptService: BcryptService
     ) { }
 
     // 로그인 가능 계정인지 확인
@@ -20,7 +22,10 @@ export class AuthService {
         if (!user) {
             return { msg: "user not found" };
         }
-        if (user?.password !== credentials.password) {
+
+        const compared = await this.bcryptService.compare(credentials.password, user?.password)
+        console.log("compared", compared)
+        if (!compared) {
             throw new UnauthorizedException(user);
         }
         const { password, ...result } = user;

@@ -3,7 +3,7 @@ import { Public } from "src/auth/public.decorator";
 import { User } from "src/user/types/user.type";
 import { User as ReqUser } from "src/user/user.decorator";
 import { QuestService } from "./quest.service";
-import { Quest } from "./types/quest.type";
+import { CreateQuestParams, Quest } from "./types/quest.type";
 
 @Controller("api/quest")
 export class QuestController {
@@ -24,9 +24,8 @@ export class QuestController {
     }
 
     @Post("/create")
-    createQuest(@ReqUser() user: User, @Body() quest: Quest) {
-        console.log(user)
-        console.log(quest) 
+    async createQuest(@ReqUser() user: User, @Body() params: CreateQuestParams) {
+        return await this.questService.createQuest({user, params});
     }
 
     @Public()

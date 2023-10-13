@@ -1,6 +1,7 @@
 export type Quest = {
-    questId: number
-    userId: number
+    questId: string
+    userId: string
+    category: Category
     content: string
     completed: boolean
     completedAt: Date
@@ -11,23 +12,24 @@ export type Quest = {
 
 export type GetQuestListQuery = Pick<Quest, "userId">
 
-export class Category {
+export type CreateQuestParams = Pick<Quest, "content" | "from" | "to" | "category">
 
-    constructor() {
-        this.walk = "🚶🏻"
-        this.run = "🏃🏿"
-        this.gym = "🏋🏽"
-        this.study = "📝"
-        this.read = "📖"
-        this.etc = "❔"
-    }
+export type EditQuestParams = Pick<Quest, "content" | "from" | "to" | "category" | "questId">
 
-    walk: string
-    run: string
-    gym: string
-    study: string
-    read: string
-    etc: string
-
+export enum Category {
+    walk="걷기",
+    run="달리기",
+    gym="헬스",
+    study="공부",
+    read="독서",
+    etc="etc"
 }
 
+export const CategoryEmojiMap = new Map<Category, string>([
+    [Category.walk, "🚶🏻"],
+    [Category.run, "🏃🏿"],
+    [Category.gym, "🏋🏽"],
+    [Category.study, "📝"],
+    [Category.read, "📖"],
+    [Category.etc, "❔"],
+])

@@ -21,7 +21,7 @@ export class AuthController {
     async signIn(@Body() cred: Credentials, @Response() res: Res) {
         console.log(cred)
         const {user, token} = await this.authService.signIn(cred)
-        console.log(token)
+        console.log("?", token)
         res.cookie("JWT", token, {
             secure: false,
             httpOnly: true,

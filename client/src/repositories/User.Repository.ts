@@ -49,6 +49,7 @@ class UserRepository {
       },
       body: JSON.stringify(cred),
     });
+    console.log("res" , response)
     const data = await response.json();
     console.log(data);
     return data;

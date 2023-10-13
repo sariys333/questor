@@ -14,14 +14,10 @@ import {
     Typography,
 } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
-import dayjs from "dayjs";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import QuestRepository from "../repositories/Quest.Repository";
-import { Category, Quest } from "./types/Quest.types";
-
-dayjs.locale("ko-kr")
-dayjs().format()
+import { CategoryEmojiMap, EditQuestParams, Quest } from "./types/Quest.types";
 
 const range = (value: number) => {
     const result = [];
@@ -42,22 +38,22 @@ const disabledRangeTime: RangePickerProps["disabledTime"] = (_, type) => {
 export class EditForm {
     quest: Quest;
     time: Date[] = [];
-    questId: number;
+    // questId: string;
 
     constructor(form: FormValues) {
         this.quest = form.quest;
         this.time = form.time.map((item) => item.toDate());
-        this.questId = form.questId;
+        // this.questId = form.questId;
     }
 }
 
 type FormValues = {
     quest: Quest;
     time: Dayjs[];
-    questId: number;
+    // questId: string;
 };
 
-export function QuestDetailComponent({ questId }: { questId: number }) {
+export function QuestDetailComponent({ questId }: { questId: string }) {
     const [quest, setQuset] = useState<Quest>();
     const [createdAt, setCreatedAt] = useState<string>();
     const [completedAt, setCompletedAt] = useState<string>();
@@ -114,7 +110,7 @@ export function QuestDetailComponent({ questId }: { questId: number }) {
         setOpen(false);
     };
 
-    const [category] = useState<Category>(new Category());
+    // const [category] = useState<Category>(new Category());
     const [categoryLabel, setCategoryLabel] = useState<string>("선택");
     const [timeLabel, setTimeLabel] = useState<string>("기간 선택");
     const [timeValue, setTimeValue] = useState();
@@ -151,8 +147,8 @@ export function QuestDetailComponent({ questId }: { questId: number }) {
         }
     };
 
-    const editQuest = async (data: FormValues) => {
-        const res = await QuestRepository.edit(new EditForm(data));
+    const editQuest = async (params: EditQuestParams) => {
+        const res = await QuestRepository.edit(params);
         console.log(res);
     };
 
@@ -265,24 +261,13 @@ export function QuestDetailComponent({ questId }: { questId: number }) {
                             onChange={onCategoryChange}
                             style={{ borderRadius: 0 }}
                         >
-                            <Radio.Button value="걷기">
-                                {category.walk} 걷기
-                            </Radio.Button>
-                            <Radio.Button value="달리기">
-                                {category.run} 달리기
-                            </Radio.Button>
-                            <Radio.Button value="헬스">
-                                {category.gym} 헬스
-                            </Radio.Button>
-                            <Radio.Button value="공부">
-                                {category.study} 공부
-                            </Radio.Button>
-                            <Radio.Button value="독서">
-                                {category.read} 독서
-                            </Radio.Button>
-                            <Radio.Button value="기타">
-                                {category.etc} 기타
-                            </Radio.Button>
+                            {
+                                Array.from(CategoryEmojiMap.entries()).map(([category, value]) => {
+                                    return <Radio.Button value={category}>
+                                        <>{value}</>
+                                    </Radio.Button>
+                                })  
+                            }
                         </Radio.Group>
                     </Form.Item>
 

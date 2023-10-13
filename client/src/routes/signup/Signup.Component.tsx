@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input } from 'antd';
+import { Button, Card, Form, Input, Space } from 'antd';
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Credentials } from '../../repositories/Auth.Repository';
@@ -56,7 +56,10 @@ export function SignupComponent() {
                     name="email"
                     rules={[{ required: true, message: '이메일을 입력해주세요.' }]}
                 >
-                    <Input placeholder='이메일' />
+                    <Space.Compact style={{width: "100%"}}>
+                        <Input placeholder='이메일' />
+                        <Button >중복확인</Button>
+                    </Space.Compact>
                 </Form.Item>
 
                 <Form.Item<FieldType>
@@ -87,7 +90,7 @@ export function SignupComponent() {
                     <Input placeholder='닉네임' />
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
+                <Form.Item>
                     <Button type="primary" htmlType="submit">
                         회원가입
                     </Button>

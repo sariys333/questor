@@ -10,6 +10,15 @@ import { Login } from "./routes/login/Login.Page";
 import { Signup } from "./routes/signup/Signup.Page";
 import { StartPage } from "./routes/start/Start.Page";
 import { UserSettingPage } from "./routes/user/User.Setting.Page";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/ko";
+import { QuestCreateComponent } from "./quest/Quest.Create.Component";
+import { QuestListComponent } from "./quest/Quest.List.Component";
+// dayjs().locale('de').format()
+dayjs.locale("ko");
+dayjs().format();
+dayjs.extend(relativeTime);
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -47,9 +56,12 @@ root.render(
             <Router>
                 <Routes>
                     <Route element={<App />}>
-                        <Route index element={<QuestPage />} />
-                        <Route path="quest">
-                            <Route path="create" />
+                        <Route element={<QuestPage />}>
+                            <Route index element={<QuestListComponent />} />
+                            <Route
+                                path="quest/create"
+                                element={<QuestCreateComponent />}
+                            />
                         </Route>
                     </Route>
                     <Route path="login" element={<Login />} />

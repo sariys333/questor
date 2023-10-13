@@ -20,11 +20,11 @@ export function LoginComponent() {
     const [user, setUser] = useState<User>()
 
     const login = async (cred: Credentials) => {
-        const user = await AuthRepository.login(cred)
-        if (user.email) {
-            setUser(user)
+        const result = await AuthRepository.login(cred)
+        if (result.status == "ok") {
+            setUser(result.user)
         } else {
-
+            
         }
     }
 

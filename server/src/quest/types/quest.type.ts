@@ -4,21 +4,45 @@ export class Quest {
         this.questId = obj?.quest_id;
         this.userId = obj?.user_id;
         this.content = obj?.content;
-        this.completed = obj?.completed;
-        this.completedAt = obj?.completedAt;
-        this.from = obj?.from;
-        this.to = obj?.to;
+        this.completed = obj?.completed || false
+        this.completedAt = obj && (obj.completedAt instanceof Date) ? obj?.completedAt.getTime() : null
+        this.from = obj && (typeof obj.from == "number") ? new Date(obj?.from).getTime() : null;
+        this.to = obj && (typeof obj.to == "number") ? new Date(obj?.to).getTime() : null;
+        this.createdAt = obj && (obj.createdAt instanceof Date) ?  obj?.createdAt.getTime() : new Date().getTime()
+        this.category = obj?.category
     }
 
-    questId: number;
-    userId: number;
+    questId: string;
+    userId: string;
     content: string;
     completed: boolean;
-    completedAt: Date;
-    createdAt: Date;
-    from: Date;
-    to: Date;
+    category: Category;
+    completedAt: Date | number;
+    createdAt: Date | number;
+    from: Date | number;
+    to: Date | number;
+
+    asObj() {
+        return Object.assign({
+            ...this,
+            user_id: this.userId,
+            quest_id: this.questId
+        })
+    }
 }
+
+export enum Category {
+    walk="걷기",
+    run="달리기",
+    gym="헬스",
+    study="공부",
+    read="독서",
+    etc="etc"
+}
+
+export type GetQuestListQuery = Pick<Quest, "userId">
+
+export type CreateQuestParams = Pick<Quest, "content" | "from" | "to" | "category">
 
 export class CreateForm {
     constructor(userId: number, questId: number) {

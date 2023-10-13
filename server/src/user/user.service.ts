@@ -10,13 +10,18 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { User } from "./types/user.type";
 import { Credentials } from "src/auth/types/auth.types";
+import { v4 as uuidv4 } from 'uuid';
+import { BcryptService } from "src/utils/bcrypt.service";
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
 @Injectable()
 export class UserService {
-    async getUserById(userId: number): Promise<User> {
+    constructor(private readonly bcryptService: BcryptService) {}
+
+
+    async getUserById(userId: string): Promise<User> {
         const command = new GetCommand({
             TableName: "users",
             Key: {
@@ -52,12 +57,14 @@ export class UserService {
     }
 
     async signup(cred: Credentials): Promise<boolean> {
+        const hashedPw = await this.bcryptService.hash(cred.password)
+
         const command = new PutCommand({
             TableName: "users",
             Item: {
-                user_id: 2,
+                user_id: uuidv4(),
                 email: cred.email,
-                password: cred.password,
+                password: hashedPw,
                 name: cred.name,
                 username: cred.username,
                 reg_date: new Date().getTime(),

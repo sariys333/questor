@@ -15,7 +15,11 @@ class AuthRepository {
         this.url = API_URL + apiName
     }
 
-    async login(cred: Credentials): Promise<User> {
+    async login(cred: Credentials): Promise<{
+        status: "ok" | "err",
+        user?: User,
+        msg?: string
+    }> {
         const response = await fetch(`${this.url}/login`, {
             method: 'post',
             credentials: "include",
@@ -25,6 +29,18 @@ class AuthRepository {
             body: JSON.stringify(cred)
         })
         const data = await response.json()
+
+        if ( response.status == 200 ) {
+            return {
+                status: "ok",
+                user: data
+            }
+        } else {
+            return {
+                status: "err",
+                msg: "로그인 실패"
+            }
+        }
         console.log(data)
         return data
     }

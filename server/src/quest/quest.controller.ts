@@ -20,6 +20,12 @@ export class QuestController {
         return await this.questService.getAll();
     }
 
+    @Post("/create")
+    createQuest(@ReqUser() user: User, @Body() quest: Quest) {
+        console.log(user)
+        console.log(quest) 
+    }
+
 
 
 }

@@ -9,6 +9,7 @@ import {
     Space,
     TimePicker,
     Typography,
+    message,
 } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
 import { Dayjs } from "dayjs";
@@ -46,6 +47,7 @@ export function QuestCreateComponent() {
     const [timeValue, setTimeValue] = useState();
     const [day, setDay] = useState<boolean>(false);
     const [result, setResult] = useState<boolean>(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const onCategoryChange = (e: any) => {
         setCategoryLabel(e.target.value);
@@ -96,13 +98,20 @@ export function QuestCreateComponent() {
             to: time[1].toDate(),
         });
         console.log(res);
-        if (res) {
-            setResult(res);
+        if (res.result) {
+            setResult(res.result);
+        } else {
+            messageApi.open({
+                type: "error",
+                content: res.msg,
+                style: { marginTop: 20 },
+            });
         }
     };
 
     return (
         <div>
+            {contextHolder}
             <Flex justify="flex-end" style={{ margin: 5 }}>
                 <Title level={3}>
                     <Link to={"/"}>CANCEL</Link>

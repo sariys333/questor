@@ -1,5 +1,9 @@
 import { API_URL } from "../Constants";
-import { CreateQuestParams, EditQuestParams, Quest } from "../quest/types/Quest.types";
+import {
+    CreateQuestParams,
+    EditQuestParams,
+    Quest,
+} from "../quest/types/Quest.types";
 
 class QuestRepository {
     private readonly url: string;
@@ -22,7 +26,11 @@ class QuestRepository {
         }
     }
 
-    async create(params: CreateQuestParams): Promise<boolean> {
+    async create(params: CreateQuestParams): Promise<{
+        status: "ok" | "err";
+        result: boolean;
+        msg?: string;
+    }> {
         try {
             const response = await fetch(`${this.url}/create`, {
                 method: "post",
@@ -35,15 +43,25 @@ class QuestRepository {
 
             const data = await response.json();
             if (data.statusCode == 401) {
-                return false;
+                return {
+                    status: "err",
+                    result: false,
+                    msg: "로그인이 필요한 서비스입니다.",
+                };
             }
             if (data) {
-                return true;
+                return {
+                    status: "ok",
+                    result: true,
+                };
             }
         } catch (error) {
             console.error(error);
         }
-        return false;
+        return {
+            status: "err",
+            result: false,
+        };
     }
 
     async getQuestById(questId: string): Promise<Quest | undefined> {
@@ -56,7 +74,7 @@ class QuestRepository {
                 },
             });
             const data = await response.json();
-            console.log(data)
+            console.log(data);
             if (data) {
                 return data;
             }
@@ -66,7 +84,7 @@ class QuestRepository {
     }
 
     async edit(params: EditQuestParams): Promise<boolean> {
-        console.log(params)
+        console.log(params);
         try {
             const response = await fetch(`${this.url}/edit`, {
                 method: "post",
@@ -86,7 +104,6 @@ class QuestRepository {
         }
         return false;
     }
-
 }
 
 export default new QuestRepository("quest") as QuestRepository;

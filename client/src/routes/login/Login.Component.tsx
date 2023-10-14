@@ -1,13 +1,12 @@
-import { Button, Card, Input, Space, Form, Checkbox } from 'antd'
-import React, { useState } from 'react'
-import {
-    UserOutlined,
-    LockOutlined,
-} from '@ant-design/icons';
-import Item from 'antd/es/list/Item';
-import { User } from './types/User.typs';
-import AuthRepository, { Credentials } from '../../repositories/Auth.Repository';
-import { Navigate } from 'react-router-dom';
+import { Button, Card, Input, Space, Form, Checkbox, message } from "antd";
+import React, { useState } from "react";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import Item from "antd/es/list/Item";
+import { User } from "./types/User.typs";
+import AuthRepository, {
+    Credentials,
+} from "../../repositories/Auth.Repository";
+import { Navigate } from "react-router-dom";
 
 type FieldType = {
     email?: string;
@@ -15,34 +14,41 @@ type FieldType = {
     remember?: string;
 };
 
-
 export function LoginComponent() {
-    const [user, setUser] = useState<User>()
+    const [user, setUser] = useState<User>();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const login = async (cred: Credentials) => {
-        const result = await AuthRepository.login(cred)
+        const result = await AuthRepository.login(cred);
         if (result.status == "ok") {
-            setUser(result.user)
+            setUser(result.user);
         } else {
-            
+            messageApi.open({
+                type: "error",
+                content: result.msg,
+                style: { marginTop: 20 },
+            });
         }
-    }
+    };
 
     const onFinish = async (values: any) => {
-        await login(values)
+        await login(values);
     };
-        
+
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+        console.log("Failed:", errorInfo);
     };
 
     return (
-        <Card title="로그인" extra={<a href="/signup">SIGNUP</a>} style={{width: "100%"}}>
-            {user && (
-                <Navigate to="/" replace={true} />
-            )}
+        <Card
+            title="로그인"
+            extra={<a href="/signup">SIGNUP</a>}
+            style={{ width: "100%" }}
+        >
+            {contextHolder}
+            {user && <Navigate to="/" replace={true} />}
             <Form
-                name="basic"
+                // name="basic"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 24 }}
                 style={{ maxWidth: 600 }}
@@ -53,33 +59,39 @@ export function LoginComponent() {
             >
                 <Form.Item<FieldType>
                     name="email"
-                    rules={[{ required: true, message: '이메일을 입력해주세요.' }]}
+                    rules={[
+                        { required: true, message: "이메일을 입력해주세요." },
+                    ]}
                 >
-                    <Input prefix={<UserOutlined />} placeholder='이메일' />
+                    <Input prefix={<UserOutlined />} placeholder="이메일" />
                 </Form.Item>
 
                 <Form.Item<FieldType>
                     name="password"
-                    rules={[{ required: true, message: '비밀번호를 입력해주세요.' }]}
+                    rules={[
+                        { required: true, message: "비밀번호를 입력해주세요." },
+                    ]}
                 >
-                    <Input.Password prefix={<LockOutlined />} placeholder='비밀번호'/>
+                    <Input.Password
+                        prefix={<LockOutlined />}
+                        placeholder="비밀번호"
+                    />
                 </Form.Item>
 
                 <Form.Item<FieldType>
                     name="remember"
                     valuePropName="checked"
-                    wrapperCol={{span: 16 }}
+                    wrapperCol={{ span: 16 }}
                 >
                     <Checkbox>로그인 상태 유지</Checkbox>
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
+                <Form.Item>
                     <Button type="primary" htmlType="submit">
                         로그인
                     </Button>
                 </Form.Item>
             </Form>
         </Card>
-    )
+    );
 }
-

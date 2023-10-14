@@ -24,7 +24,7 @@ export class QuestService {
     });
 
     const response = await docClient.send(command);
-    console.log(response);
+    // console.log(response);
 
     //   return response
     return [new Quest(response.Item)];
@@ -68,21 +68,21 @@ export class QuestService {
 
     const response = await docClient.send(command);
     const quests = response.Items.map((item: Quest) => new Quest(item));
-    console.log("list quests", quests);
+    // console.log("list quests", quests);
     return quests;
   }
 
-  async getQuestById(questId: number): Promise<Quest> {
+  async getQuestById(questId: string): Promise<Quest> {
     const command = new ScanCommand({
       TableName: "quests",
       FilterExpression: "quest_id = :questId",
       ExpressionAttributeValues: {
-        ":questId": 1,
+        ":questId": questId,
       },
     });
 
     const response = await docClient.send(command);
-    console.log(response);
+    // console.log(response);
 
     //   return response
     return new Quest(response.Items[0]);
@@ -100,7 +100,7 @@ export class QuestService {
         to: form.to,
       },
     });
-    console.log(form);
+    // console.log(form);
     //const response = await docClient.send(command);
     return;
   }

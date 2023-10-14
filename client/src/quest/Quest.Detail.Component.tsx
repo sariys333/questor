@@ -18,6 +18,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import QuestRepository from "../repositories/Quest.Repository";
 import { CategoryEmojiMap, EditQuestParams, Quest } from "./types/Quest.types";
+import { Meta } from "antd/es/list/Item";
 
 const range = (value: number) => {
     const result = [];
@@ -155,7 +156,7 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
     return (
         <>
             <Card
-                title="걷기"
+                title={quest?.category}
                 style={{ marginTop: 30 }}
                 extra={
                     <>
@@ -164,11 +165,7 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                         ) : (
                             <></>
                         )}
-                        {!quest?.completed ? (
-                            <Button onClick={completeQuest}>완료</Button>
-                        ) : (
-                            <></>
-                        )}
+
                         <Button onClick={deleteQuest}>삭제</Button>
                     </>
                 }
@@ -217,21 +214,18 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                             },
                             {
                                 title: (
-                                    <Popover
-                                        placement="top"
-                                        content={completedAt}
-                                        arrow={mergedArrow}
-                                    >
-                                        <a href="#">완료일</a>
-                                    </Popover>
-                                ),
-                            },
-                            {
-                                title: (
                                     <a href="#">
-                                        {quest?.completed
-                                            ? "완료됨"
-                                            : "완료안됨"}
+                                        {quest?.completed ? (
+                                            <Popover
+                                                placement="top"
+                                                content={completedAt}
+                                                arrow={mergedArrow}
+                                            >
+                                                <a href="#">완료일</a>
+                                            </Popover>
+                                        ) : (
+                                            "완료안됨"
+                                        )}
                                     </a>
                                 ),
                             },
@@ -240,6 +234,10 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                     <Typography.Title level={3} style={{ textAlign: "center" }}>
                         {quest?.content}
                     </Typography.Title>
+                    <Meta
+                        avatar={<Button onClick={completeQuest}>완료</Button>}
+                        style={{}}
+                    />
                 </>
             </Card>
             <Modal
@@ -261,13 +259,15 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                             onChange={onCategoryChange}
                             style={{ borderRadius: 0 }}
                         >
-                            {
-                                Array.from(CategoryEmojiMap.entries()).map(([category, value]) => {
-                                    return <Radio.Button value={category}>
-                                        <>{value}</>
-                                    </Radio.Button>
-                                })  
-                            }
+                            {Array.from(CategoryEmojiMap.entries()).map(
+                                ([category, value]) => {
+                                    return (
+                                        <Radio.Button value={category}>
+                                            <>{value}</>
+                                        </Radio.Button>
+                                    );
+                                }
+                            )}
                         </Radio.Group>
                     </Form.Item>
 

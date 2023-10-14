@@ -1,1 +1,5 @@
-export const SECRET_KEY = "NOTNOTNOT"
+export const SECRET_KEY = "NOTNOTNOT";
+export const ACCESS_EXPIRATION = 1800000;
+
+export const REFRESH_KEY = "REFRESHSHSHSHSH";
+export const REFRESH_EXPIRATION = 86400000;

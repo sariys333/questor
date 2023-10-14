@@ -36,7 +36,7 @@ export function App() {
     }, []);
 
     return (
-        <Layout style={{ height: "100vh" }}>
+        <Layout style={{ height: "100%", minHeight: "100vh" }}>
             <Sider
                 trigger={null}
                 collapsible

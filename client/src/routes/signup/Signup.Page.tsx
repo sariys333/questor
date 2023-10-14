@@ -23,8 +23,7 @@ export function Signup() {
                 style={{
                     margin: "24px auto",
                     padding: "24px",
-                    minHeight: 280,
-                    width: "50%",
+                    width: "100%",
                     maxWidth: 500,
                 }}
             >

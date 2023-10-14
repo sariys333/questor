@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import {Avatar, Button, Card, Modal, Tooltip, Typography} from 'antd'
-import Meta from 'antd/es/card/Meta'
-import { EditOutlined, EllipsisOutlined, LockOutlined, LogoutOutlined } from '@ant-design/icons';
-import UserRepository from '../../repositories/User.Repository';
-import { User } from '../login/types/User.typs';
-import { key } from 'localforage';
+import { EditOutlined, LockOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Card, Tooltip, Typography } from "antd";
+import { useEffect, useState } from "react";
+import UserRepository from "../../repositories/User.Repository";
+import { User } from "../login/types/User.typs";
 
+const { Title } = Typography;
 
 export function UserSettingComponent() {
-
-    const [user, setUser] = useState<User>()
+    const [user, setUser] = useState<User>();
     const [index, setIndex] = useState<number>(0);
     const [open, setOpen] = useState(false);
 
@@ -20,38 +18,32 @@ export function UserSettingComponent() {
 
     const getApi = async () => {
         const response = await UserRepository.findCurrentUser();
-        setUser(response)
-        console.log(response)
-    }
+        setUser(response);
+        console.log(response);
+    };
 
     const onClickEdit = () => {
-        setIndex(1)
-    }
-    
+        setIndex(1);
+    };
+
     const onClickSetting = () => {
-        setIndex(2)
-    }
+        setIndex(2);
+    };
 
-    const onClickLogout = () => {
-        setIndex(3)
-    }
-
-    const showModal = () => {
-        setOpen(true);
-      };
-      const handleOk = () => {
-        setOpen(false);
-      };
-    
-      const handleCancel = () => {
-        setOpen(false);
-      };
+    const onClickLogout = () => {};
 
     return (
         <>
             <Card
-                style={{ width: "100%" }}
-                
+                cover={
+                    <>
+                        <Title level={1} style={{ marginLeft: 20 }}>
+                            {user?.name}
+                        </Title>
+                        <Title level={3}>{user?.username}</Title>
+                    </>
+                }
+                style={{ width: "100%", maxWidth: 500 }}
                 actions={[
                     <Tooltip placement="bottom" title="프로필 설정">
                         <EditOutlined key="edit" onClick={onClickEdit} />
@@ -60,62 +52,26 @@ export function UserSettingComponent() {
                         <LockOutlined key="pwReset" onClick={onClickSetting} />
                     </Tooltip>,
                     <Tooltip placement="bottom" title="로그아웃">
-                        <LogoutOutlined key="logout" onClick={() => {
-                            Modal.confirm({
-                                title: 'Confirm',
-                                content: 'Bla bla ...',
-                                footer: (_, { OkBtn, CancelBtn }) => (
-                                    <>
-                                        <Button>Custom Button</Button>
-                                        <CancelBtn />
-                                        <OkBtn />
-                                    </>
-                                ),
-                                });
-                            }} />
+                        <LogoutOutlined key="logout" onClick={onClickLogout} />
                     </Tooltip>,
                 ]}
-            >
-                <Meta
-                    title={user?.name}
-                    description={user?.username}
-                />
-            </Card>
+            ></Card>
 
-            {index == 1 ?
-                <Card style={{marginTop: 50}}>
+            {index == 1 ? (
+                <Card style={{ marginTop: 50 }}>
                     <>user profile edit</>
                 </Card>
-            : <></>}
+            ) : (
+                <></>
+            )}
 
-            {index == 2 ?
-                <Card style={{marginTop: 50}}>
+            {index == 2 ? (
+                <Card style={{ marginTop: 50 }}>
                     <>user password reset</>
                 </Card>
-            : <></>}
-
-            {/* <Modal
-                open={open}
-                title="Title"
-                onOk={handleOk}
-                onCancel={handleCancel}
-                footer={(_, { OkBtn, CancelBtn }) => (
-                <>
-                    <Button>Custom Button</Button>
-                    <CancelBtn />
-                    <OkBtn />
-                </>
-                )}
-                >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-            </Modal> */}
-            
-            
+            ) : (
+                <></>
+            )}
         </>
-    )
+    );
 }
-

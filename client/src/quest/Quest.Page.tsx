@@ -8,10 +8,9 @@ import { Link, Outlet } from "react-router-dom";
 // import { Quest } from './Quest.Item.Props';
 
 export function QuestPage() {
-
     return (
         <>
-            <Outlet/>
+            <Outlet />
         </>
     );
 }

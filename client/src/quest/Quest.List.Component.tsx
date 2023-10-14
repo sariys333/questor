@@ -1,15 +1,33 @@
-import { Flex, Table, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { SearchOutlined } from "@ant-design/icons";
+import {
+    Button,
+    Flex,
+    Form,
+    Input,
+    InputRef,
+    Space,
+    Table,
+    Typography,
+} from "antd";
+import type { ColumnType } from "antd/es/table";
+import { FilterConfirmProps } from "antd/es/table/interface";
+import dayjs from "dayjs";
+import { useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
+import { Link } from "react-router-dom";
+import QuestRepository from "../repositories/Quest.Repository";
 import { QuestDetailComponent } from "./Quest.Detail.Component";
 import { CategoryEmojiMap, Quest } from "./types/Quest.types";
-import dayjs from "dayjs";
-import QuestRepository from "../repositories/Quest.Repository";
-import { Link } from "react-router-dom";
+import { WeeklyCalendar } from "antd-weekly-calendar";
+import { add } from "date-fns";
+import { GenericEvent } from "antd-weekly-calendar/dist/components/types";
+import { QuestCalendar } from "./Quest.Calendar";
 
 const { Title } = Typography;
 
 export function QuestListComponent() {
-    const [quests, setQuests] = useState<Quest[]>();
+    const [quests, setQuests] = useState<Quest[]>([]);
+    // const [events, setEvents] = useState<GenericEvent[]>();
 
     // 컴포넌트 불러지면 실행하는 함수
     useEffect(() => {
@@ -21,14 +39,13 @@ export function QuestListComponent() {
         setQuests(quests);
     };
 
-    console.log(quests);
     const [now] = useState(new Date());
     const [questId, setQuestId] = useState<string>("");
     const [detail, setDetail] = useState(false);
 
     const onClick = (e: any) => {
         setQuestId(e.target.id);
-        if (e.target.id > 0) {
+        if (e.target.id) {
             setDetail(true);
         } else {
             setDetail(false);
@@ -36,7 +53,7 @@ export function QuestListComponent() {
     };
 
     const time = (to: any) => {
-        console.log(to);
+        // console.log(to);
         if (to > now) {
             const formattedDate = dayjs(now.getTime()).to(to);
             return formattedDate;
@@ -53,12 +70,14 @@ export function QuestListComponent() {
                     <Link to={"/quest/create"}>CREATE</Link>
                 </Title>
             </Flex>
+            <QuestCalendar quests={quests} />
             <Table
                 columns={[
                     {
                         key: "questId",
                         title: "내용",
                         dataIndex: "content",
+                        ellipsis: true,
                         render: (text, r) => (
                             <a onClick={onClick} id={`${r.questId}`}>
                                 {text}
@@ -98,7 +117,6 @@ export function QuestListComponent() {
                     defaultPageSize: 5,
                 }}
             />
-
             <div>
                 {detail ? <QuestDetailComponent questId={questId} /> : <></>}
             </div>

@@ -16,7 +16,6 @@ const { Title } = Typography;
 export function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [user, setUser] = useState<User>();
-
     const {
         token: { colorBgContainer },
     } = theme.useToken();

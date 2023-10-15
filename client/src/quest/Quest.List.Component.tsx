@@ -1,43 +1,22 @@
-import { SearchOutlined } from "@ant-design/icons";
-import {
-    Button,
-    Flex,
-    Form,
-    Input,
-    InputRef,
-    Space,
-    Table,
-    Typography,
-} from "antd";
-import type { ColumnType } from "antd/es/table";
-import { FilterConfirmProps } from "antd/es/table/interface";
+import { Flex, Table, Typography } from "antd";
 import dayjs from "dayjs";
-import { useEffect, useRef, useState } from "react";
-import Highlighter from "react-highlight-words";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import QuestRepository from "../repositories/Quest.Repository";
+import { QuestState } from "../redux/Quest.Slice";
+import { QuestCalendar } from "./Quest.Calendar";
 import { QuestDetailComponent } from "./Quest.Detail.Component";
 import { CategoryEmojiMap, Quest } from "./types/Quest.types";
-import { WeeklyCalendar } from "antd-weekly-calendar";
-import { add } from "date-fns";
-import { GenericEvent } from "antd-weekly-calendar/dist/components/types";
-import { QuestCalendar } from "./Quest.Calendar";
 
 const { Title } = Typography;
 
 export function QuestListComponent() {
-    const [quests, setQuests] = useState<Quest[]>([]);
     // const [events, setEvents] = useState<GenericEvent[]>();
 
-    // 컴포넌트 불러지면 실행하는 함수
-    useEffect(() => {
-        getApi();
-    }, []);
-
-    const getApi = async () => {
-        const quests = await QuestRepository.getAll();
-        setQuests(quests);
-    };
+    const quests = useSelector((state: QuestState) => {
+        console.log(state);
+        return state.quests;
+    });
 
     const [now] = useState(new Date());
     const [questId, setQuestId] = useState<string>("");
@@ -70,7 +49,7 @@ export function QuestListComponent() {
                     <Link to={"/quest/create"}>CREATE</Link>
                 </Title>
             </Flex>
-            <QuestCalendar quests={quests} />
+            <QuestCalendar />
             <Table
                 columns={[
                     {

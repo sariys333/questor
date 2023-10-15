@@ -15,6 +15,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
 import { QuestCreateComponent } from "./quest/Quest.Create.Component";
 import { QuestListComponent } from "./quest/Quest.List.Component";
+import { Provider } from "react-redux";
+import store from "./redux/Store";
+
 // dayjs().locale('de').format()
 dayjs.locale("ko");
 dayjs().format();
@@ -53,23 +56,25 @@ root.render(
                 algorithm: theme.darkAlgorithm,
             }}
         >
-            <Router>
-                <Routes>
-                    <Route element={<App />}>
-                        <Route element={<QuestPage />}>
-                            <Route index element={<QuestListComponent />} />
-                            <Route
-                                path="quest/create"
-                                element={<QuestCreateComponent />}
-                            />
+            <Provider store={store}>
+                <Router>
+                    <Routes>
+                        <Route element={<App />}>
+                            <Route element={<QuestPage />}>
+                                <Route index element={<QuestListComponent />} />
+                                <Route
+                                    path="quest/create"
+                                    element={<QuestCreateComponent />}
+                                />
+                            </Route>
                         </Route>
-                    </Route>
-                    <Route path="login" element={<Login />} />
-                    <Route path="signup" element={<Signup />} />
-                    <Route path="start" element={<StartPage />} />
-                    <Route path="setting" element={<UserSettingPage />} />
-                </Routes>
-            </Router>
+                        <Route path="login" element={<Login />} />
+                        <Route path="signup" element={<Signup />} />
+                        <Route path="start" element={<StartPage />} />
+                        <Route path="setting" element={<UserSettingPage />} />
+                    </Routes>
+                </Router>
+            </Provider>
         </ConfigProvider>
     </React.StrictMode>
 );

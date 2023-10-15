@@ -14,7 +14,7 @@ import {
 import { RangePickerProps } from "antd/es/date-picker";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import QuestRepository from "../repositories/Quest.Repository";
 import { CategoryEmojiMap, Quest } from "./types/Quest.types";
 
@@ -186,8 +186,6 @@ export function QuestCreateComponent() {
                 ) : (
                     <></>
                 )}
-
-                {result && <Navigate to="/" replace={true} />}
             </Form>
         </div>
     );

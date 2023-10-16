@@ -3,9 +3,10 @@ import { QuestState } from "../redux/Quest.Slice";
 import { Badge, BadgeProps, Calendar, CalendarProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
 import { Quest, Category } from "./types/Quest.types";
+import { AppState } from "../redux/Store";
 
 export function QuestCalendar() {
-    const quests = useSelector((state: QuestState) => state.quests);
+    const quests = useSelector((state: AppState) => state.quest.quests);
 
     const getListData = (value: Dayjs) => {
         if (quests) {

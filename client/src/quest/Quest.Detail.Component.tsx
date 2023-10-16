@@ -14,11 +14,14 @@ import {
     Typography,
 } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
+import { Meta } from "antd/es/list/Item";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { QuestState, fetchQuestByQuestId } from "../redux/Quest.Slice";
+import store, { AppState } from "../redux/Store";
 import QuestRepository from "../repositories/Quest.Repository";
 import { CategoryEmojiMap, EditQuestParams, Quest } from "./types/Quest.types";
-import { Meta } from "antd/es/list/Item";
 
 const range = (value: number) => {
     const result = [];
@@ -54,45 +57,30 @@ type FormValues = {
     // questId: string;
 };
 
-export function QuestDetailComponent({ questId }: { questId: string }) {
-    const [quest, setQuset] = useState<Quest>();
-    const [createdAt, setCreatedAt] = useState<string>();
-    const [completedAt, setCompletedAt] = useState<string>();
-    const [to, setTo] = useState<string>();
-    const [from, setFrom] = useState<string>();
-
-    const [showArrow, setShowArrow] = useState(true);
-    const [arrowAtCenter, setArrowAtCenter] = useState(false);
-    const mergedArrow = useMemo(() => {
-        if (arrowAtCenter) return { pointAtCenter: true };
-        return showArrow;
-    }, [showArrow, arrowAtCenter]);
+export function QuestDetailComponent() {
+    const questId = useSelector(
+        (state: AppState) => state.quest.selectedQuestId
+    );
+    const [quest, setQuest] = useState<Quest>();
 
     useEffect(() => {
-        getApi();
+        getQuest();
     }, [questId]);
 
-    const getApi = async () => {
-        const response = await QuestRepository.getQuestById(questId);
-        if (response) {
-            if (response.createdAt) {
-                setCreatedAt(dateFormat(response.createdAt));
-            }
-            if (response.from) {
-                setFrom(dateFormat(response.from));
-            }
-            if (response.to) {
-                setTo(dateFormat(response.to));
-            }
-            if (response.completedAt) {
-                setCompletedAt(dateFormat(response.completedAt));
-            }
-            setQuset(response);
-        }
+    const getQuest = async () => {
+        store
+            .dispatch(fetchQuestByQuestId(questId))
+            .unwrap()
+            .then((data) => {
+                setQuest(data);
+            });
+        console.log(quest);
     };
 
     const dateFormat = (time: Date) => {
-        return dayjs(new Date(time)).format("YY/MM/DD HH:mm");
+        if (time) {
+            return dayjs(new Date(time)).format("YY/MM/DD HH:mm");
+        }
     };
 
     const completeQuest = () => {};
@@ -183,8 +171,11 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                                 title: (
                                     <Popover
                                         placement="top"
-                                        content={createdAt}
-                                        arrow={mergedArrow}
+                                        content={
+                                            quest
+                                                ? dateFormat(quest.createdAt)
+                                                : undefined
+                                        }
                                     >
                                         <a href="#">생성일</a>
                                     </Popover>
@@ -194,8 +185,11 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                                 title: (
                                     <Popover
                                         placement="top"
-                                        content={from}
-                                        arrow={mergedArrow}
+                                        content={
+                                            quest
+                                                ? dateFormat(quest.from)
+                                                : undefined
+                                        }
                                     >
                                         <a href="#">시작일</a>
                                     </Popover>
@@ -205,8 +199,11 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                                 title: (
                                     <Popover
                                         placement="top"
-                                        content={to}
-                                        arrow={mergedArrow}
+                                        content={
+                                            quest
+                                                ? dateFormat(quest.to)
+                                                : undefined
+                                        }
                                     >
                                         <a href="#">만료일</a>
                                     </Popover>
@@ -218,8 +215,13 @@ export function QuestDetailComponent({ questId }: { questId: string }) {
                                         {quest?.completed ? (
                                             <Popover
                                                 placement="top"
-                                                content={completedAt}
-                                                arrow={mergedArrow}
+                                                content={
+                                                    quest
+                                                        ? dateFormat(
+                                                              quest.completedAt
+                                                          )
+                                                        : undefined
+                                                }
                                             >
                                                 <a href="#">완료일</a>
                                             </Popover>

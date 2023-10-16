@@ -1,41 +1,42 @@
 import { Flex, Table, Typography } from "antd";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { QuestState } from "../redux/Quest.Slice";
+import { detail } from "../redux/Quest.Slice";
+import { AppState } from "../redux/Store";
 import { QuestCalendar } from "./Quest.Calendar";
 import { QuestDetailComponent } from "./Quest.Detail.Component";
 import { CategoryEmojiMap } from "./types/Quest.types";
 
 const { Title } = Typography;
-const questSelector = (state: QuestState) => state.quests;
 
 export function QuestListComponent() {
     // const [events, setEvents] = useState<GenericEvent[]>();
 
-    const quests = useSelector(questSelector);
-    console.log(quests);
+    const quests = useSelector((state: AppState) => state.quest.quests);
+    const showDetail = useSelector((state: AppState) => state.quest.showDetail);
+    const dispatch = useDispatch();
 
-    const [now] = useState(new Date());
-    const [questId, setQuestId] = useState<string>("");
-    const [detail, setDetail] = useState(false);
+    const [now, setNow] = useState<Date>();
+
+    useEffect(() => {
+        setNow(new Date());
+    }, [quests || showDetail]);
 
     const onClick = (e: any) => {
-        setQuestId(e.target.id);
-        if (e.target.id) {
-            setDetail(true);
-        } else {
-            setDetail(false);
+        const questId = e.target.id;
+        console.log(questId);
+        if (questId) {
+            dispatch(detail(questId));
         }
     };
 
-    const time = (to: any) => {
-        // console.log(to);
-        if (to > now) {
+    const time = (to: Date) => {
+        if (now && to > now) {
             const formattedDate = dayjs(now.getTime()).to(to);
             return formattedDate;
-        } else {
+        } else if (now && to < now) {
             const formattedDate = dayjs(to).from(now.getTime());
             return formattedDate;
         }
@@ -79,7 +80,7 @@ export function QuestListComponent() {
                                 <>{r.completedAt}</>
                             ) : (
                                 <>
-                                    {r.to < now ? (
+                                    {now && r.to < now ? (
                                         <>기간 만료 : {time(r.to)}</>
                                     ) : (
                                         <>남은시간 : {time(r.to)}</>
@@ -95,9 +96,7 @@ export function QuestListComponent() {
                     defaultPageSize: 5,
                 }}
             />
-            <div>
-                {detail ? <QuestDetailComponent questId={questId} /> : <></>}
-            </div>
+            {showDetail ? <QuestDetailComponent /> : <></>}
         </div>
     );
 }

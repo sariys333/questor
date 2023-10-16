@@ -61,6 +61,7 @@ class QuestRepository {
         return {
             status: "err",
             result: false,
+            msg: "퀘스트 생성에 실패하였습니다. 다시 시도해주세요."
         };
     }
 
@@ -74,7 +75,6 @@ class QuestRepository {
                 },
             });
             const data = await response.json();
-            console.log(data);
             if (data) {
                 return data;
             }

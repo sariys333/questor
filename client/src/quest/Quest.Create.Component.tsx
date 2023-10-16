@@ -14,8 +14,10 @@ import {
 import { RangePickerProps } from "antd/es/date-picker";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import QuestRepository from "../repositories/Quest.Repository";
+import { useSelector } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
+import { ResultMsg, createQuest } from "../redux/Quest.Slice";
+import store, { AppState } from "../redux/Store";
 import { CategoryEmojiMap, Quest } from "./types/Quest.types";
 
 const { Title } = Typography;
@@ -36,7 +38,7 @@ const disabledRangeTime: RangePickerProps["disabledTime"] = (_, type) => {
     };
 };
 
-type FormValues = Pick<Quest, "content" | "category"> & {
+export type FormValues = Pick<Quest, "content" | "category"> & {
     time: Dayjs[];
 };
 
@@ -46,8 +48,9 @@ export function QuestCreateComponent() {
     const [timeLabel, setTimeLabel] = useState<string>("");
     const [timeValue, setTimeValue] = useState();
     const [day, setDay] = useState<boolean>(false);
-    const [result, setResult] = useState<boolean>(false);
     const [messageApi, contextHolder] = message.useMessage();
+
+    const resultMsg = useSelector((state: AppState) => state.quest.resultMsg);
 
     const onCategoryChange = (e: any) => {
         setCategoryLabel(e.target.value);
@@ -82,28 +85,30 @@ export function QuestCreateComponent() {
     };
 
     const onFinish = async (e: any) => {
-        // console.log(timeValue)
-
         if (e.time.length == 2) {
-            await createQuest(e);
+            const params = {
+                content: e.content,
+                category: e.category,
+                from: e.time[0].toDate(),
+                to: e.time[1].toDate(),
+            };
+            const response = await store.dispatch(createQuest(params)).unwrap();
+            printMsg(response);
         }
     };
 
-    const createQuest = async ({ content, category, time }: FormValues) => {
-        console.log(time);
-        const res = await QuestRepository.create({
-            content,
-            category,
-            from: time[0].toDate(),
-            to: time[1].toDate(),
-        });
-        console.log(res);
-        if (res.result) {
-            setResult(res.result);
-        } else {
+    const printMsg = (response: ResultMsg) => {
+        console.log(response);
+        if (!response.result) {
             messageApi.open({
                 type: "error",
-                content: res.msg,
+                content: response.msg,
+                style: { marginTop: 20 },
+            });
+        } else if (response.result) {
+            messageApi.open({
+                type: "success",
+                content: response.msg,
                 style: { marginTop: 20 },
             });
         }

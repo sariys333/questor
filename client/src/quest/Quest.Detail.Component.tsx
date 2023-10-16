@@ -18,8 +18,8 @@ import { Meta } from "antd/es/list/Item";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { QuestState, fetchQuestByQuestId } from "../redux/Quest.Slice";
-import store, { AppState } from "../redux/Store";
+import { QuestState, fetchQuestByQuestId } from "../store/Quest.Slice";
+import store, { AppState } from "../store/Store";
 import QuestRepository from "../repositories/Quest.Repository";
 import { CategoryEmojiMap, EditQuestParams, Quest } from "./types/Quest.types";
 

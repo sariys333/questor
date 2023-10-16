@@ -8,11 +8,11 @@ import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { REFRESH_KEY, SECRET_KEY } from "src/Constants";
-import { IS_PUBLIC_KEY } from "./public.decorator";
+import { IS_PUBLIC_KEY } from "../../auth/public.decorator";
 import { Response as Res } from "express";
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
@@ -30,7 +30,6 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     // console.log(request.cookies);
     const token = this.extractTokenFromHeader(request);
-    const refreshToken = this.extactRefreshTokenFromHeader(request);
     // console.log("token", token);
     // console.log("refreshToken", refreshToken);
     // return true
@@ -53,11 +52,7 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    return request.cookies.JWT;
-  }
-
-  private extactRefreshTokenFromHeader(request: Request): string | undefined {
-    return request.cookies.RE;
+    return request.cookies.access_token;
   }
 
   private async refresh(refreshToken: string): Promise<any> {}

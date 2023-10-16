@@ -4,23 +4,22 @@ import {
     EditQuestParams,
     Quest,
 } from "../quest/types/Quest.types";
+import { Repository } from "./Repository";
 
-class QuestRepository {
-    private readonly url: string;
-    constructor(private readonly apiName: string) {
-        this.url = API_URL + apiName;
+class QuestRepository extends Repository {
+    constructor(protected readonly apiName: string) {
+        super(apiName);
     }
 
     async getAll(): Promise<Quest[]> {
         try {
-            const response = await fetch(`${this.url}/list`, {
+            const response = await this.fetch(`${this.url}/list`, {
                 method: "get",
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            const data = await response.json();
-            return data;
+            return response;
         } catch (e) {
             return [];
         }
@@ -32,7 +31,7 @@ class QuestRepository {
         msg?: string;
     }> {
         try {
-            const response = await fetch(`${this.url}/create`, {
+            const response = await this.fetch(`${this.url}/create`, {
                 method: "post",
                 credentials: "include",
                 headers: {
@@ -40,16 +39,14 @@ class QuestRepository {
                 },
                 body: JSON.stringify(params),
             });
-
-            const data = await response.json();
-            if (data.statusCode == 401) {
+            if (response.statusCode == 401) {
                 return {
                     status: "err",
                     result: false,
                     msg: "로그인이 필요한 서비스입니다.",
                 };
             }
-            if (data) {
+            if (response) {
                 return {
                     status: "ok",
                     result: true,
@@ -61,22 +58,21 @@ class QuestRepository {
         return {
             status: "err",
             result: false,
-            msg: "퀘스트 생성에 실패하였습니다. 다시 시도해주세요."
+            msg: "퀘스트 생성에 실패하였습니다. 다시 시도해주세요.",
         };
     }
 
     async getQuestById(questId: string): Promise<Quest | undefined> {
         try {
-            const response = await fetch(`${this.url}/detail/${questId}`, {
+            const response = await this.fetch(`${this.url}/detail/${questId}`, {
                 method: "get",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            const data = await response.json();
-            if (data) {
-                return data;
+            if (response) {
+                return response;
             }
         } catch (error) {
             console.error(error);
@@ -84,9 +80,8 @@ class QuestRepository {
     }
 
     async edit(params: EditQuestParams): Promise<boolean> {
-        console.log(params);
         try {
-            const response = await fetch(`${this.url}/edit`, {
+            const response = await this.fetch(`${this.url}/edit`, {
                 method: "post",
                 credentials: "include",
                 headers: {
@@ -95,8 +90,7 @@ class QuestRepository {
                 body: JSON.stringify(params),
             });
 
-            const data = await response.json();
-            if (data) {
+            if (response) {
                 return true;
             }
         } catch (error) {

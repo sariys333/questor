@@ -21,6 +21,7 @@ export class UserService {
   constructor(private readonly bcryptService: BcryptService) {}
 
   async getUserById(userId: string): Promise<User> {
+    console.log(userId);
     const command = new GetCommand({
       TableName: "users",
       Key: {
@@ -32,7 +33,11 @@ export class UserService {
 
     console.log(response);
 
-    return new User(response.Item);
+    if (response.Item) {
+      return new User(response.Item);
+    } else {
+      return undefined;
+    }
   }
 
   async getUserByEmail(email: string): Promise<User> {

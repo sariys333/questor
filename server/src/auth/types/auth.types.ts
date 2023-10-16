@@ -1,3 +1,5 @@
+import { User } from "src/user/types/user.type";
+
 export type Credentials = {
   email: string;
   password: string;
@@ -5,3 +7,5 @@ export type Credentials = {
   name: string;
   username: string;
 };
+
+export type RefreshTokenParams = Pick<User, "userId">;

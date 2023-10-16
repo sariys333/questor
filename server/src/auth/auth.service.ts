@@ -4,7 +4,8 @@ import { JwtService } from "@nestjs/jwt";
 import { REFRESH_KEY } from "src/Constants";
 import { UserService } from "src/user/user.service";
 import { BcryptService } from "src/utils/bcrypt.service";
-import { Credentials } from "./types/auth.types";
+import { Credentials, RefreshTokenParams } from "./types/auth.types";
+import { User } from "src/user/types/user.type";
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,15 @@ export class AuthService {
 
   // 로그인 가능 계정인지 확인
   // 토큰도 생성, 반환
+
+  async refresh({ userId }: RefreshTokenParams): Promise<any> {
+    console.log(userId);
+    const user = await this.userService.getUserById(userId);
+    const payload = { userId: user.userId, email: user.email };
+    return {
+      token: await this.jwtService.signAsync(payload),
+    };
+  }
 
   async signIn(credentials: Credentials): Promise<any> {
     const user = await this.userService.getUserByEmail(credentials.email);

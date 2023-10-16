@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
-import { QuestState } from "../redux/Quest.Slice";
+import { QuestState } from "../store/Quest.Slice";
 import { Badge, BadgeProps, Calendar, CalendarProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
 import { Quest, Category } from "./types/Quest.types";
-import { AppState } from "../redux/Store";
+import { AppState } from "../store/Store";
 
 export function QuestCalendar() {
     const quests = useSelector((state: AppState) => state.quest.quests);

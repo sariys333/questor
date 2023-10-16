@@ -16,8 +16,8 @@ import { Dayjs } from "dayjs";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
-import { ResultMsg, createQuest } from "../redux/Quest.Slice";
-import store, { AppState } from "../redux/Store";
+import { ResultMsg, createQuest } from "../store/Quest.Slice";
+import store, { AppState } from "../store/Store";
 import { CategoryEmojiMap, Quest } from "./types/Quest.types";
 
 const { Title } = Typography;

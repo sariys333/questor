@@ -16,7 +16,7 @@ import "dayjs/locale/ko";
 import { QuestCreateComponent } from "./quest/Quest.Create.Component";
 import { QuestListComponent } from "./quest/Quest.List.Component";
 import { Provider } from "react-redux";
-import store from "./redux/Store";
+import store from "./store/Store";
 
 // dayjs().locale('de').format()
 dayjs.locale("ko");
@@ -45,6 +45,10 @@ root.render(
                     DatePicker: {
                         borderRadius: 0,
                         borderRadiusLG: 0,
+                    },
+                    Typography: {
+                        fontFamily:
+                            "'Young Serif', -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'",
                     },
                 },
                 token: {

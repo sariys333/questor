@@ -1,14 +1,11 @@
+import { useSelector } from "react-redux";
+import { QuestState } from "../redux/Quest.Slice";
 import { Badge, BadgeProps, Calendar, CalendarProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
-import { Category, Quest } from "./types/Quest.types";
-import { QuestState } from "../redux/Quest.Slice";
-import { useSelector } from "react-redux";
+import { Quest, Category } from "./types/Quest.types";
 
 export function QuestCalendar() {
-    const quests = useSelector((state: QuestState) => {
-        console.log(state.quests);
-        return state.quests;
-    });
+    const quests = useSelector((state: QuestState) => state.quests);
 
     const getListData = (value: Dayjs) => {
         if (quests) {
@@ -63,23 +60,23 @@ export function QuestCalendar() {
         return type;
     };
 
-    // const getMonthData = (value: Dayjs) => {
-    //     const monthList = quests.filter((quest) =>
-    //         value.isSame(quest.to, "month")
-    //     );
-    //     if (value.month() === 8) {
-    //         return 1394;
-    //     }
-    // };
+    const getMonthData = (value: Dayjs) => {
+        const monthList = quests.filter((quest) =>
+            value.isSame(quest.to, "month")
+        );
+        if (value.month() === 8) {
+            return 1394;
+        }
+    };
 
     const monthCellRender = (value: Dayjs) => {
-        // // const num = getMonthData(value);
-        // return num ? (
-        //     <div className="notes-month">
-        //         <section>{num}</section>
-        //         <span>Backlog number</span>
-        //     </div>
-        // ) : null;
+        const num = getMonthData(value);
+        return num ? (
+            <div className="notes-month">
+                <section>{num}</section>
+                <span>Backlog number</span>
+            </div>
+        ) : null;
     };
 
     const onClick = (e: any) => {

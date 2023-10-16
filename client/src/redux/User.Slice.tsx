@@ -1,16 +1,11 @@
-import {
-    SliceCaseReducers,
-    createAsyncThunk,
-    createSlice,
-} from "@reduxjs/toolkit";
-import QuestRepository from "../repositories/Quest.Repository";
+import { SliceCaseReducers, createSlice } from "@reduxjs/toolkit";
 import { User } from "../routes/login/types/User.typs";
 
 export type UserState = {
     user: User;
 };
 
-export const userSlice = createSlice<UserState, SliceCaseReducers<UserState>>({
+const userSlice = createSlice<UserState, SliceCaseReducers<UserState>>({
     name: "user",
     initialState: {
         user: {
@@ -29,3 +24,4 @@ export const userSlice = createSlice<UserState, SliceCaseReducers<UserState>>({
 });
 
 export const { logout } = userSlice.actions;
+export default userSlice;

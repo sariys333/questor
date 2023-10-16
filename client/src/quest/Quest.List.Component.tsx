@@ -1,22 +1,21 @@
 import { Flex, Table, Typography } from "antd";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { QuestState } from "../redux/Quest.Slice";
 import { QuestCalendar } from "./Quest.Calendar";
 import { QuestDetailComponent } from "./Quest.Detail.Component";
-import { CategoryEmojiMap, Quest } from "./types/Quest.types";
+import { CategoryEmojiMap } from "./types/Quest.types";
 
 const { Title } = Typography;
+const questSelector = (state: QuestState) => state.quests;
 
 export function QuestListComponent() {
     // const [events, setEvents] = useState<GenericEvent[]>();
 
-    const quests = useSelector((state: QuestState) => {
-        console.log(state);
-        return state.quests;
-    });
+    const quests = useSelector(questSelector);
+    console.log(quests);
 
     const [now] = useState(new Date());
     const [questId, setQuestId] = useState<string>("");

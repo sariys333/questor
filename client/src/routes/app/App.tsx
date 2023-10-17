@@ -1,30 +1,24 @@
+import { UserOutlined } from "@ant-design/icons";
 import {
     Affix,
+    Avatar,
+    Badge,
     Button,
     Flex,
     Layout,
     Menu,
-    Space,
     Typography,
     theme,
 } from "antd";
-import {
-    HomeFilled,
-    UploadOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-} from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import UserRepository from "../../repositories/User.Repository";
 import { User } from "../login/types/User.typs";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { QuestPage } from "../../quest/Quest.Page";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
 export function App() {
-    const [collapsed, setCollapsed] = useState(false);
     const [user, setUser] = useState<User>();
 
     const navigate = useNavigate();
@@ -111,7 +105,7 @@ export function App() {
                                     ),
                                 },
                                 {
-                                    title: "내 퀘스트",
+                                    title: "퀘스트",
                                     key: "/quest/create",
                                     style: {
                                         padding: 0,
@@ -164,12 +158,24 @@ export function App() {
                                 },
                             ]}
                         />
-
                         <Link
                             to={user ? "/setting" : "/login"}
-                            style={{ margin: 10, fontFamily: "Young Serif" }}
+                            style={{
+                                fontFamily: "Young Serif",
+                                marginBottom: 10,
+                            }}
                         >
-                            {user ? "SETTINGS" : "login"}
+                            {user ? (
+                                <Badge count={99} overflowCount={10}>
+                                    <Avatar
+                                        shape="square"
+                                        size={"large"}
+                                        icon={<UserOutlined />}
+                                    ></Avatar>
+                                </Badge>
+                            ) : (
+                                "login"
+                            )}
                         </Link>
                     </Flex>
                 </Affix>

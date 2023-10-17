@@ -9,46 +9,29 @@ export class Repository {
     async fetch(input: RequestInfo | URL, init?: RequestInit) {
         try {
             const response = await fetch(input, {
-                method: "get",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
                 ...init,
             });
             if (response.status === 401) {
-                await fetch(`${API_URL}auth/refresh`, {
-                    method: "get",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+                this.refresh()
                 const retryResult = await fetch(input, {
-                    method: "get",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
                     ...init,
                 });
-                const data = await retryResult.json();
-                return data;
+                return await retryResult.json();
             }
-            const data = await response.json();
-            return data;
+            return await response.json();
         } catch (e) {
-            console.log(e);
+            console.error(e);
             throw e;
         }
     }
 
     async refresh() {
-        // await fetch(`${this.url}/auth/refresh`, {
-        //     method: "get",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        // });
+        await fetch(`${API_URL}auth/refresh`, {
+            method: "get",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
     }
 }

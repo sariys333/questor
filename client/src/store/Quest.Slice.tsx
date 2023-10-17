@@ -3,27 +3,30 @@ import {
     createAsyncThunk,
     createSlice,
 } from "@reduxjs/toolkit";
-import { CreateQuestParams, Quest } from "../quest/types/Quest.types";
+import { Category, CreateQuestParams, Quest } from "../quest/types/Quest.types";
 import QuestRepository from "../repositories/Quest.Repository";
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 export type QuestState = {
-    quests: Quest[];
-    selectedQuestId: string;
+    list: Quest[];
+    detail: Quest;
     showDetail: boolean;
-    resultMsg: ResultMsg;
-};
-
-export type ResultMsg = {
-    status: string;
-    result: boolean;
-    msg?: string;
 };
 
 const initialState = {
-    quests: [],
-    selectedQuestId: "",
+    list: [],
     showDetail: false,
-    resultMsg: { status: "err", result: false },
+    detail: {
+        questId: "",
+        userId: "",
+        category: Category.walk,
+        content: "",
+        completed: false,
+        completedAt: new Date(),
+        createdAt: new Date(),
+        from: new Date(),
+        to: new Date(),
+    },
 };
 
 const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
@@ -31,7 +34,6 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
     initialState: initialState,
     reducers: {
         detail: (state, action) => {
-            state.selectedQuestId = action.payload;
             state.showDetail = true;
         },
     },
@@ -42,7 +44,7 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             })
             .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
                 console.log(action);
-                state.quests = action.payload;
+                state.list = action.payload;
             })
             .addCase(fetchQuestsByUserId.rejected, (state, action) => {
                 console.log(action);
@@ -50,16 +52,19 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         builder
             .addCase(fetchQuestByQuestId.pending, (state, action) => {})
             .addCase(fetchQuestByQuestId.fulfilled, (state, action) => {
-                state.showDetail = true;
+                if (action.payload) {
+                    state.detail = action.payload;
+                    state.showDetail = true;
+                } else {
+                    state.showDetail = false;
+                }
             })
             .addCase(fetchQuestByQuestId.rejected, (state, action) => {
                 state.showDetail = false;
             });
         builder
             .addCase(createQuest.pending, (state, action) => {})
-            .addCase(createQuest.fulfilled, (state, action) => {
-                state.resultMsg = action.payload;
-            })
+            .addCase(createQuest.fulfilled, (state, action) => {})
             .addCase(createQuest.rejected, (state, action) => {});
     },
 });

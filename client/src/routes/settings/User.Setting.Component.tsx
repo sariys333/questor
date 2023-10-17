@@ -1,6 +1,7 @@
 import { EditOutlined, LockOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Card, Tooltip, Typography } from "antd";
 import { useEffect, useState } from "react";
+import cookie from "react-cookie";
 import UserRepository from "../../repositories/User.Repository";
 import { User } from "../login/types/User.typs";
 

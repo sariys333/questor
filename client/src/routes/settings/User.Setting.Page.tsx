@@ -1,4 +1,3 @@
-import React from "react";
 import { Layout, theme, Typography } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import { Link } from "react-router-dom";

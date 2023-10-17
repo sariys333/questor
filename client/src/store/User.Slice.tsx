@@ -3,20 +3,31 @@ import { User } from "../routes/login/types/User.typs";
 
 export type UserState = {
     user: User;
+    selectedUser: User;
+};
+
+const initialState = {
+    user: {
+        userId: "",
+        email: "",
+        password: "",
+        name: "",
+        username: "",
+        regDate: undefined,
+    },
+    selectedUser: {
+        userId: "",
+        email: "",
+        password: "",
+        name: "",
+        username: "",
+        regDate: undefined,
+    },
 };
 
 const userSlice = createSlice<UserState, SliceCaseReducers<UserState>>({
     name: "user",
-    initialState: {
-        user: {
-            userId: "",
-            email: "",
-            password: "",
-            name: "",
-            username: "",
-            regDate: undefined,
-        },
-    },
+    initialState: initialState,
     reducers: {
         logout: (state, action) => {},
     },

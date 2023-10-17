@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { detail } from "../store/Quest.Slice";
-import { AppState } from "../store/Store";
+import { detail, fetchQuestByQuestId } from "../store/Quest.Slice";
+import store, { AppState } from "../store/Store";
 import { QuestCalendar } from "./Quest.Calendar";
 import { QuestDetailComponent } from "./Quest.Detail.Component";
 import { CategoryEmojiMap } from "./types/Quest.types";
@@ -14,7 +14,7 @@ const { Title } = Typography;
 export function QuestListComponent() {
     // const [events, setEvents] = useState<GenericEvent[]>();
 
-    const quests = useSelector((state: AppState) => state.quest.quests);
+    const quests = useSelector((state: AppState) => state.quest.list);
     const showDetail = useSelector((state: AppState) => state.quest.showDetail);
     const dispatch = useDispatch();
 
@@ -25,10 +25,9 @@ export function QuestListComponent() {
     }, [quests || showDetail]);
 
     const onClick = (e: any) => {
-        const questId = e.target.id;
-        console.log(questId);
+        const questId: string = e.target.id;
         if (questId) {
-            dispatch(detail(questId));
+            store.dispatch(fetchQuestByQuestId(questId));
         }
     };
 

@@ -16,7 +16,7 @@ import { Dayjs } from "dayjs";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
-import { ResultMsg, createQuest } from "../store/Quest.Slice";
+import { createQuest } from "../store/Quest.Slice";
 import store, { AppState } from "../store/Store";
 import { CategoryEmojiMap, Quest } from "./types/Quest.types";
 
@@ -42,6 +42,12 @@ export type FormValues = Pick<Quest, "content" | "category"> & {
     time: Dayjs[];
 };
 
+type ResultMsg = {
+    status: string;
+    result: boolean;
+    msg?: string;
+};
+
 export function QuestCreateComponent() {
     const [categoryLabel, setCategoryLabel] = useState<string>("선택");
     const [createStep, setCreateStep] = useState<number>(0);
@@ -49,8 +55,6 @@ export function QuestCreateComponent() {
     const [timeValue, setTimeValue] = useState();
     const [day, setDay] = useState<boolean>(false);
     const [messageApi, contextHolder] = message.useMessage();
-
-    const resultMsg = useSelector((state: AppState) => state.quest.resultMsg);
 
     const onCategoryChange = (e: any) => {
         setCategoryLabel(e.target.value);

@@ -58,24 +58,7 @@ type FormValues = {
 };
 
 export function QuestDetailComponent() {
-    const questId = useSelector(
-        (state: AppState) => state.quest.selectedQuestId
-    );
-    const [quest, setQuest] = useState<Quest>();
-
-    useEffect(() => {
-        getQuest();
-    }, [questId]);
-
-    const getQuest = async () => {
-        store
-            .dispatch(fetchQuestByQuestId(questId))
-            .unwrap()
-            .then((data) => {
-                setQuest(data);
-            });
-        console.log(quest);
-    };
+    const quest = useSelector((state: AppState) => state.quest.detail);
 
     const dateFormat = (time: Date) => {
         if (time) {
@@ -144,11 +127,11 @@ export function QuestDetailComponent() {
     return (
         <>
             <Card
-                title={quest?.category}
+                title={quest.category}
                 style={{ marginTop: 30 }}
                 extra={
                     <>
-                        {!quest?.completed ? (
+                        {!quest.completed ? (
                             <Button onClick={showModal}>수정</Button>
                         ) : (
                             <></>
@@ -234,7 +217,7 @@ export function QuestDetailComponent() {
                         ]}
                     />
                     <Typography.Title level={3} style={{ textAlign: "center" }}>
-                        {quest?.content}
+                        {quest.content}
                     </Typography.Title>
                     <Meta
                         avatar={<Button onClick={completeQuest}>완료</Button>}
@@ -316,11 +299,7 @@ export function QuestDetailComponent() {
                                 justifyContent: "flex-end",
                             }}
                         >
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                value={questId}
-                            >
+                            <Button type="primary" htmlType="submit">
                                 적용
                             </Button>
                         </div>

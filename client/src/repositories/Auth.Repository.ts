@@ -4,7 +4,7 @@ import { User } from "../routes/login/types/User.typs";
 export type Credentials = {
     email: string;
     password: string;
-    remember: boolean;
+    remember?: boolean;
     name: string;
     username: string;
 };

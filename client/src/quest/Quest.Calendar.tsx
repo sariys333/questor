@@ -6,7 +6,7 @@ import { Quest, Category } from "./types/Quest.types";
 import { AppState } from "../store/Store";
 
 export function QuestCalendar() {
-    const quests = useSelector((state: AppState) => state.quest.list);
+    const quests = useSelector((state: AppState) => state.quest.list.list);
 
     const getListData = (value: Dayjs) => {
         if (quests) {

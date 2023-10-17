@@ -14,7 +14,7 @@ const { Title } = Typography;
 export function QuestListComponent() {
     // const [events, setEvents] = useState<GenericEvent[]>();
 
-    const quests = useSelector((state: AppState) => state.quest.list);
+    const quests = useSelector((state: AppState) => state.quest.list.list);
     const showDetail = useSelector((state: AppState) => state.quest.showDetail);
     const dispatch = useDispatch();
 
@@ -48,7 +48,7 @@ export function QuestListComponent() {
                     <Link to={"/quest/create"}>CREATE</Link>
                 </Title>
             </Flex>
-            <QuestCalendar />
+            {/* <QuestCalendar /> */}
             <Table
                 columns={[
                     {

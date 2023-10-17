@@ -1,23 +1,23 @@
 import { ConfigProvider, theme } from "antd";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import relativeTime from "dayjs/plugin/relativeTime";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./index.css";
+import { QuestCreateComponent } from "./quest/Quest.Create.Component";
+import { QuestListComponent } from "./quest/Quest.List.Component";
 import { QuestPage } from "./quest/Quest.Page";
 import reportWebVitals from "./reportWebVitals";
 import App from "./routes/app/App";
 import { Login } from "./routes/login/Login.Page";
+import { UserSettingPage } from "./routes/settings/User.Setting.Page";
 import { Signup } from "./routes/signup/Signup.Page";
 import { StartPage } from "./routes/start/Start.Page";
-import { UserSettingPage } from "./routes/settings/User.Setting.Page";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/ko";
-import { QuestCreateComponent } from "./quest/Quest.Create.Component";
-import { QuestListComponent } from "./quest/Quest.List.Component";
-import { Provider } from "react-redux";
 import store from "./store/Store";
-import { CookiesProvider } from "react-cookie";
+import { DashboardPage } from "./routes/app/dashboard/Dashboard.Page";
 
 // dayjs().locale('de').format()
 dayjs.locale("ko");
@@ -64,33 +64,26 @@ root.render(
                 algorithm: theme.darkAlgorithm,
             }}
         >
-            <CookiesProvider>
-                <Provider store={store}>
-                    <Router>
-                        <Routes>
-                            <Route element={<App />}>
-                                <Route element={<QuestPage />}>
-                                    <Route
-                                        index
-                                        element={<QuestListComponent />}
-                                    />
-                                    <Route
-                                        path="quest/create"
-                                        element={<QuestCreateComponent />}
-                                    />
-                                </Route>
+            <Provider store={store}>
+                <Router>
+                    <Routes>
+                        <Route element={<App />}>
+                            <Route index element={<DashboardPage />}></Route>
+                            <Route path="quest" element={<QuestPage />}>
+                                <Route index element={<QuestListComponent />} />
+                                <Route
+                                    path="create"
+                                    element={<QuestCreateComponent />}
+                                />
                             </Route>
-                            <Route path="login" element={<Login />} />
-                            <Route path="signup" element={<Signup />} />
-                            <Route path="start" element={<StartPage />} />
-                            <Route
-                                path="setting"
-                                element={<UserSettingPage />}
-                            />
-                        </Routes>
-                    </Router>
-                </Provider>
-            </CookiesProvider>
+                        </Route>
+                        <Route path="login" element={<Login />} />
+                        <Route path="signup" element={<Signup />} />
+                        <Route path="start" element={<StartPage />} />
+                        <Route path="setting" element={<UserSettingPage />} />
+                    </Routes>
+                </Router>
+            </Provider>
         </ConfigProvider>
     </React.StrictMode>
 );

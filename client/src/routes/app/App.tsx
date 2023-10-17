@@ -14,31 +14,36 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import UserRepository from "../../repositories/User.Repository";
 import { User } from "../login/types/User.typs";
+import { useSelector } from "react-redux";
+import store, { AppState } from "../../store/Store";
+import { getCurrentUser } from "../../store/User.Slice";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
 export function App() {
-    const [user, setUser] = useState<User>();
+    // const [user, setUser] = useState<User>();
+    useEffect(() => {
+        store.dispatch(getCurrentUser());
+    }, []);
+    const user = useSelector((state: AppState) => state.user.user);
 
     const navigate = useNavigate();
     const {
         token: { colorBgContainer, colorBorder },
     } = theme.useToken();
 
-    const getCurrentUser = async () => {
-        const currentUser = await UserRepository.findCurrentUser();
-        setUser(currentUser);
-    };
+    // const getCurrentUser = async () => {
 
-    if (user) {
-        console.log(user.name);
-    }
-    console.log(user);
+    //     // const currentUser = await UserRepository.findCurrentUser();
+    //     // setUser(currentUser);
+    // };
+    // const dispatch = useDispatch();
 
-    useEffect(() => {
-        getCurrentUser();
-    }, []);
+    // if (user) {
+    //     console.log(user.name);
+    // }
+    // console.log(user);
 
     return (
         <Layout style={{ height: "100%", minHeight: "100vh" }}>
@@ -181,14 +186,14 @@ export function App() {
                 </Affix>
             </Sider>
             <Layout>
-                <Header
+                {/* <Header
                     style={{ padding: 0, background: "transparent" }}
-                ></Header>
+                ></Header> */}
                 <Content
                     style={{
-                        margin: "24px 16px",
+                        // margin: "24px 16px",
                         padding: 24,
-                        minHeight: 280,
+                        // minHeight: 280,
                     }}
                 >
                     <Outlet />

@@ -35,10 +35,3 @@ export class UserController {
     return true;
   }
 }
-// 토큰 유효기간있잖아
-
-// 토큰을 리프레쉬하는 기능
-// 일정시간이 지났어도 다시 새로운걸 발급해줄수있는
-
-// 접근을 위한 토큰 : access token 휘발성
-// 토큰을 리프레쉬 하기 위한 토큰: refresh token < 데이터 베이스에 저장하는 방식일 것이다.

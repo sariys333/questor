@@ -8,13 +8,19 @@ import QuestRepository from "../repositories/Quest.Repository";
 import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 export type QuestState = {
-    list: Quest[];
+    list: {
+        loading: boolean;
+        list: Quest[];
+    };
     detail: Quest;
     showDetail: boolean;
 };
 
 const initialState = {
-    list: [],
+    list: {
+        loading: true,
+        list: [],
+    },
     showDetail: false,
     detail: {
         questId: "",
@@ -40,14 +46,16 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
     extraReducers: (builder) => {
         builder
             .addCase(fetchQuestsByUserId.pending, (state, action) => {
-                console.log(action);
+                state.list.loading = true;
             })
             .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
                 console.log(action);
-                state.list = action.payload;
+                state.list.list = action.payload;
+                state.list.loading = true;
             })
             .addCase(fetchQuestsByUserId.rejected, (state, action) => {
                 console.log(action);
+                state.list.loading = false;
             });
         builder
             .addCase(fetchQuestByQuestId.pending, (state, action) => {})

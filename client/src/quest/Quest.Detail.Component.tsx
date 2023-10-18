@@ -58,7 +58,7 @@ type FormValues = {
 };
 
 export function QuestDetailComponent() {
-    const quest = useSelector((state: AppState) => state.quest.detail);
+    const state = useSelector((state: AppState) => state.quest.detailComp);
 
     const dateFormat = (time: Date) => {
         if (time) {
@@ -127,11 +127,11 @@ export function QuestDetailComponent() {
     return (
         <>
             <Card
-                title={quest.category}
+                title={state.quest?.category}
                 style={{ marginTop: 30 }}
                 extra={
                     <>
-                        {!quest.completed ? (
+                        {!state.quest?.completed ? (
                             <Button onClick={showModal}>수정</Button>
                         ) : (
                             <></>
@@ -155,8 +155,10 @@ export function QuestDetailComponent() {
                                     <Popover
                                         placement="top"
                                         content={
-                                            quest
-                                                ? dateFormat(quest.createdAt)
+                                            state.quest
+                                                ? dateFormat(
+                                                      state.quest.createdAt
+                                                  )
                                                 : undefined
                                         }
                                     >
@@ -169,8 +171,8 @@ export function QuestDetailComponent() {
                                     <Popover
                                         placement="top"
                                         content={
-                                            quest
-                                                ? dateFormat(quest.from)
+                                            state.quest
+                                                ? dateFormat(state.quest.from)
                                                 : undefined
                                         }
                                     >
@@ -183,8 +185,8 @@ export function QuestDetailComponent() {
                                     <Popover
                                         placement="top"
                                         content={
-                                            quest
-                                                ? dateFormat(quest.to)
+                                            state.quest
+                                                ? dateFormat(state.quest.to)
                                                 : undefined
                                         }
                                     >
@@ -195,13 +197,14 @@ export function QuestDetailComponent() {
                             {
                                 title: (
                                     <a href="#">
-                                        {quest?.completed ? (
+                                        {state.quest?.completed ? (
                                             <Popover
                                                 placement="top"
                                                 content={
-                                                    quest
+                                                    state.quest
                                                         ? dateFormat(
-                                                              quest.completedAt
+                                                              state.quest
+                                                                  .completedAt
                                                           )
                                                         : undefined
                                                 }
@@ -217,7 +220,7 @@ export function QuestDetailComponent() {
                         ]}
                     />
                     <Typography.Title level={3} style={{ textAlign: "center" }}>
-                        {quest.content}
+                        {state.quest?.content}
                     </Typography.Title>
                     <Meta
                         avatar={<Button onClick={completeQuest}>완료</Button>}

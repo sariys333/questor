@@ -3,12 +3,11 @@ import {
     createAsyncThunk,
     createSlice,
 } from "@reduxjs/toolkit";
-import { User } from "../routes/login/types/User.typs";
-import UserRepository from "../repositories/User.Repository";
+import { Quest } from "../quest/types/Quest.types";
 import AuthRepository, { Credentials } from "../repositories/Auth.Repository";
 import QuestRepository from "../repositories/Quest.Repository";
-import { Quest } from "../quest/types/Quest.types";
-import { GetThunkAPI } from "@reduxjs/toolkit/dist/createAsyncThunk";
+import UserRepository from "../repositories/User.Repository";
+import { User } from "../routes/login/types/User.typs";
 
 export type UserState = {
     user?: User;
@@ -18,15 +17,6 @@ export type UserState = {
 const initialState = {
     user: undefined,
     quests: undefined,
-    // selectedUser: {
-    //     userId: "",
-    //     email: "",
-    //     password: "",
-    //     name: "",
-    //     username: "",
-    //     regDate: undefined,
-    // },
-    // signupSuccess: false,
 };
 
 const userSlice = createSlice<UserState, SliceCaseReducers<UserState>>({

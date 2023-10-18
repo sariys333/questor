@@ -1,20 +1,23 @@
-import { UserOutlined } from "@ant-design/icons";
+import {
+    DashboardOutlined,
+    PlayCircleOutlined,
+    PlusCircleOutlined,
+    QuestionCircleOutlined,
+} from "@ant-design/icons";
 import {
     Affix,
     Avatar,
     Badge,
-    Button,
     Flex,
     Layout,
     Menu,
     Typography,
     theme,
 } from "antd";
-import { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import UserRepository from "../../repositories/User.Repository";
-import { User } from "../login/types/User.typs";
+import dayjs from "dayjs";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import store, { AppState } from "../../store/Store";
 import { getCurrentUser } from "../../store/User.Slice";
 
@@ -22,28 +25,71 @@ const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
 export function App() {
-    // const [user, setUser] = useState<User>();
     useEffect(() => {
         store.dispatch(getCurrentUser());
     }, []);
-    const user = useSelector((state: AppState) => state.user.user);
+    const user = useSelector((state: AppState) => state.user);
 
     const navigate = useNavigate();
     const {
         token: { colorBgContainer, colorBorder },
     } = theme.useToken();
 
-    // const getCurrentUser = async () => {
-
-    //     // const currentUser = await UserRepository.findCurrentUser();
-    //     // setUser(currentUser);
-    // };
-    // const dispatch = useDispatch();
-
-    // if (user) {
-    //     console.log(user.name);
-    // }
+    const getMenu = () => {
+        // console.log(user);
+        if (user.user == undefined) {
+            // console.log("publicMenu");
+            return publicMenu;
+        }
+        // console.log("userMenu");
+        return userMenu;
+    };
     // console.log(user);
+
+    const createMenuItem = (title: string, key: string, icon: JSX.Element) => {
+        return {
+            style: { paddingLeft: 22, paddingTop: 5 },
+            title,
+            key,
+            icon: icon,
+        };
+    };
+
+    const publicMenu = [
+        createMenuItem(
+            "시작",
+            "/start",
+            <PlayCircleOutlined style={{ fontSize: 30 }} />
+        ),
+        createMenuItem(
+            "퀘스트",
+            "/quest",
+            <QuestionCircleOutlined style={{ fontSize: 30 }} />
+        ),
+    ];
+
+    const userMenu = [
+        createMenuItem(
+            "홈",
+            "/",
+            <DashboardOutlined style={{ fontSize: 30 }} />
+        ),
+        createMenuItem(
+            "내 퀘스트",
+            "/quest",
+            <QuestionCircleOutlined style={{ fontSize: 30 }} />
+        ),
+        createMenuItem(
+            "퀘스트 생성",
+            "/quest/create",
+            <PlusCircleOutlined style={{ fontSize: 30 }} />
+        ),
+    ];
+
+    const today = dayjs();
+    const active = user?.quests?.filter(
+        (q) => !q.completed && dayjs(q.to).isAfter(today)
+    );
 
     return (
         <Layout style={{ height: "100%", minHeight: "100vh" }}>
@@ -74,109 +120,34 @@ export function App() {
                         </Typography>
                         <Menu
                             onSelect={(selected) => {
-                                // console.log(selected);
                                 navigate(selected.key);
                             }}
                             style={{ height: "100%", border: "none" }}
-                            // theme="dark"
                             mode="inline"
+                            inlineCollapsed={true}
                             defaultSelectedKeys={["/"]}
-                            items={[
-                                {
-                                    title: "홈",
-                                    key: "/",
-                                    style: {
-                                        padding: 0,
-                                        height: 50,
-                                    },
-                                    icon: (
-                                        <Button
-                                            style={{
-                                                width: "100%",
-                                                height: "100%",
-                                            }}
-                                            size={"large"}
-                                        >
-                                            <Typography
-                                                style={{
-                                                    marginTop: 0,
-                                                    marginBottom: 0,
-                                                    fontFamily: "'Young Serif'",
-                                                }}
-                                            >
-                                                Home
-                                            </Typography>
-                                        </Button>
-                                    ),
-                                },
-                                {
-                                    title: "퀘스트",
-                                    key: "/quest/create",
-                                    style: {
-                                        padding: 0,
-                                        height: 50,
-                                    },
-                                    icon: (
-                                        <Button
-                                            style={{
-                                                width: "100%",
-                                                height: "100%",
-                                            }}
-                                            size={"large"}
-                                        >
-                                            <Typography
-                                                style={{
-                                                    margin: 0,
-                                                    fontFamily: "'Young Serif'",
-                                                }}
-                                            >
-                                                Create
-                                            </Typography>
-                                        </Button>
-                                    ),
-                                },
-                                {
-                                    title: "test",
-                                    key: "test",
-                                    style: {
-                                        padding: 0,
-                                        height: 50,
-                                    },
-                                    icon: (
-                                        <Button
-                                            style={{
-                                                width: "100%",
-                                                height: "100%",
-                                            }}
-                                            size={"large"}
-                                        >
-                                            <Typography
-                                                style={{
-                                                    margin: 0,
-                                                    fontFamily: "'Young Serif'",
-                                                }}
-                                            >
-                                                Something
-                                            </Typography>
-                                        </Button>
-                                    ),
-                                },
-                            ]}
+                            items={getMenu()}
                         />
                         <Link
-                            to={user ? "/setting" : "/login"}
+                            to={user.user ? "/setting" : "/login"}
                             style={{
                                 fontFamily: "Young Serif",
                                 marginBottom: 10,
                             }}
                         >
-                            {user ? (
-                                <Badge count={99} overflowCount={10}>
+                            {user.user ? (
+                                <Badge
+                                    count={active?.length}
+                                    overflowCount={99}
+                                    color="yellow"
+                                >
                                     <Avatar
                                         shape="square"
                                         size={"large"}
-                                        icon={<UserOutlined />}
-                                    ></Avatar>
+                                        style={{ fontSize: 20 }}
+                                    >
+                                        {user.user?.username?.charAt(0)}
+                                    </Avatar>
                                 </Badge>
                             ) : (
                                 "login"
@@ -186,14 +157,9 @@ export function App() {
                 </Affix>
             </Sider>
             <Layout>
-                {/* <Header
-                    style={{ padding: 0, background: "transparent" }}
-                ></Header> */}
                 <Content
                     style={{
-                        // margin: "24px 16px",
                         padding: 24,
-                        // minHeight: 280,
                     }}
                 >
                     <Outlet />

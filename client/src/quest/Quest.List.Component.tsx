@@ -3,9 +3,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { detail, fetchQuestByQuestId } from "../store/Quest.Slice";
+import { fetchQuestByQuestId } from "../store/Quest.Slice";
 import store, { AppState } from "../store/Store";
-import { QuestCalendar } from "./Quest.Calendar";
 import { QuestDetailComponent } from "./Quest.Detail.Component";
 import { CategoryEmojiMap } from "./types/Quest.types";
 
@@ -14,15 +13,12 @@ const { Title } = Typography;
 export function QuestListComponent() {
     // const [events, setEvents] = useState<GenericEvent[]>();
 
-    const quests = useSelector((state: AppState) => state.quest.list.list);
-    const showDetail = useSelector((state: AppState) => state.quest.showDetail);
+    const state = useSelector((state: AppState) => state.quest.detailComp);
     const dispatch = useDispatch();
 
-    const [now, setNow] = useState<Date>();
+    useEffect(() => {}, [state.quest || state.showDetail]);
 
-    useEffect(() => {
-        setNow(new Date());
-    }, [quests || showDetail]);
+    const now = new Date(Date.now());
 
     const onClick = (e: any) => {
         const questId: string = e.target.id;
@@ -89,13 +85,13 @@ export function QuestListComponent() {
                         },
                     },
                 ]}
-                loading={quests == undefined}
-                dataSource={quests}
+                loading={state.loading == undefined}
+                dataSource={state.list}
                 pagination={{
                     defaultPageSize: 5,
                 }}
             />
-            {showDetail ? <QuestDetailComponent /> : <></>}
+            {state.showDetail ? <QuestDetailComponent /> : <></>}
         </div>
     );
 }

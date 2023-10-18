@@ -1,3 +1,4 @@
+
 export class User {
 
     constructor(obj?: any) {
@@ -17,10 +18,4 @@ export class User {
     regDate: Date
 }
 
-export type UserCredentials = {
-    email: string,
-    password: string,
-    name: string,
-    username: string,
-    regDate: Date
-}
+export type UserCredentials = Pick<User, "userId">

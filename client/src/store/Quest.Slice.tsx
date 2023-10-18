@@ -5,33 +5,47 @@ import {
 } from "@reduxjs/toolkit";
 import { Category, CreateQuestParams, Quest } from "../quest/types/Quest.types";
 import QuestRepository from "../repositories/Quest.Repository";
-import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 export type QuestState = {
-    list: {
+    listComp: {
         loading: boolean;
         list: Quest[];
     };
-    detail: Quest;
-    showDetail: boolean;
+    detailComp: {
+        list: Quest[];
+        quest?: Quest;
+        showDetail: boolean;
+        loading: boolean;
+    };
+    calendarComp: {
+        list: Quest[];
+        quest?: Quest;
+        showDetail: boolean;
+        loading: boolean;
+    };
+    createComp: {
+        quest?: Quest;
+        loading: boolean;
+    };
 };
 
 const initialState = {
-    list: {
+    listComp: {
         loading: true,
         list: [],
     },
-    showDetail: false,
-    detail: {
-        questId: "",
-        userId: "",
-        category: Category.walk,
-        content: "",
-        completed: false,
-        completedAt: new Date(),
-        createdAt: new Date(),
-        from: new Date(),
-        to: new Date(),
+    detailComp: {
+        list: [],
+        showDetail: false,
+        loading: true,
+    },
+    calendarComp: {
+        list: [],
+        showDetail: false,
+        loading: true,
+    },
+    createComp: {
+        loading: true,
     },
 };
 
@@ -40,35 +54,35 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
     initialState: initialState,
     reducers: {
         detail: (state, action) => {
-            state.showDetail = true;
+            state.detailComp.showDetail = true;
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(fetchQuestsByUserId.pending, (state, action) => {
-                state.list.loading = true;
+                state.listComp.loading = true;
             })
             .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
                 console.log(action);
-                state.list.list = action.payload;
-                state.list.loading = true;
+                state.listComp.list = action.payload;
+                state.listComp.loading = false;
             })
             .addCase(fetchQuestsByUserId.rejected, (state, action) => {
                 console.log(action);
-                state.list.loading = false;
+                state.listComp.loading = false;
             });
         builder
             .addCase(fetchQuestByQuestId.pending, (state, action) => {})
             .addCase(fetchQuestByQuestId.fulfilled, (state, action) => {
                 if (action.payload) {
-                    state.detail = action.payload;
-                    state.showDetail = true;
+                    state.detailComp.quest = action.payload;
+                    state.detailComp.showDetail = true;
                 } else {
-                    state.showDetail = false;
+                    state.detailComp.showDetail = false;
                 }
             })
             .addCase(fetchQuestByQuestId.rejected, (state, action) => {
-                state.showDetail = false;
+                state.detailComp.showDetail = false;
             });
         builder
             .addCase(createQuest.pending, (state, action) => {})
@@ -77,7 +91,6 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
     },
 });
 
-export const { detail } = questSlice.actions;
 export default questSlice;
 
 export const fetchQuestsByUserId = createAsyncThunk(

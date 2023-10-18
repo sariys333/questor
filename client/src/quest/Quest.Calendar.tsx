@@ -6,15 +6,15 @@ import { Quest, Category } from "./types/Quest.types";
 import { AppState } from "../store/Store";
 
 export function QuestCalendar() {
-    const quests = useSelector((state: AppState) => state.quest.list.list);
+    const state = useSelector((state: AppState) => state.quest.calendarComp);
 
     const getListData = (value: Dayjs) => {
-        if (quests) {
-            const questsTo = quests.filter((quest) =>
+        if (state.list) {
+            const questsTo = state.list.filter((quest) =>
                 value.isSame(quest.to, "day")
             );
 
-            const questsFrom = quests.filter((quest) =>
+            const questsFrom = state.list.filter((quest) =>
                 value.isSame(quest.from, "day")
             );
 
@@ -59,25 +59,6 @@ export function QuestCalendar() {
             type = "error";
         }
         return type;
-    };
-
-    const getMonthData = (value: Dayjs) => {
-        const monthList = quests.filter((quest) =>
-            value.isSame(quest.to, "month")
-        );
-        if (value.month() === 8) {
-            return 1394;
-        }
-    };
-
-    const monthCellRender = (value: Dayjs) => {
-        const num = getMonthData(value);
-        return num ? (
-            <div className="notes-month">
-                <section>{num}</section>
-                <span>Backlog number</span>
-            </div>
-        ) : null;
     };
 
     const onClick = (e: any) => {
@@ -125,7 +106,6 @@ export function QuestCalendar() {
 
     const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
         if (info.type === "date") return dateCellRender(current);
-        // if (info.type === "month") return monthCellRender(current);
         return info.originNode;
     };
 

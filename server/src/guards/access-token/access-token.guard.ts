@@ -55,5 +55,4 @@ export class AccessTokenGuard implements CanActivate {
         return request.cookies.access_token;
     }
 
-    private async refresh(refreshToken: string): Promise<any> { }
 }

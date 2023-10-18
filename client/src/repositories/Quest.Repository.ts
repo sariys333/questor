@@ -98,6 +98,23 @@ class QuestRepository extends Repository {
         }
         return false;
     }
+
+    async getAllByUserId(userId: string): Promise<Quest[]> {
+        try {
+            const response = await this.fetch(`${this.url}/list`, {
+                method: "post",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userId })
+            });
+            return response;
+        } catch (e) {
+            return [];
+        }
+    }
+
 }
 
 export default new QuestRepository("quest") as QuestRepository;

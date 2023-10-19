@@ -95,9 +95,14 @@ export default questSlice;
 
 export const fetchQuestsByUserId = createAsyncThunk(
     "quest/fetchByUserId",
-    async () => {
-        const questList = await QuestRepository.getAll();
-        return questList;
+    async (userId: string | undefined) => {
+        if (userId) {
+            const questList = await QuestRepository.getAllByUserId(userId);
+            return questList;
+        } else {
+            const questList = await QuestRepository.getAll();
+            return questList;
+        }
     }
 );
 

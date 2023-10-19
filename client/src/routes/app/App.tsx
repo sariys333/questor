@@ -55,34 +55,34 @@ export function App() {
         };
     };
 
+    const iconStyle = {
+        fontSize: 30,
+    };
+
     const publicMenu = [
         createMenuItem(
             "시작",
             "/start",
-            <PlayCircleOutlined style={{ fontSize: 30 }} />
+            <PlayCircleOutlined style={iconStyle} />
         ),
         createMenuItem(
             "퀘스트",
             "/quest",
-            <QuestionCircleOutlined style={{ fontSize: 30 }} />
+            <QuestionCircleOutlined style={iconStyle} />
         ),
     ];
 
     const userMenu = [
-        createMenuItem(
-            "홈",
-            "/",
-            <DashboardOutlined style={{ fontSize: 30 }} />
-        ),
+        createMenuItem("홈", "/", <DashboardOutlined style={iconStyle} />),
         createMenuItem(
             "내 퀘스트",
             "/quest",
-            <QuestionCircleOutlined style={{ fontSize: 30 }} />
+            <QuestionCircleOutlined style={iconStyle} />
         ),
         createMenuItem(
             "퀘스트 생성",
             "/quest/create",
-            <PlusCircleOutlined style={{ fontSize: 30 }} />
+            <PlusCircleOutlined style={iconStyle} />
         ),
     ];
 

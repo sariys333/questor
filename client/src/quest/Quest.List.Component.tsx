@@ -13,10 +13,8 @@ const { Title } = Typography;
 export function QuestListComponent() {
     // const [events, setEvents] = useState<GenericEvent[]>();
 
-    const state = useSelector((state: AppState) => state.quest.detailComp);
+    const state = useSelector((state: AppState) => state.quest);
     const dispatch = useDispatch();
-
-    useEffect(() => {}, [state.quest || state.showDetail]);
 
     const now = new Date(Date.now());
 
@@ -85,13 +83,13 @@ export function QuestListComponent() {
                         },
                     },
                 ]}
-                loading={state.loading == undefined}
-                dataSource={state.list}
+                loading={state.listComp.loading == undefined}
+                dataSource={state.listComp.list}
                 pagination={{
                     defaultPageSize: 5,
                 }}
             />
-            {state.showDetail ? <QuestDetailComponent /> : <></>}
+            {state.detailComp.showDetail ? <QuestDetailComponent /> : <></>}
         </div>
     );
 }

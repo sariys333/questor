@@ -36,9 +36,23 @@ export const DashboardStats = () => {
 
     const today = dayjs().valueOf();
 
-    const active = stats?.quests?.filter(
-        (q) => !q.completed && dayjs(q.to).isAfter(today)
-    );
+    const nonActiveByDay = () => {
+        return stats?.quests?.filter(
+            (q) =>
+                q.completed ||
+                dayjs(q.to).add(stats.dayOption, "day").isBefore(today)
+        );
+    };
+    const nonActive = nonActiveByDay()?.length;
+
+    const activeByDay = () => {
+        return stats?.quests?.filter(
+            (q) =>
+                !q.completed &&
+                dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
+        );
+    };
+    const active = activeByDay()?.length;
 
     const completedByDay = () => {
         return stats?.quests?.filter(
@@ -47,6 +61,7 @@ export const DashboardStats = () => {
                 dayjs(q.completedAt).add(stats.dayOption, "day").isAfter(today)
         );
     };
+    const completed = completedByDay()?.length;
 
     const expiredByDay = () => {
         return stats?.quests?.filter(
@@ -55,14 +70,13 @@ export const DashboardStats = () => {
                 dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
         );
     };
+    const expired = expiredByDay()?.length;
 
-    console.log(today);
-
-    const activatePercent = () => {
-        if (stats.quests && active) {
-            return (active.length / stats.quests.length) * 100;
+    const getPercent = (left?: number, right?: number) => {
+        if (left && right) {
+            return (left / right) * 100;
         } else {
-            return 0;
+            return 100;
         }
     };
 
@@ -76,26 +90,7 @@ export const DashboardStats = () => {
                             valueRender={() => {
                                 return (
                                     <Flex vertical={true}>
-                                        <Space>
-                                            <Typography.Title
-                                                level={3}
-                                                type="warning"
-                                            >
-                                                {active?.length}
-                                            </Typography.Title>
-                                            <Typography.Title level={3}>
-                                                active quests
-                                            </Typography.Title>
-                                        </Space>
-                                        <Progress
-                                            percent={activatePercent()}
-                                            showInfo={false}
-                                            strokeColor={[MyTheme.warning]}
-                                        />
-                                        <Flex
-                                            justify="flex-end"
-                                            style={{ marginTop: 20 }}
-                                        >
+                                        <Flex justify="flex-end">
                                             <Select
                                                 style={{ width: "20%" }}
                                                 defaultValue={7}
@@ -111,13 +106,32 @@ export const DashboardStats = () => {
                                                 ]}
                                             ></Select>
                                         </Flex>
+                                        <Space>
+                                            <Typography.Title
+                                                level={3}
+                                                type="warning"
+                                            >
+                                                {active}
+                                            </Typography.Title>
+                                            <Typography.Title level={3}>
+                                                active quests
+                                            </Typography.Title>
+                                        </Space>
+                                        <Progress
+                                            percent={getPercent(
+                                                nonActive,
+                                                active
+                                            )}
+                                            showInfo={false}
+                                            strokeColor={[MyTheme.warning]}
+                                        />
                                         <Flex justify="space-evenly">
                                             <Space>
                                                 <Typography.Title
                                                     level={3}
                                                     type="success"
                                                 >
-                                                    {completedByDay()?.length}
+                                                    {completed}
                                                 </Typography.Title>
                                                 <Typography.Title level={3}>
                                                     done
@@ -129,7 +143,7 @@ export const DashboardStats = () => {
                                                     level={3}
                                                     type="danger"
                                                 >
-                                                    {expiredByDay()?.length}
+                                                    {expired}
                                                 </Typography.Title>
                                                 <Typography.Title level={3}>
                                                     expired
@@ -137,10 +151,12 @@ export const DashboardStats = () => {
                                             </Space>
                                         </Flex>
                                         <Progress
-                                            percent={100}
+                                            percent={getPercent(
+                                                expired,
+                                                completed
+                                            )}
                                             success={{
-                                                percent:
-                                                    completedByDay()?.length,
+                                                percent: completed,
                                             }}
                                             strokeColor={[MyTheme.error]}
                                             showInfo={false}

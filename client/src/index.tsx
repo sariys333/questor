@@ -48,9 +48,16 @@ root.render(
                     },
                     Input: {
                         borderRadius: 0,
+                        borderRadiusLG: 0,
                     },
                     Radio: {
                         borderRadius: 0,
+                        borderRadiusLG: 0,
+                    },
+                    Select: {
+                        borderRadiusLG: 0,
+                    },
+                    InputNumber: {
                         borderRadiusLG: 0,
                     },
                     DatePicker: {

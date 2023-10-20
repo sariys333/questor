@@ -39,3 +39,24 @@ export const CategoryEmojiMap = new Map<Category, string>([
     [Category.read, "📖"],
     [Category.etc, "❔"],
 ]);
+
+export type UserQuest = {
+    questId: string;
+    userId: string;
+    completed: boolean;
+    completedAt: Date;
+    acceptedAt: Date;
+    productorId: string;
+};
+
+export type QuestsAndIds = {
+    questsId: string[]
+    userQuests: UserQuest[]
+}
+
+export type QuestByPersonal = {
+    quests: Quest[],
+    userQuests: UserQuest[]
+}
+
+

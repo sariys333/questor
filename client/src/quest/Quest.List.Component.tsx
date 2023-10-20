@@ -25,6 +25,8 @@ export function QuestListComponent() {
         }
     };
 
+    console.log(state);
+
     const time = (to: Date) => {
         if (now && to > now) {
             const formattedDate = dayjs(now.getTime()).to(to);

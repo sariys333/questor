@@ -88,6 +88,9 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             .addCase(createQuest.pending, (state, action) => {})
             .addCase(createQuest.fulfilled, (state, action) => {})
             .addCase(createQuest.rejected, (state, action) => {});
+        builder.addCase(getQuestsByPersonal.fulfilled, (state, action) => {
+            console.log(action);
+        });
     },
 });
 
@@ -121,6 +124,14 @@ export const createQuest = createAsyncThunk(
         if (response.result) {
             await thunkApi.dispatch(fetchQuestsByUserId());
         }
+        return response;
+    }
+);
+
+export const getQuestsByPersonal = createAsyncThunk(
+    "quest/fetchQuestsByPersonal",
+    async (userId: string) => {
+        const response = await QuestRepository.getQuestsByPersonal(userId);
         return response;
     }
 );

@@ -5,6 +5,7 @@ import { error } from "console";
 import { useSelector } from "react-redux";
 import store from "../../../store/Store";
 import { DashboardContent } from "./Dashboard.Content";
+import { getQuestsByPersonal } from "../../../store/Quest.Slice";
 const { Header, Content } = Layout;
 
 const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
@@ -19,7 +20,6 @@ export function DashboardPage() {
                     style={{
                         marginBottom: 16,
                         backgroundColor: "transparent",
-                        // borderBottom: "1px solid #ffffff88",
                     }}
                 >
                     <Flex>

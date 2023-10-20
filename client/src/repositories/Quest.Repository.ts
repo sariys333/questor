@@ -3,6 +3,7 @@ import {
     CreateQuestParams,
     EditQuestParams,
     Quest,
+    QuestByPersonal,
 } from "../quest/types/Quest.types";
 import { Repository } from "./Repository";
 
@@ -112,6 +113,22 @@ class QuestRepository extends Repository {
             return response;
         } catch (e) {
             return [];
+        }
+    }
+
+    async getQuestsByPersonal(userId: string): Promise<QuestByPersonal | undefined> {
+        try {
+            const response = await this.fetch(`${this.url}/personal`, {
+                method: "post",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userId })
+            });
+            return response;
+        } catch (e) {
+            return
         }
     }
 

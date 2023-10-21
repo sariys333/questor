@@ -3,7 +3,7 @@ import {
     createAsyncThunk,
     createSlice,
 } from "@reduxjs/toolkit";
-import { Category, CreateQuestParams, Quest } from "../quest/types/Quest.types";
+import { Category, CreateQuestParams, Quest } from "../routes/quest/types/Quest.types";
 import QuestRepository from "../repositories/Quest.Repository";
 import { ConsoleSqlOutlined } from "@ant-design/icons";
 import { User } from "../routes/login/types/User.typs";

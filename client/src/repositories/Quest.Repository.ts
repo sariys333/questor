@@ -4,7 +4,7 @@ import {
     EditQuestParams,
     Quest,
     QuestByPersonal,
-} from "../quest/types/Quest.types";
+} from "../routes/quest/types/Quest.types";
 import { Repository } from "./Repository";
 
 class QuestRepository extends Repository {

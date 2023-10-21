@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { QuestState, fetchQuestsByUserId } from "../store/Quest.Slice";
+import { QuestState, fetchQuestsByUserId } from "../../store/Quest.Slice";
 import { Quest } from "./types/Quest.types";
-import store, { AppState } from "../store/Store";
+import store, { AppState } from "../../store/Store";
 import { Progress } from "antd";
 import { error } from "console";
 import { useSelector } from "react-redux";

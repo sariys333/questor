@@ -3,7 +3,7 @@ import {
     createAsyncThunk,
     createSlice,
 } from "@reduxjs/toolkit";
-import { Quest } from "../quest/types/Quest.types";
+import { Quest } from "../routes/quest/types/Quest.types";
 import AuthRepository, { Credentials } from "../repositories/Auth.Repository";
 import QuestRepository from "../repositories/Quest.Repository";
 import UserRepository from "../repositories/User.Repository";

@@ -18,9 +18,9 @@ import { Meta } from "antd/es/list/Item";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { QuestState, fetchQuestByQuestId } from "../store/Quest.Slice";
-import store, { AppState } from "../store/Store";
-import QuestRepository from "../repositories/Quest.Repository";
+import { QuestState, fetchQuestByQuestId } from "../../store/Quest.Slice";
+import store, { AppState } from "../../store/Store";
+import QuestRepository from "../../repositories/Quest.Repository";
 import { CategoryEmojiMap, EditQuestParams, Quest } from "./types/Quest.types";
 
 const range = (value: number) => {
@@ -66,9 +66,9 @@ export function QuestDetailComponent() {
         }
     };
 
-    const completeQuest = () => {};
+    const completeQuest = () => { };
 
-    const deleteQuest = () => {};
+    const deleteQuest = () => { };
 
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -157,8 +157,8 @@ export function QuestDetailComponent() {
                                         content={
                                             state.quest
                                                 ? dateFormat(
-                                                      state.quest.createdAt
-                                                  )
+                                                    state.quest.createdAt
+                                                )
                                                 : undefined
                                         }
                                     >
@@ -203,9 +203,9 @@ export function QuestDetailComponent() {
                                                 content={
                                                     state.quest
                                                         ? dateFormat(
-                                                              state.quest
-                                                                  .completedAt
-                                                          )
+                                                            state.quest
+                                                                .completedAt
+                                                        )
                                                         : undefined
                                                 }
                                             >

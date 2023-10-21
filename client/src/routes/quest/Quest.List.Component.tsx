@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchQuestByQuestId } from "../store/Quest.Slice";
-import store, { AppState } from "../store/Store";
+import { fetchQuestByQuestId } from "../../store/Quest.Slice";
+import store, { AppState } from "../../store/Store";
 import { QuestDetailComponent } from "./Quest.Detail.Component";
 import { CategoryEmojiMap } from "./types/Quest.types";
 

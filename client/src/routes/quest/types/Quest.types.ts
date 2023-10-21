@@ -49,6 +49,23 @@ export type UserQuest = {
     productorId: string;
 };
 
+export type Objective = {
+    questId: string;
+    objectId: string
+    category: Category
+    content: string
+    targetReps: number
+}
+
+export type UserObjective = {
+    objectId: string
+    userId: string;
+    completedAt: Date
+    currentReps: number
+}
+
+export type EditableObjective = Partial<Pick<Objective, "category" | "content" | "targetReps"> & Pick<UserObjective, "currentReps" | "completedAt">>
+
 export type QuestsAndIds = {
     questsId: string[]
     userQuests: UserQuest[]
@@ -58,5 +75,6 @@ export type QuestByPersonal = {
     quests: Quest[],
     userQuests: UserQuest[]
 }
+
 
 

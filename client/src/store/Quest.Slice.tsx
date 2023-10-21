@@ -3,7 +3,7 @@ import {
     createAsyncThunk,
     createSlice,
 } from "@reduxjs/toolkit";
-import { Category, CreateQuestParams, Quest } from "../quest/types/Quest.types";
+import { CreateQuestParams, EditableObjective, Quest } from "../routes/quest/types/Quest.types";
 import QuestRepository from "../repositories/Quest.Repository";
 
 export type QuestState = {
@@ -25,6 +25,8 @@ export type QuestState = {
     };
     createComp: {
         quest?: Quest;
+        objectives: EditableObjective[];
+        editable: boolean;
         loading: boolean;
     };
 };
@@ -45,6 +47,8 @@ const initialState = {
         loading: true,
     },
     createComp: {
+        objectives: [{}],
+        editable: true,
         loading: true,
     },
 };
@@ -56,6 +60,9 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         detail: (state, action) => {
             state.detailComp.showDetail = true;
         },
+        createAddObjective: (state, action) => {
+            state.createComp.objectives.push(action.payload)
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -72,7 +79,7 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
                 state.listComp.loading = false;
             });
         builder
-            .addCase(fetchQuestByQuestId.pending, (state, action) => {})
+            .addCase(fetchQuestByQuestId.pending, (state, action) => { })
             .addCase(fetchQuestByQuestId.fulfilled, (state, action) => {
                 if (action.payload) {
                     state.detailComp.quest = action.payload;
@@ -85,9 +92,9 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
                 state.detailComp.showDetail = false;
             });
         builder
-            .addCase(createQuest.pending, (state, action) => {})
-            .addCase(createQuest.fulfilled, (state, action) => {})
-            .addCase(createQuest.rejected, (state, action) => {});
+            .addCase(createQuest.pending, (state, action) => { })
+            .addCase(createQuest.fulfilled, (state, action) => { })
+            .addCase(createQuest.rejected, (state, action) => { });
         builder.addCase(getQuestsByPersonal.fulfilled, (state, action) => {
             console.log(action);
         });
@@ -95,6 +102,8 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
 });
 
 export default questSlice;
+
+export const { createAddObjective } = questSlice.actions
 
 export const fetchQuestsByUserId = createAsyncThunk(
     "quest/fetchByUserId",

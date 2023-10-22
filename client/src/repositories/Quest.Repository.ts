@@ -31,6 +31,7 @@ class QuestRepository extends Repository {
         result: boolean;
         msg?: string;
     }> {
+        console.log(params)
         try {
             const response = await this.fetch(`${this.url}/create`, {
                 method: "post",
@@ -81,6 +82,7 @@ class QuestRepository extends Repository {
     }
 
     async edit(params: EditQuestParams): Promise<boolean> {
+
         try {
             const response = await this.fetch(`${this.url}/edit`, {
                 method: "post",

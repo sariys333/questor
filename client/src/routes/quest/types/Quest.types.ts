@@ -14,8 +14,8 @@ export type GetQuestListQuery = Pick<Quest, "userId">;
 
 export type CreateQuestParams = Pick<
     Quest,
-    "content" | "from" | "to" | "category"
->;
+    "from" | "to"
+> & { objectives: (Pick<Objective, "category" | "content" | "targetReps">)[] };
 
 export type EditQuestParams = Pick<
     Quest,

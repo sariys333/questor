@@ -72,7 +72,7 @@ export class UserQuest {
 
 export type GetQuestListQuery = Pick<Quest, "userId">;
 
-export type CreateQuestParams = Pick<Quest, "from" | "to">;
+export type CreateQuestParams = Pick<Quest, "from" | "to"> & { objectives: (Pick<Objective, "category" | "content" | "targetReps">)[] };
 
 export class CreateForm {
     constructor(userId: number, questId: number) {
@@ -141,4 +141,28 @@ export class QuestByPersonal {
     completedAt: Date | number;
     acceptedAt: Date | number;
     productorId: string;
+}
+
+export class Objective {
+
+    constructor(obj?: any) {
+        this.questId = obj?.quest_id
+        this.userId = obj?.user_id
+        this.objectId = obj?.object_id
+        this.category = obj?.category
+        this.content = obj?.content
+        this.targetReps = obj?.target_reps
+        this.currentReps = obj?.current_reps
+        this.completedAt = obj?.completed_at
+
+    }
+
+    questId: string;
+    userId: string;
+    objectId: string
+    category: string
+    content: string
+    targetReps: number
+    currentReps: number
+    completedAt: Date | number
 }

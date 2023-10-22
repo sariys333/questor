@@ -18,6 +18,7 @@ export class QuestController {
 
     @Post("/create")
     async createQuest(@ReqUser() user: User, @Body() params: CreateQuestParams) {
+        await this.questService.createObjectives({ user, params })
         return await this.questService.createQuest({ user, params });
     }
 

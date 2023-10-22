@@ -7,7 +7,7 @@ import {
 import { Injectable } from "@nestjs/common";
 import { User } from "src/user/types/user.type";
 import { v4 as uuidv4 } from "uuid";
-import { CreateQuestParams, Quest, QuestByPersonal, QuestsAndIds, UserQuest } from './types/quest.type';
+import { CreateQuestParams, Objective, Quest, QuestByPersonal, QuestsAndIds, UserQuest } from './types/quest.type';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -61,6 +61,28 @@ export class QuestService {
         const response = await docClient.send(command);
         const quests = response.Items.map((item: Quest) => new Quest(item));
         return quests;
+    }
+
+    async createObjectives({
+        user,
+        params,
+    }: {
+        user: User;
+        params: CreateQuestParams;
+    }): Promise<any> {
+        console.log("obj")
+        console.log(params)
+
+        // const command = new PutCommand({
+        //     TableName: "quests",
+        //     Item: quest,
+        // });
+
+        // const response = await docClient.send(command);
+        // return {
+        //     result: "ok",
+        // };
+
     }
 
     async getQuestById(questId: string): Promise<Quest> {

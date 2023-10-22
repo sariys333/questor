@@ -8,6 +8,7 @@ const inputStyle = {
     minHeight: 40, width: "100%"
 }
 
+
 export function QuestObjectiveComponent() {
 
     const state = useSelector((state: AppState) => state.quest.createComp)
@@ -37,7 +38,7 @@ export function QuestObjectiveComponent() {
 
     return (
         <List
-            className="objectives"
+            className="objective"
             itemLayout="horizontal"
 
             loadMore={loadMore}
@@ -45,7 +46,7 @@ export function QuestObjectiveComponent() {
             renderItem={(data, index) => (
                 <List.Item>
                     <Flex gap={"large"}>
-                        <Form.Item name={"category" + index}>
+                        <Form.Item name={["objectives" + index, "category"]}>
                             <Select
                                 size="large"
                                 defaultValue={"-"}
@@ -55,7 +56,7 @@ export function QuestObjectiveComponent() {
                             />
                         </Form.Item>
 
-                        <Form.Item name={"objective" + index} >
+                        <Form.Item name={["objectives" + index, "objective"]} >
                             <Input.TextArea
                                 autoSize
                                 size="large"
@@ -63,13 +64,14 @@ export function QuestObjectiveComponent() {
                             />
                         </Form.Item>
 
-                        <Form.Item name={"progress" + index} >
+                        <Form.Item name={["objectives" + index, "progress"]} >
                             <InputNumber
                                 defaultValue={0}
                                 size="large"
                                 style={inputStyle}
                             />
                         </Form.Item>
+
                     </Flex>
 
                 </List.Item>

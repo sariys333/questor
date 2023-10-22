@@ -19,7 +19,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { createQuest } from "../../store/Quest.Slice";
 import store from "../../store/Store";
-import { CategoryEmojiMap, Quest } from "./types/Quest.types";
+import { CategoryEmojiMap, CreateQuestParams, Objective, Quest } from "./types/Quest.types";
 import { QuestObjectiveComponent } from "./Quest.Objective.Component";
 import { create } from "domain";
 
@@ -43,9 +43,9 @@ const disabledRangeTime: RangePickerProps["disabledTime"] = (_, type) => {
     };
 };
 
-export type FormValues = Pick<Quest, "content" | "category"> & {
-    time: Dayjs[];
-};
+// export type FormValues = {
+//     from: Dayjs, to: Dayjs
+// };
 
 export function QuestCreateComponent() {
     const [timeValue, setTimeValue] = useState();
@@ -56,8 +56,19 @@ export function QuestCreateComponent() {
     };
 
     const onFinish = async (e: any) => {
-        console.log(e);
-        store.dispatch(createQuest(e))
+        console.log(e)
+        // const objArray: Pick<Objective, "category" | "content" | "targetReps"> = Object.values(e).map((objective, index) => {
+        //     return objective
+        // })
+
+        // console.log(objArray)
+
+        // const params: CreateQuestParams = {
+        //     from: e.from.toDate(),
+        //     to: e.from.toDate(),
+        //     objectives: objArray
+        // }
+        // store.dispatch(createQuest(params))
     };
 
     return (

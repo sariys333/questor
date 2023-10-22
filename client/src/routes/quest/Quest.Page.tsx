@@ -1,29 +1,21 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { QuestState, fetchQuestsByUserId } from "../../store/Quest.Slice";
-import { Quest } from "./types/Quest.types";
+import { fetchQuestsByUserId } from "../../store/Quest.Slice";
 import store, { AppState } from "../../store/Store";
-import { Progress } from "antd";
-import { error } from "console";
+import { Typography } from "antd";
 import { useSelector } from "react-redux";
-import { stat } from "fs";
 
-const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
+const { Title } = Typography;
 
 export function QuestPage() {
-    const state = useSelector((state: AppState) => state.quest.listComp);
+    const state = useSelector((state: AppState) => state.quest);
 
-    useEffect(() => {
-        store.dispatch(fetchQuestsByUserId());
-    }, []);
+    const { pageTitle } = state;
 
     return (
         <>
-            {state.list ? (
-                <Outlet />
-            ) : (
-                <Progress percent={99.9} strokeColor={twoColors} />
-            )}
+            <Title level={3}>{pageTitle}</Title>
+            <Outlet />
         </>
     );
 }

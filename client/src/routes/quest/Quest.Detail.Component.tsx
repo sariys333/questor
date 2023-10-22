@@ -58,7 +58,7 @@ type FormValues = {
 };
 
 export function QuestDetailComponent() {
-    const state = useSelector((state: AppState) => state.quest.detailComp);
+    const state = useSelector((state: AppState) => state.quest.viewComp);
 
     const dateFormat = (time: Date) => {
         if (time) {
@@ -66,9 +66,9 @@ export function QuestDetailComponent() {
         }
     };
 
-    const completeQuest = () => { };
+    const completeQuest = () => {};
 
-    const deleteQuest = () => { };
+    const deleteQuest = () => {};
 
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -157,8 +157,8 @@ export function QuestDetailComponent() {
                                         content={
                                             state.quest
                                                 ? dateFormat(
-                                                    state.quest.createdAt
-                                                )
+                                                      state.quest.createdAt
+                                                  )
                                                 : undefined
                                         }
                                     >
@@ -203,9 +203,9 @@ export function QuestDetailComponent() {
                                                 content={
                                                     state.quest
                                                         ? dateFormat(
-                                                            state.quest
-                                                                .completedAt
-                                                        )
+                                                              state.quest
+                                                                  .completedAt
+                                                          )
                                                         : undefined
                                                 }
                                             >

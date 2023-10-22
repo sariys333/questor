@@ -7,17 +7,17 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./index.css";
-import { QuestCreateComponent } from "./routes/quest/Quest.Create.Component";
-import { QuestListComponent } from "./routes/quest/Quest.List.Component";
-import { QuestPage } from "./routes/quest/Quest.Page";
 import reportWebVitals from "./reportWebVitals";
 import App from "./routes/app/App";
+import { DashboardPage } from "./routes/app/dashboard/Dashboard.Page";
 import { Login } from "./routes/login/Login.Page";
+import { QuestListComponent } from "./routes/quest/Quest.List.Component";
+import { QuestPage } from "./routes/quest/Quest.Page";
+import { QuestViewerComponent } from "./routes/quest/viewer/Quest.Viewer.Component";
 import { UserSettingPage } from "./routes/settings/User.Setting.Page";
 import { Signup } from "./routes/signup/Signup.Page";
 import { StartPage } from "./routes/start/Start.Page";
 import store from "./store/Store";
-import { DashboardPage } from "./routes/app/dashboard/Dashboard.Page";
 
 // dayjs().locale('de').format()
 dayjs.locale("ko");
@@ -93,7 +93,13 @@ root.render(
                                 <Route index element={<QuestListComponent />} />
                                 <Route
                                     path="create"
-                                    element={<QuestCreateComponent />}
+                                    element={<QuestViewerComponent create />}
+                                />
+                                <Route
+                                    path="view/:questId"
+                                    element={
+                                        <QuestViewerComponent create={false} />
+                                    }
                                 />
                             </Route>
                         </Route>

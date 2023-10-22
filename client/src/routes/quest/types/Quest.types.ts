@@ -12,10 +12,7 @@ export type Quest = {
 
 export type GetQuestListQuery = Pick<Quest, "userId">;
 
-export type CreateQuestParams = Pick<
-    Quest,
-    "from" | "to"
-> & { objectives: (Pick<Objective, "category" | "content" | "targetReps">)[] };
+export type CreateQuestParams = Pick<Quest, "from" | "to">;
 
 export type EditQuestParams = Pick<
     Quest,
@@ -51,30 +48,30 @@ export type UserQuest = {
 
 export type Objective = {
     questId: string;
-    objectId: string
-    category: Category
-    content: string
-    targetReps: number
-}
+    objectiveId: string;
+    category: Category;
+    content: string;
+    targetReps: number;
+};
 
 export type UserObjective = {
-    objectId: string
+    objectiveId: string;
     userId: string;
-    completedAt: Date
-    currentReps: number
-}
+    completedAt: Date;
+    currentReps: number;
+};
 
-export type EditableObjective = Partial<Pick<Objective, "category" | "content" | "targetReps"> & Pick<UserObjective, "currentReps" | "completedAt">>
+export type EditableObjective = Partial<
+    Pick<Objective, "category" | "content" | "targetReps"> &
+        Pick<UserObjective, "currentReps" | "completedAt">
+>;
 
 export type QuestsAndIds = {
-    questsId: string[]
-    userQuests: UserQuest[]
-}
+    questsId: string[];
+    userQuests: UserQuest[];
+};
 
 export type QuestByPersonal = {
-    quests: Quest[],
-    userQuests: UserQuest[]
-}
-
-
-
+    quests: Quest[];
+    userQuests: UserQuest[];
+};

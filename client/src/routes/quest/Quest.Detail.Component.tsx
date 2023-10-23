@@ -16,12 +16,11 @@ import {
 import { RangePickerProps } from "antd/es/date-picker";
 import { Meta } from "antd/es/list/Item";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { QuestState, fetchQuestByQuestId } from "../../store/Quest.Slice";
-import store, { AppState } from "../../store/Store";
 import QuestRepository from "../../repositories/Quest.Repository";
-import { CategoryEmojiMap, EditQuestParams, Quest } from "./types/Quest.types";
+import { AppState } from "../../store/Store";
+import { CategoryEmojiMap, Quest } from "./types/Quest.types";
 
 const range = (value: number) => {
     const result = [];
@@ -115,19 +114,18 @@ export function QuestDetailComponent() {
             setConfirmLoading(false);
         }, 2000);
         if (e.time.length == 2) {
-            await editQuest(e);
+            // await editQuest(e);
         }
     };
 
-    const editQuest = async (params: EditQuestParams) => {
-        const res = await QuestRepository.edit(params);
-        console.log(res);
-    };
+    // const editQuest = async (params: EditQuestParams) => {
+    //     const res = await QuestRepository.edit(params);
+    //     console.log(res);
+    // };
 
     return (
         <>
             <Card
-                title={state.quest?.category}
                 style={{ marginTop: 30 }}
                 extra={
                     <>
@@ -219,9 +217,10 @@ export function QuestDetailComponent() {
                             },
                         ]}
                     />
-                    <Typography.Title level={3} style={{ textAlign: "center" }}>
-                        {state.quest?.content}
-                    </Typography.Title>
+                    <Typography.Title
+                        level={3}
+                        style={{ textAlign: "center" }}
+                    ></Typography.Title>
                     <Meta
                         avatar={<Button onClick={completeQuest}>완료</Button>}
                         style={{}}

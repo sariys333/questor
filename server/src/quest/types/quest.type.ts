@@ -14,7 +14,7 @@ export class Quest {
       obj && obj.created_at instanceof Date
         ? obj?.created_at.getTime()
         : new Date().getTime();
-    this.isPrivate = obj?.is_private;
+    this.isPrivate = obj?.is_private || true;
   }
 
   questId: string;
@@ -45,8 +45,7 @@ export class UserQuest {
       obj && obj.completed_at instanceof Date
         ? obj?.completed_at.getTime()
         : null;
-    this.acceptedAt = obj?.accepted_at;
-    this.productorId = obj?.productor_id;
+    this.acceptedAt = obj?.accepted_at | new Date().getTime();
   }
 
   questId: string;
@@ -54,7 +53,6 @@ export class UserQuest {
   completed: boolean;
   completedAt: Date | number;
   acceptedAt: Date | number;
-  productorId: string;
 
   asObj() {
     return Object.assign({
@@ -63,16 +61,67 @@ export class UserQuest {
       completed: this.completed,
       completed_at: this.completedAt,
       accepted_at: this.acceptedAt,
-      productor_id: this.productorId,
     });
   }
 }
 
+export class QuestByUser {
+  constructor(obj?: any) {
+    this.questId = obj?.quest_id;
+    this.userId = obj?.user_id;
+    this.from =
+      obj && (typeof obj.from == "string" || typeof obj.from == "number")
+        ? new Date(obj?.from).getTime()
+        : null;
+    this.to =
+      obj && (typeof obj.to == "string" || typeof obj.to == "number")
+        ? new Date(obj?.to).getTime()
+        : null;
+    this.createdAt =
+      obj && obj.created_at instanceof Date
+        ? obj?.created_at.getTime()
+        : new Date().getTime();
+    this.isPrivate = obj?.is_private || true;
+    this.completed = obj?.completed || false;
+    this.completedAt =
+      obj && obj.completed_at instanceof Date
+        ? obj?.completed_at.getTime()
+        : null;
+    this.acceptedAt = obj?.accepted_at | new Date().getTime();
+  }
+
+  questId: string;
+  userId: string;
+  createdAt: Date | number;
+  from: Date | number;
+  to: Date | number;
+  isPrivate: boolean;
+  completed: boolean;
+  completedAt: Date | number;
+  acceptedAt: Date | number;
+
+  asObj() {
+    return Object.assign({
+      user_id: this.userId,
+      quest_id: this.questId,
+      created_at: this.createdAt,
+      from: this.from,
+      to: this.to,
+      is_private: this.isPrivate,
+      completed: this.completed,
+      completed_at: this.completedAt,
+      accepted_at: this.acceptedAt,
+    });
+  }
+}
+
+export type QuestObj = {
+  [key: string]: QuestByUser & { [objectiveId: string]: Objective };
+};
+
 export type GetQuestListQuery = Pick<Quest, "userId">;
 
-export type CreateQuestParams = Pick<Quest, "from" | "to"> & {
-  objectives: Pick<Objective, "category" | "content" | "targetReps">[];
-};
+export type CreateQuestParams = Pick<Quest, "from" | "to" | "isPrivate">;
 
 export class CreateForm {
   constructor(userId: number, questId: number) {
@@ -96,58 +145,6 @@ export class EditForm {
   userId: number;
   from: Date;
   to: Date;
-}
-
-export type QuestsAndIds = {
-  questsId: string[];
-  userQuests: QuestByPersonal[];
-};
-
-export class QuestByPersonal {
-  constructor(obj?: any) {
-    this.questId = obj?.quest_id;
-    this.userId = obj?.user_id;
-    this.from =
-      obj && (typeof obj.from == "string" || typeof obj.from == "number")
-        ? new Date(obj?.from).getTime()
-        : null;
-    this.to =
-      obj && (typeof obj.to == "string" || typeof obj.to == "number")
-        ? new Date(obj?.to).getTime()
-        : null;
-    this.createdAt =
-      obj && obj.created_at instanceof Date
-        ? obj?.created_at.getTime()
-        : new Date().getTime();
-    this.completed = obj?.completed || false;
-    this.completedAt =
-      obj && obj.completed_at instanceof Date
-        ? obj?.completed_at.getTime()
-        : null;
-    this.acceptedAt = obj?.accepted_at;
-    this.productorId = obj?.productor_id;
-    this.isPublic = obj?.isPublic || false;
-    this.objectives = obj?.objectives;
-  }
-
-  questId: string;
-  userId: string;
-  createdAt: Date | number;
-  from: Date | number;
-  to: Date | number;
-  isPublic: boolean;
-  completed: boolean;
-  completedAt: Date | number;
-  acceptedAt: Date | number;
-  productorId: string;
-  objectives: {
-    objectiveId: string;
-    category: string;
-    content: string;
-    targetReps: number;
-    currentReps: number;
-    completedObjAt: Date | number;
-  }[];
 }
 
 export class Objective {

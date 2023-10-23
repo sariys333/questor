@@ -17,16 +17,17 @@ export function QuestListComponent() {
     // const [events, setEvents] = useState<GenericEvent[]>();
 
     const state = useSelector((state: AppState) => state.quest.listComp);
-    const { list, loading } = state;
+    const user = useSelector((state: AppState) => state.user.user);
+    const { list, loading, combined } = state;
 
     const now = new Date(Date.now());
 
     useEffect(() => {
         store.dispatch(changePageTitle("목록"));
-        store.dispatch(fetchQuestsByUserId());
+        store.dispatch(fetchQuestsByUserId(user?.userId));
     }, []);
 
-    console.log(list);
+    console.log(combined);
 
     const onClick = (e: any) => {
         const questId: string = e.target.id;
@@ -47,11 +48,16 @@ export function QuestListComponent() {
         <div>
             {/* <Flex justify="flex-end" style={{ margin: 5 }}>
                 <Title level={3}>
-                    <Link to={"/quest/create"}>CREATE</Link>
+                <Link to={"/quest/create"}>CREATE</Link>
                 </Title>
             </Flex> */}
             {/* <QuestCalendar /> */}
             <Table
+                loading={loading == undefined}
+                dataSource={list}
+                pagination={{
+                    defaultPageSize: 5,
+                }}
                 columns={[
                     {
                         key: "questId",
@@ -89,11 +95,6 @@ export function QuestListComponent() {
                         },
                     },
                 ]}
-                loading={loading == undefined}
-                dataSource={list}
-                pagination={{
-                    defaultPageSize: 5,
-                }}
             />
         </div>
     );

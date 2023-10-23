@@ -6,25 +6,35 @@ import {
     InputNumber,
     List,
     Select,
-    Typography,
+    Spin,
+    Table,
 } from "antd";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { createAddObjective } from "../../../store/Quest.Slice";
+import {
+    createAddObjective,
+    fetchObjectivesByQuest,
+} from "../../../store/Quest.Slice";
 import store, { AppState } from "../../../store/Store";
 import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
 
 export function QuestViewerObjectiveComponent() {
     const state = useSelector((state: AppState) => state.quest.viewComp);
+    const user = useSelector((state: AppState) => state.user.user);
 
     const { editable, objectives, loading, quest } = state;
-
-    // console.log(editable);
-    // console.log(objectives);
 
     const onLoadMore = () => {
         const newObjective: EditableObjective = {};
         store.dispatch(createAddObjective(newObjective));
     };
+
+    useEffect(() => {
+        if (user && quest) {
+            const questId = quest.questId;
+            store.dispatch(fetchObjectivesByQuest(questId));
+        }
+    }, [quest]);
 
     const loadMore = editable ? (
         <Button size="small" type="text" onClick={onLoadMore}>
@@ -32,67 +42,142 @@ export function QuestViewerObjectiveComponent() {
         </Button>
     ) : null;
 
+    if (loading) {
+        return (
+            <Spin tip="Loading" size="large">
+                <div className="content" />
+            </Spin>
+        );
+    }
+
     return (
-        <List
-            className="objective"
-            itemLayout="horizontal"
-            split={false}
-            grid={{
-                gutter: 0,
-                column: 0,
-            }}
-            loadMore={loadMore}
-            dataSource={objectives}
-            renderItem={(data, index) => (
-                <List.Item>
-                    <Flex gap={"large"}>
-                        <Form.Item
-                            name={["objectives" + index, "category"]}
-                            style={{ marginBottom: 0 }}
-                        >
-                            <Select
-                                size="small"
-                                defaultValue={data ? data.category : "-"}
-                                style={{ width: 120 }}
-                                value={data.category}
-                                options={Array.from(
-                                    CategoryEmojiMap.entries()
-                                ).map(([cat, emoji]) => ({
-                                    value: cat,
-                                    label: `${cat}`,
-                                    disabled: !editable,
-                                }))}
-                                bordered={editable}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name={["objectives" + index, "content"]}
-                            style={{ marginBottom: 0 }}
-                        >
-                            <Input
-                                size="small"
-                                value={data ? data.content : ""}
-                                bordered={editable}
-                                readOnly={!editable}
-                            />
-                        </Form.Item>
+        <>
+            <List
+                className="objective"
+                itemLayout="horizontal"
+                split={false}
+                grid={{
+                    gutter: 0,
+                    column: 0,
+                }}
+                loadMore={loadMore}
+                dataSource={objectives}
+                renderItem={(data, index) => (
+                    <List.Item>
+                        <Flex gap={"large"}>
+                            {editable ? (
+                                <Form.Item
+                                    name={["objectives" + index, "category"]}
+                                    style={{ marginBottom: 0 }}
+                                >
+                                    <Select
+                                        size="small"
+                                        defaultValue={
+                                            data ? data.category : "-"
+                                        }
+                                        style={{ width: 120 }}
+                                        value={data.category}
+                                        options={Array.from(
+                                            CategoryEmojiMap.entries()
+                                        ).map(([cat, emoji]) => ({
+                                            value: cat,
+                                            label: `${cat}`,
+                                        }))}
+                                    />
+                                </Form.Item>
+                            ) : (
+                                <></>
+                            )}
 
-                        {editable ? <></> : <Typography>5</Typography>}
+                            {editable ? (
+                                <Form.Item
+                                    name={["objectives" + index, "content"]}
+                                    style={{ marginBottom: 0 }}
+                                >
+                                    <Input
+                                        size="small"
+                                        value={data ? data.content : ""}
+                                    />
+                                </Form.Item>
+                            ) : (
+                                <></>
+                            )}
 
-                        <Form.Item
-                            name={["objectives" + index, "targetReps"]}
-                            style={{ marginBottom: 0 }}
-                        >
-                            <InputNumber
-                                defaultValue={data ? data.targetReps : ""}
-                                size="small"
-                                bordered={editable}
-                                readOnly={!editable}
-                            />
-                        </Form.Item>
-                    </Flex>
-                </List.Item>
+                            {editable ? (
+                                <Form.Item
+                                    name={["objectives" + index, "targetReps"]}
+                                    style={{ marginBottom: 0 }}
+                                >
+                                    <InputNumber
+                                        defaultValue={
+                                            data ? data.targetReps : ""
+                                        }
+                                        size="small"
+                                    />
+                                </Form.Item>
+                            ) : (
+                                <></>
+                            )}
+                        </Flex>
+                    </List.Item>
+                )}
+            />
+            {editable ? (
+                <></>
+            ) : (
+                <Table
+                    loading={loading == undefined}
+                    dataSource={objectives}
+                    pagination={false}
+                    tableLayout="auto"
+                    columns={[
+                        {
+                            key: "objectiveId",
+                            title: "카테고리",
+                            dataIndex: "category",
+                            render: (text) => text,
+                        },
+                        {
+                            key: "objectiveId",
+                            title: "내용",
+                            dataIndex: "content",
+                            ellipsis: true,
+                            render: (text) => text,
+                        },
+                        {
+                            key: "objectiveId",
+                            title: "진행 상태",
+                            dataIndex: "currenReps",
+                            render: (v, r, i) =>
+                                r.targetReps == v ? (
+                                    <>완료</>
+                                ) : (
+                                    <>
+                                        {v}
+                                        {/* 로그인 상태 + 현재 내가 진행중인 퀘스트 */}
+                                        {user &&
+                                        user.userId == r.userId &&
+                                        r.targetReps != v ? (
+                                            <Button size="small" type="text">
+                                                +
+                                            </Button>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </>
+                                ),
+                        },
+                        {
+                            key: "objectiveId",
+                            title: "목표치",
+                            dataIndex: "targetReps",
+                            render: (v, r, i) => {
+                                return v;
+                            },
+                        },
+                    ]}
+                />
             )}
-        />
+        </>
     );
 }

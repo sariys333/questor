@@ -1,10 +1,17 @@
-import { Button, DatePicker, Flex, Form, Statistic } from "antd";
+import {
+    Breadcrumb,
+    Button,
+    DatePicker,
+    Flex,
+    Form,
+    Spin,
+    Tooltip,
+} from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
-    changeObjective,
     changePageTitle,
     changeTime,
     createQuest,
@@ -76,21 +83,44 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
         return days.year() < dayjs().year();
     };
 
+    if (loading) {
+        return (
+            <Spin tip="Loading" size="large">
+                <div className="content" />
+            </Spin>
+        );
+    }
+
     return (
         <div>
             {!editable ? (
-                <Flex gap={"large"}>
-                    <Statistic
-                        title="작성자"
-                        value={quest ? quest.userId : ""}
-                    />
-                    <Statistic
-                        title="작성일"
-                        value={
-                            quest?.createdAt
-                                ? dayjs(quest?.createdAt).format("YYYY-MM-DD")
-                                : ""
-                        }
+                <Flex gap={"large"} justify="flex-end">
+                    <Breadcrumb
+                        items={[
+                            //
+                            {
+                                title: (
+                                    <Tooltip placement="top" title={"작성자"}>
+                                        <a href="#">
+                                            {quest ? user?.username : ""}
+                                        </a>
+                                    </Tooltip>
+                                ),
+                            },
+                            {
+                                title: (
+                                    <Tooltip placement="top" title={"작성일"}>
+                                        <a href="#">
+                                            {quest?.createdAt
+                                                ? dayjs(
+                                                      quest?.createdAt
+                                                  ).format("YYYY-MM-DD")
+                                                : ""}
+                                        </a>
+                                    </Tooltip>
+                                ),
+                            },
+                        ]}
                     />
                 </Flex>
             ) : (
@@ -105,6 +135,11 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
                             size="small"
                             format="YYYY-MM-DD"
                             onChange={timeChange}
+                            value={
+                                quest
+                                    ? [dayjs(quest.from), dayjs(quest.to)]
+                                    : undefined
+                            }
                             defaultValue={
                                 quest
                                     ? [dayjs(quest.from), dayjs(quest.to)]
@@ -112,17 +147,22 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
                             }
                             inputReadOnly={true}
                             disabledDate={disabledDate}
+                            allowClear={false}
                         />
                     </Form.Item>
                 </Flex>
 
                 <QuestViewerObjectiveComponent />
 
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                    <Button type="primary" htmlType="submit">
-                        생성
-                    </Button>
-                </div>
+                {editable ? (
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <Button type="primary" htmlType="submit">
+                            {create ? "생성" : "수정"}
+                        </Button>
+                    </div>
+                ) : (
+                    <></>
+                )}
             </Form>
         </div>
     );

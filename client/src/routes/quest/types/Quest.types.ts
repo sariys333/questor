@@ -1,23 +1,53 @@
 export type Quest = {
     questId: string;
     userId: string;
-    category: Category;
-    content: string;
-    completed: boolean;
-    completedAt: Date;
-    createdAt: Date;
     from: Date;
     to: Date;
+    isPrivate: boolean;
+    createdAt: Date;
+    completed: boolean;
+    completedAt: Date;
+    acceptedAt: Date;
 };
 
 export type GetQuestListQuery = Pick<Quest, "userId">;
 
 export type CreateQuestParams = Pick<Quest, "from" | "to">;
 
-export type EditQuestParams = Pick<
-    Quest,
-    "content" | "from" | "to" | "category" | "questId"
+export type Objective = {
+    questId: string;
+    userId: string;
+    objectiveId: string;
+    category: string;
+    content: string;
+    currentReps: number;
+    targetReps: number;
+    completedAt: Date;
+};
+
+export type EditableObjective = Partial<
+    Pick<
+        Objective,
+        | "questId"
+        | "userId"
+        | "objectiveId"
+        | "category"
+        | "content"
+        | "targetReps"
+        | "currentReps"
+        | "completedAt"
+    >
 >;
+
+export type QuestsAndIds = {
+    questsId: string[];
+    userQuests: Partial<Quest[]>;
+};
+
+export type QuestByPersonal = {
+    quests: Quest[];
+    userQuests: Partial<Quest[]>;
+};
 
 export enum Category {
     walk = "걷기",
@@ -36,42 +66,3 @@ export const CategoryEmojiMap = new Map<Category, string>([
     [Category.read, "📖"],
     [Category.etc, "❔"],
 ]);
-
-export type UserQuest = {
-    questId: string;
-    userId: string;
-    completed: boolean;
-    completedAt: Date;
-    acceptedAt: Date;
-    productorId: string;
-};
-
-export type Objective = {
-    questId: string;
-    objectiveId: string;
-    category: Category;
-    content: string;
-    targetReps: number;
-};
-
-export type UserObjective = {
-    objectiveId: string;
-    userId: string;
-    completedAt: Date;
-    currentReps: number;
-};
-
-export type EditableObjective = Partial<
-    Pick<Objective, "category" | "content" | "targetReps"> &
-        Pick<UserObjective, "currentReps" | "completedAt">
->;
-
-export type QuestsAndIds = {
-    questsId: string[];
-    userQuests: UserQuest[];
-};
-
-export type QuestByPersonal = {
-    quests: Quest[];
-    userQuests: UserQuest[];
-};

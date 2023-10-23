@@ -1,9 +1,8 @@
-import { useSelector } from "react-redux";
-import { QuestState } from "../../store/Quest.Slice";
 import { Badge, BadgeProps, Calendar, CalendarProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
-import { Quest, Category } from "./types/Quest.types";
+import { useSelector } from "react-redux";
 import { AppState } from "../../store/Store";
+import { Category, Quest } from "./types/Quest.types";
 
 export function QuestCalendar() {
     const state = useSelector((state: AppState) => state.quest.calendarComp);
@@ -20,12 +19,12 @@ export function QuestCalendar() {
 
             const toList = questsTo.map((quest) => {
                 const type = setEventType(quest);
-                const content = quest.category;
+                // const content = quest.category;
                 const tooltip = "만료";
                 const questId = quest.questId;
                 return {
                     type,
-                    content,
+                    // content,
                     tooltip,
                     questId,
                 };
@@ -33,12 +32,12 @@ export function QuestCalendar() {
 
             const fromList = questsFrom.map((quest) => {
                 const type = setEventType(quest);
-                const content = quest.category;
+                // const content = quest.category;
                 const tooltip = "시작";
                 const questId = quest.questId;
                 return {
                     type,
-                    content,
+                    // content,
                     tooltip,
                     questId,
                 };
@@ -73,8 +72,8 @@ export function QuestCalendar() {
                     className="events"
                     style={{ listStyleType: "none", paddingLeft: 0 }}
                 >
-                    {listData ? listToData(listData.fromList) : ""}
-                    {listData ? listToData(listData.toList) : ""}
+                    {/* {listData ? listToData(listData.fromList) : ""}
+                    {listData ? listToData(listData.toList) : ""} */}
                 </ul>
             </>
         );

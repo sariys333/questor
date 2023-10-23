@@ -4,15 +4,23 @@ import {
     createSlice,
 } from "@reduxjs/toolkit";
 import QuestRepository from "../repositories/Quest.Repository";
-import { CreateQuestParams, Quest } from "../routes/quest/types/Quest.types";
-import { AppState } from "./Store";
-import { EditableObjective } from "../routes/quest/types/Quest.types";
+import {
+    CreateQuestParams,
+    EditableObjective,
+    Objective,
+    Quest,
+} from "../routes/quest/types/Quest.types";
 
 export type QuestState = {
     pageTitle: string;
     listComp: {
         loading: boolean;
         list: Quest[];
+        combined?: {
+            [questId: string]: Quest & {
+                [objectiveId: string]: Partial<Objective>;
+            };
+        };
     };
     viewComp: {
         quest?: Quest;
@@ -24,6 +32,7 @@ export type QuestState = {
             from?: Date | number;
             to?: Date | number;
         };
+        combined?: { [objectiveId: string]: Objective };
     };
     calendarComp: {
         list: Quest[];
@@ -65,6 +74,7 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         },
         editableQuest: (state, action) => {
             state.viewComp.editable = action.payload;
+            state.viewComp.loading = false;
         },
         changeTime: (state, action) => {
             console.log(action.payload);
@@ -79,6 +89,26 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         showDetail: (state, action) => {
             state.viewComp.show = action.payload;
         },
+        combineObjectives: (state, action) => {
+            const combineObj: { [id: string]: Objective } = {};
+            for (const userObj of action.payload) {
+                combineObj[userObj.objectiveId] = userObj;
+                for (const obj of state.viewComp.objectives) {
+                    if (obj && userObj.objectiveId == obj.objectiveId) {
+                        if (combineObj[userObj.objectiveId]) {
+                            combineObj[userObj.objectiveId].category =
+                                obj.category || "";
+                            combineObj[userObj.objectiveId].content =
+                                obj.content || "";
+                            combineObj[userObj.objectiveId].targetReps =
+                                obj.targetReps || 0;
+                        }
+                    }
+                }
+            }
+            state.viewComp.combined = combineObj;
+            console.log(combineObj);
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -86,8 +116,8 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
                 state.listComp.loading = true;
             })
             .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
-                state.listComp.list = action.payload;
-                state.listComp.loading = false;
+                console.log(action.payload);
+                state.listComp.combined = action.payload;
             })
             .addCase(fetchQuestsByUserId.rejected, (state, action) => {
                 state.listComp.loading = false;
@@ -123,16 +153,22 @@ export const {
     changeObjective,
     changePageTitle,
     showDetail,
+    combineObjectives,
 } = questSlice.actions;
+
+export const fetchAllQuests = createAsyncThunk(
+    "quest/fetchAllQuests",
+    async () => {
+        const questList = await QuestRepository.getAll();
+        return questList;
+    }
+);
 
 export const fetchQuestsByUserId = createAsyncThunk(
     "quest/fetchByUserId",
     async (userId: string | undefined) => {
         if (userId) {
             const questList = await QuestRepository.getAllByUserId(userId);
-            return questList;
-        } else {
-            const questList = await QuestRepository.getAll();
             return questList;
         }
     }
@@ -144,6 +180,15 @@ export const fetchQuestByQuestId = createAsyncThunk(
         const quest = await QuestRepository.getQuestById(questId);
         console.log(quest);
         return quest;
+    }
+);
+
+export const fetchObjectivesByQuest = createAsyncThunk(
+    "quest/fetchObjectivesByQuest",
+    async (questId: string, thunkApi) => {
+        const objectives = await QuestRepository.getObjectivesByQuest(questId);
+        thunkApi.dispatch(combineObjectives(objectives));
+        return objectives;
     }
 );
 
@@ -165,17 +210,10 @@ export const createQuest = createAsyncThunk(
             return;
         }
         const response = await QuestRepository.create({ params, objectives });
-        // const response = await QuestRepository.create({
-        //     from: quest.from,
-        //     to: quest.to,
-        //     objectives: objectives.map(v => {
 
-        //     }),
-        // })
-
-        if (response.result) {
-            await thunkApi.dispatch(fetchQuestsByUserId());
-        }
+        // if (response.result) {
+        //     await thunkApi.dispatch(fetchQuestsByUserId());
+        // }
         return response;
     }
 );
@@ -187,3 +225,17 @@ export const getQuestsByPersonal = createAsyncThunk(
         return response;
     }
 );
+
+// const obj = {
+//     questid : {
+//         from,
+//         to,
+//         isPrivate,
+//         ...
+//         objectId: {
+//             content,
+//             category
+//         },
+//         ...
+//     }
+// }

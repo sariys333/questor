@@ -1,11 +1,11 @@
 import {
     CreateQuestParams,
-    EditQuestParams,
+    EditableObjective,
+    Objective,
     Quest,
     QuestByPersonal,
 } from "../routes/quest/types/Quest.types";
 import { Repository } from "./Repository";
-import { EditableObjective } from "../routes/quest/types/Quest.types";
 
 class QuestRepository extends Repository {
     constructor(protected readonly apiName: string) {
@@ -94,27 +94,31 @@ class QuestRepository extends Repository {
         }
     }
 
-    async edit(params: EditQuestParams): Promise<boolean> {
-        try {
-            const response = await this.fetch(`${this.url}/edit`, {
-                method: "post",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(params),
-            });
+    // async edit(params: EditQuestParams): Promise<boolean> {
+    //     try {
+    //         const response = await this.fetch(`${this.url}/edit`, {
+    //             method: "post",
+    //             credentials: "include",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //             },
+    //             body: JSON.stringify(params),
+    //         });
 
-            if (response) {
-                return true;
-            }
-        } catch (error) {
-            console.error(error);
-        }
-        return false;
-    }
+    //         if (response) {
+    //             return true;
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    //     return false;
+    // }
 
-    async getAllByUserId(userId: string): Promise<Quest[]> {
+    async getAllByUserId(userId: string): Promise<{
+        [questId: string]: Quest & {
+            [objectiveId: string]: Partial<Objective>;
+        };
+    }> {
         try {
             const response = await this.fetch(`${this.url}/list`, {
                 method: "post",
@@ -126,7 +130,7 @@ class QuestRepository extends Repository {
             });
             return response;
         } catch (e) {
-            return [];
+            return {};
         }
     }
 
@@ -145,6 +149,24 @@ class QuestRepository extends Repository {
             return response;
         } catch (e) {
             return;
+        }
+    }
+
+    async getObjectivesByQuest(questId: string): Promise<Objective[]> {
+        try {
+            const response = await this.fetch(
+                `${this.url}/${questId}/objectives`,
+                {
+                    method: "get",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            return response;
+        } catch (e) {
+            return [];
         }
     }
 }

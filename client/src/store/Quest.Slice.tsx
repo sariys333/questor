@@ -141,6 +141,9 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         builder.addCase(getQuestsByPersonal.fulfilled, (state, action) => {
             console.log(action);
         });
+        builder.addCase(fetchObjectivesByQuest.fulfilled, (state, action) => {
+            state.viewComp.objectives = action.payload;
+        });
     },
 });
 

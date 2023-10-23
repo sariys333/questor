@@ -26,7 +26,7 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
     const { questId } = useParams();
     const user = useSelector((state: AppState) => state.user.user);
     const state = useSelector((state: AppState) => state.quest.viewComp);
-    const { editable, quest, objectives, time, loading } = state;
+    const { editable, quest, time, loading } = state;
 
     useEffect(() => {
         if (!create && questId) {

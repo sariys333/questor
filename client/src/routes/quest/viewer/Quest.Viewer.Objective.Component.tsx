@@ -122,62 +122,7 @@ export function QuestViewerObjectiveComponent() {
                     </List.Item>
                 )}
             />
-            {editable ? (
-                <></>
-            ) : (
-                <Table
-                    loading={loading == undefined}
-                    dataSource={objectives}
-                    pagination={false}
-                    tableLayout="auto"
-                    columns={[
-                        {
-                            key: "objectiveId",
-                            title: "카테고리",
-                            dataIndex: "category",
-                            render: (text) => text,
-                        },
-                        {
-                            key: "objectiveId",
-                            title: "내용",
-                            dataIndex: "content",
-                            ellipsis: true,
-                            render: (text) => text,
-                        },
-                        {
-                            key: "objectiveId",
-                            title: "진행 상태",
-                            dataIndex: "currenReps",
-                            render: (v, r, i) =>
-                                r.targetReps == v ? (
-                                    <>완료</>
-                                ) : (
-                                    <>
-                                        {v}
-                                        {/* 로그인 상태 + 현재 내가 진행중인 퀘스트 */}
-                                        {user &&
-                                        user.userId == r.userId &&
-                                        r.targetReps != v ? (
-                                            <Button size="small" type="text">
-                                                +
-                                            </Button>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </>
-                                ),
-                        },
-                        {
-                            key: "objectiveId",
-                            title: "목표치",
-                            dataIndex: "targetReps",
-                            render: (v, r, i) => {
-                                return v;
-                            },
-                        },
-                    ]}
-                />
-            )}
+            {editable ? <></> : <></>}
         </>
     );
 }

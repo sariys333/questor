@@ -69,11 +69,8 @@ export class QuestController {
 
     const userQuestsObject = {};
     if (quests) {
-      // 유저 퀘스트 가져오기
       const userQuest = await this.questService.getUserQuests(user.userId);
-      // 퀘스트에서 id값만 꺼내기
       const questIds = quests.map((item: QuestByUser) => item.questId);
-      // 꺼낸 id값들로 objectives 가져오기
       const questObjectives =
         await this.questService.getObjectivesByIds(questIds);
 

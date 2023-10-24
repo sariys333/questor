@@ -17,6 +17,7 @@ import {
 } from "../../../store/Quest.Slice";
 import store, { AppState } from "../../../store/Store";
 import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
+import { Typography } from "antd";
 
 export function QuestViewerObjectiveComponent() {
     const state = useSelector((state: AppState) => state.quest.viewComp);
@@ -86,7 +87,7 @@ export function QuestViewerObjectiveComponent() {
                                     />
                                 </Form.Item>
                             ) : (
-                                <></>
+                                <Typography>{data.category}</Typography>
                             )}
 
                             {editable ? (
@@ -100,7 +101,7 @@ export function QuestViewerObjectiveComponent() {
                                     />
                                 </Form.Item>
                             ) : (
-                                <></>
+                                <Typography>{data.content}</Typography>
                             )}
 
                             {editable ? (
@@ -116,13 +117,15 @@ export function QuestViewerObjectiveComponent() {
                                     />
                                 </Form.Item>
                             ) : (
-                                <></>
+                                <>
+                                    <Typography>{data.currentReps}</Typography>
+                                    <Typography>{data.targetReps}</Typography>
+                                </>
                             )}
                         </Flex>
                     </List.Item>
                 )}
             />
-            {editable ? <></> : <></>}
         </>
     );
 }

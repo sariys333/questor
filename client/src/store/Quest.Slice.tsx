@@ -15,7 +15,7 @@ export type QuestState = {
     pageTitle: string;
     listComp: {
         loading: boolean;
-        list: Quest[];
+        list?: Quest[];
         combined?: {
             [questId: string]: Quest & {
                 [objectiveId: string]: Partial<Objective>;
@@ -117,7 +117,8 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             })
             .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
                 console.log(action.payload);
-                state.listComp.combined = action.payload;
+                state.listComp.list = action.payload?.quest;
+                state.listComp.combined = action.payload?.combined;
             })
             .addCase(fetchQuestsByUserId.rejected, (state, action) => {
                 state.listComp.loading = false;

@@ -1,6 +1,7 @@
 export type Quest = {
     questId: string;
     userId: string;
+    title: string
     from: Date;
     to: Date;
     isPrivate: boolean;

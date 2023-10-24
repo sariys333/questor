@@ -115,8 +115,11 @@ class QuestRepository extends Repository {
     // }
 
     async getAllByUserId(userId: string): Promise<{
-        [questId: string]: Quest & {
-            [objectiveId: string]: Partial<Objective>;
+        quest: Quest[];
+        combined: {
+            [questId: string]: Quest & {
+                [objectiveId: string]: Partial<Objective>;
+            };
         };
     }> {
         try {
@@ -130,7 +133,7 @@ class QuestRepository extends Repository {
             });
             return response;
         } catch (e) {
-            return {};
+            return { quest: [], combined: {} };
         }
     }
 

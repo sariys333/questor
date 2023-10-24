@@ -1,11 +1,16 @@
 export type Quest = {
     questId: string;
     userId: string;
-    title: string
+    title: string;
     from: Date;
     to: Date;
     isPrivate: boolean;
     createdAt: Date;
+};
+
+export type UserQuest = {
+    questId: string;
+    userId: string;
     completed: boolean;
     completedAt: Date;
     acceptedAt: Date;
@@ -67,3 +72,5 @@ export const CategoryEmojiMap = new Map<Category, string>([
     [Category.read, "📖"],
     [Category.etc, "❔"],
 ]);
+
+export type UserQuestDetail = Quest & UserQuest & { objectives: Objective[] };

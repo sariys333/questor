@@ -9,18 +9,14 @@ import {
     EditableObjective,
     Objective,
     Quest,
+    UserQuestDetail,
 } from "../routes/quest/types/Quest.types";
 
 export type QuestState = {
     pageTitle: string;
     listComp: {
         loading: boolean;
-        list?: Quest[];
-        combined?: {
-            [questId: string]: Quest & {
-                [objectiveId: string]: Partial<Objective>;
-            };
-        };
+        list?: UserQuestDetail[];
     };
     viewComp: {
         quest?: Quest;
@@ -32,12 +28,9 @@ export type QuestState = {
             from?: Date | number;
             to?: Date | number;
         };
-        combined?: { [objectiveId: string]: Objective };
     };
     calendarComp: {
-        list: Quest[];
-        quest?: Quest;
-        showDetail: boolean;
+        list: UserQuestDetail[];
         loading: boolean;
     };
 };
@@ -56,7 +49,6 @@ const initialState = {
     },
     calendarComp: {
         list: [],
-        showDetail: false,
         loading: true,
     },
 };
@@ -89,26 +81,6 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         showDetail: (state, action) => {
             state.viewComp.show = action.payload;
         },
-        combineObjectives: (state, action) => {
-            const combineObj: { [id: string]: Objective } = {};
-            for (const userObj of action.payload) {
-                combineObj[userObj.objectiveId] = userObj;
-                for (const obj of state.viewComp.objectives) {
-                    if (obj && userObj.objectiveId == obj.objectiveId) {
-                        if (combineObj[userObj.objectiveId]) {
-                            combineObj[userObj.objectiveId].category =
-                                obj.category || "";
-                            combineObj[userObj.objectiveId].content =
-                                obj.content || "";
-                            combineObj[userObj.objectiveId].targetReps =
-                                obj.targetReps || 0;
-                        }
-                    }
-                }
-            }
-            state.viewComp.combined = combineObj;
-            console.log(combineObj);
-        },
     },
     extraReducers: (builder) => {
         builder
@@ -117,8 +89,7 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             })
             .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
                 console.log(action.payload);
-                state.listComp.list = action.payload?.quest;
-                state.listComp.combined = action.payload?.combined;
+                state.listComp.list = action.payload;
             })
             .addCase(fetchQuestsByUserId.rejected, (state, action) => {
                 state.listComp.loading = false;
@@ -157,7 +128,6 @@ export const {
     changeObjective,
     changePageTitle,
     showDetail,
-    combineObjectives,
 } = questSlice.actions;
 
 export const fetchAllQuests = createAsyncThunk(
@@ -191,7 +161,6 @@ export const fetchObjectivesByQuest = createAsyncThunk(
     "quest/fetchObjectivesByQuest",
     async (questId: string, thunkApi) => {
         const objectives = await QuestRepository.getObjectivesByQuest(questId);
-        thunkApi.dispatch(combineObjectives(objectives));
         return objectives;
     }
 );

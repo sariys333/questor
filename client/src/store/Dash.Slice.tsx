@@ -7,6 +7,7 @@ import {
     Category,
     CreateQuestParams,
     Quest,
+    UserQuestDetail,
 } from "../routes/quest/types/Quest.types";
 import QuestRepository from "../repositories/Quest.Repository";
 import { ConsoleSqlOutlined } from "@ant-design/icons";
@@ -14,9 +15,7 @@ import { User } from "../routes/login/types/User.typs";
 
 export type DashState = {
     dashStats: {
-        user?: User;
-        quests?: Quest[];
-        quest?: Quest;
+        quests?: UserQuestDetail[];
         dayOption: number;
     };
 };

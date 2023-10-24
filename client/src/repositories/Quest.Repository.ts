@@ -4,6 +4,7 @@ import {
     Objective,
     Quest,
     QuestByPersonal,
+    UserQuestDetail,
 } from "../routes/quest/types/Quest.types";
 import { Repository } from "./Repository";
 
@@ -12,7 +13,7 @@ class QuestRepository extends Repository {
         super(apiName);
     }
 
-    async getAll(): Promise<Quest[]> {
+    async getAll(): Promise<UserQuestDetail[]> {
         try {
             const response = await this.fetch(`${this.url}/list`, {
                 method: "get",
@@ -114,14 +115,7 @@ class QuestRepository extends Repository {
     //     return false;
     // }
 
-    async getAllByUserId(userId: string): Promise<{
-        quest: Quest[];
-        combined: {
-            [questId: string]: Quest & {
-                [objectiveId: string]: Partial<Objective>;
-            };
-        };
-    }> {
+    async getAllByUserId(userId: string): Promise<UserQuestDetail[]> {
         try {
             const response = await this.fetch(`${this.url}/list`, {
                 method: "post",
@@ -133,7 +127,7 @@ class QuestRepository extends Repository {
             });
             return response;
         } catch (e) {
-            return { quest: [], combined: {} };
+            return [];
         }
     }
 

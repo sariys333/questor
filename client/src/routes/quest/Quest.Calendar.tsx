@@ -2,7 +2,7 @@ import { Badge, BadgeProps, Calendar, CalendarProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
 import { useSelector } from "react-redux";
 import { AppState } from "../../store/Store";
-import { Category, Quest } from "./types/Quest.types";
+import { Category, Quest, UserQuestDetail } from "./types/Quest.types";
 
 export function QuestCalendar() {
     const state = useSelector((state: AppState) => state.quest.calendarComp);
@@ -50,7 +50,7 @@ export function QuestCalendar() {
         }
     };
 
-    const setEventType = (quest: Quest) => {
+    const setEventType = (quest: UserQuestDetail) => {
         let type = "warning";
         if (quest.completed) {
             type = "success";

@@ -10,7 +10,7 @@ import {
     Objective,
     Quest,
     UserQuestDetail,
-} from "../routes/quest/types/Quest.types";
+} from "../routes/app/quest/types/Quest.types";
 
 export type QuestState = {
     pageTitle: string;

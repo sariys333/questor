@@ -14,8 +14,8 @@ import { useSelector } from "react-redux";
 import {
     createAddObjective,
     fetchObjectivesByQuest,
-} from "../../../store/Quest.Slice";
-import store, { AppState } from "../../../store/Store";
+} from "../../../../store/Quest.Slice";
+import store, { AppState } from "../../../../store/Store";
 import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
 import { Typography } from "antd";
 

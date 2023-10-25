@@ -5,7 +5,7 @@ import {
     Quest,
     QuestByPersonal,
     UserQuestDetail,
-} from "../routes/quest/types/Quest.types";
+} from "../routes/app/quest/types/Quest.types";
 import { Repository } from "./Repository";
 
 class QuestRepository extends Repository {
@@ -95,25 +95,25 @@ class QuestRepository extends Repository {
         }
     }
 
-    // async edit(params: EditQuestParams): Promise<boolean> {
-    //     try {
-    //         const response = await this.fetch(`${this.url}/edit`, {
-    //             method: "post",
-    //             credentials: "include",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //             body: JSON.stringify(params),
-    //         });
+    async edit(params: CreateQuestParams): Promise<boolean> {
+        try {
+            const response = await this.fetch(`${this.url}/edit`, {
+                method: "post",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(params),
+            });
 
-    //         if (response) {
-    //             return true;
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    //     return false;
-    // }
+            if (response) {
+                return true;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        return false;
+    }
 
     async getAllByUserId(userId: string): Promise<UserQuestDetail[]> {
         try {

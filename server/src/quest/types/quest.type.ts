@@ -68,9 +68,11 @@ export class UserQuest {
     }
 }
 
-export class QuestByUser {
+export class UserQuestDetail {
     constructor(obj?: any) {
         this.questId = obj?.quest_id;
+        this.masterId = obj?.user_id;
+        this.mastername = obj?.username;
         this.userId = obj?.user_id;
         this.title = obj?.title;
         this.from =
@@ -95,6 +97,8 @@ export class QuestByUser {
     }
 
     questId: string;
+    masterId: string;
+    mastername: string;
     userId: string;
     title: string;
     createdAt: Date | number;
@@ -105,24 +109,10 @@ export class QuestByUser {
     completedAt: Date | number;
     acceptedAt: Date | number;
 
-    asObj() {
-        return Object.assign({
-            user_id: this.userId,
-            quest_id: this.questId,
-            title: this.title,
-            created_at: this.createdAt,
-            from: this.from,
-            to: this.to,
-            is_private: this.isPrivate,
-            completed: this.completed,
-            completed_at: this.completedAt,
-            accepted_at: this.acceptedAt,
-        });
-    }
 }
 
 export type QuestObj = {
-    [key: string]: QuestByUser & { [objectiveId: string]: Objective };
+    [key: string]: UserQuestDetail & { [objectiveId: string]: Objective };
 };
 
 export type GetQuestListQuery = Pick<Quest, "userId">;

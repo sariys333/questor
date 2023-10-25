@@ -1,6 +1,8 @@
 export type Quest = {
     questId: string;
     userId: string;
+    masterId: string;
+    mastername: string;
     title: string;
     from: Date;
     to: Date;
@@ -74,3 +76,5 @@ export const CategoryEmojiMap = new Map<Category, string>([
 ]);
 
 export type UserQuestDetail = Quest & UserQuest & { objectives: Objective[] };
+
+export type QuestDetail = Quest & Objective[];

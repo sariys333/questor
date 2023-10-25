@@ -1,7 +1,7 @@
 import { Badge, BadgeProps, Calendar, CalendarProps, Tooltip } from "antd";
 import { Dayjs } from "dayjs";
 import { useSelector } from "react-redux";
-import { AppState } from "../../store/Store";
+import { AppState } from "../../../store/Store";
 import { Category, Quest, UserQuestDetail } from "./types/Quest.types";
 
 export function QuestCalendar() {

@@ -6,6 +6,7 @@ import {
     Form,
     Spin,
     Tooltip,
+    Typography,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect } from "react";
@@ -17,10 +18,12 @@ import {
     createQuest,
     editableQuest,
     fetchQuestByQuestId,
-} from "../../../store/Quest.Slice";
-import store, { AppState } from "../../../store/Store";
+} from "../../../../store/Quest.Slice";
+import store, { AppState } from "../../../../store/Store";
 import { CreateQuestParams, EditableObjective } from "../types/Quest.types";
 import { QuestViewerObjectiveComponent } from "./Quest.Viewer.Objective.Component";
+
+const { Title } = Typography;
 
 export function QuestViewerComponent({ create }: { create: boolean }) {
     const { questId } = useParams();

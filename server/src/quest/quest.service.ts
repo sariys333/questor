@@ -12,8 +12,8 @@ import {
     CreateQuestParams,
     Objective,
     Quest,
-    QuestByUser,
     UserQuest,
+    UserQuestDetail,
 } from "./types/quest.type";
 
 const client = new DynamoDBClient({});
@@ -21,7 +21,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 @Injectable()
 export class QuestService {
-    async getQuestsByUserId(userId: string): Promise<QuestByUser[]> {
+    async getQuestsByUserId(userId: string): Promise<UserQuestDetail[]> {
         const command = new ScanCommand({
             TableName: "quests",
             FilterExpression: "user_id = :userId",
@@ -32,7 +32,7 @@ export class QuestService {
 
         const response = await docClient.send(command);
         const quests = response.Items.map(
-            (item: QuestByUser) => new QuestByUser(item),
+            (item: UserQuestDetail) => new UserQuestDetail(item),
         );
         return quests;
     }
@@ -54,14 +54,14 @@ export class QuestService {
     }: {
         user: User;
         params: CreateQuestParams;
-    }): Promise<any> {
+    }): Promise<{ result: string, questId: string }> {
         const questId: string = uuidv4();
         const quest = new Quest({
             ...params,
             quest_id: questId,
             user_id: user.userId,
         }).asObj();
-        console.log("quest", quest);
+        // console.log("quest", quest);
         const command = new PutCommand({
             TableName: "quests",
             Item: quest,
@@ -84,8 +84,8 @@ export class QuestService {
         user: User;
         questId: string;
     }): Promise<any> {
-        console.log(user);
-        console.log(questId);
+        // console.log(user);
+        // console.log(questId);
 
         const userQuest = new UserQuest({
             quest_id: questId,
@@ -130,7 +130,7 @@ export class QuestService {
         };
     }
 
-    async getQuestById(questId: string): Promise<Quest> {
+    async getQuestById(questId: string): Promise<UserQuestDetail> {
         const command = new ScanCommand({
             TableName: "quests",
             FilterExpression: "quest_id = :questId",
@@ -140,7 +140,7 @@ export class QuestService {
         });
 
         const response = await docClient.send(command);
-        return new Quest(response.Items[0]);
+        return new UserQuestDetail(response.Items[0]);
     }
 
     async getObjectivesByQuest(questId: string): Promise<Objective[]> {
@@ -176,7 +176,7 @@ export class QuestService {
         const response = await docClient.send(command);
         const obejctives = response.Items.map((obj) => new Objective(obj));
 
-        console.log(obejctives);
+        // console.log(obejctives);
 
         return obejctives;
     }
@@ -200,7 +200,7 @@ export class QuestService {
             (item: Objective) => new Objective(item),
         );
 
-        console.log(objectives);
+        // console.log(objectives);
 
         return objectives;
     }
@@ -215,7 +215,7 @@ export class QuestService {
             })
             .join(",");
         expressionAttributeValues[":userId"] = user.userId
-        console.log(expressionAttributeValues);
+        // console.log(expressionAttributeValues);
         const command = new ScanCommand({
             TableName: "user_objectives",
             FilterExpression: `user_id = :userId AND quest_id In (${questIdParams})`,
@@ -225,14 +225,14 @@ export class QuestService {
         const objectives = response.Items.map(
             (item: Objective) => new Objective(item),
         );
-        console.log("userobje", objectives);
+        // console.log("userobje", objectives);
 
         return objectives;
     }
 
     async editQuest(form: Quest): Promise<boolean> {
-        console.log(form.from);
-        console.log(form.to);
+        // console.log(form.from);
+        // console.log(form.to);
         const command = new PutCommand({
             TableName: "quests",
             Item: {
@@ -244,8 +244,8 @@ export class QuestService {
         return;
     }
 
-    async getUserQuests(userId: string): Promise<QuestByUser[]> {
-        console.log(userId);
+    async getUserQuests(userId: string): Promise<UserQuestDetail[]> {
+        // console.log(userId);
         const command = new ScanCommand({
             TableName: "user_quests",
             FilterExpression: "user_id = :userId",
@@ -254,49 +254,52 @@ export class QuestService {
             },
         });
         const response = await docClient.send(command);
-        console.log(response);
-        const userQuests = response.Items.map((item) => new QuestByUser(item));
+        // console.log(response);
+        const userQuests = response.Items.map((item) => new UserQuestDetail(item));
 
         return userQuests;
     }
+
+    async getUsersInfo(userIds: string[]): Promise<User[]> {
+        // console.log(userIds)
+        const idArray = [...new Set(userIds)];
+        const expressionAttributeValues = {};
+        const userIdParams = idArray
+            .map((u, i) => {
+                const userParam = `:u${i}`;
+                expressionAttributeValues[userParam] = u;
+                return userParam;
+            })
+            .join(",");
+        // console.log(userIdParams)
+        const command = new ScanCommand({
+            TableName: "users",
+            FilterExpression: `user_id In (${userIdParams})`,
+            ExpressionAttributeValues: expressionAttributeValues,
+        })
+
+        const response = await docClient.send(command);
+
+        // console.log(response)
+
+        const users = response.Items.map((item) => new User(item))
+
+        return users
+    };
+
+    async getUserInfo(userId: string): Promise<User> {
+        const command = new ScanCommand({
+            TableName: "users",
+            FilterExpression: "user_id = :userId",
+            ExpressionAttributeValues: {
+                ":userId": userId
+            },
+        })
+
+        const response = await docClient.send(command);
+
+        return new User(response.Items[0]);
+    };
+
 }
 
-
-
-
-
-
-
-
-
-
-
-// async getUserQuestsId(userId: string): Promise<QuestsAndIds> {
-//   console.log(userId);
-//   const command = new ScanCommand({
-//     TableName: "user_quests",
-//     FilterExpression: "user_id = :userId",
-//     ExpressionAttributeValues: {
-//       ":userId": userId,
-//     },
-//   });
-//   const response = await docClient.send(command);
-//   console.log(response.Items);
-//   const questsId: string[] = response.Items.map((item) => item.quest_id);
-//   console.log(questsId);
-//   const userQuests = response.Items.map((item) => new QuestByPersonal(item));
-
-//   return {
-//     questsId: questsId,
-//     userQuests: userQuests,
-//   };
-// }
-
-// const expressionAttributeValues = {};
-// const questIdParams = questsId
-//   .map((u, i) => {
-//     const questParam = `:quest${i}`;
-//     expressionAttributeValues[questParam] = u;
-//     return questParam;
-//   })
-//   .join(",");

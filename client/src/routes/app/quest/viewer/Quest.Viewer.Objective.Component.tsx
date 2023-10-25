@@ -7,7 +7,6 @@ import {
     List,
     Select,
     Spin,
-    Table,
 } from "antd";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";

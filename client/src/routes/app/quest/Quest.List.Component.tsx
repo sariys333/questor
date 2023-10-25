@@ -2,27 +2,34 @@ import { Flex, Table, TableColumnsType, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import {
-    changePageTitle,
+    fetchAllQuests,
     fetchQuestByQuestId,
     fetchQuestsByUserId,
 } from "../../../store/Quest.Slice";
 import store, { AppState } from "../../../store/Store";
 import { Objective, UserQuestDetail } from "./types/Quest.types";
-import { Link } from "react-router-dom";
+import { render } from "@testing-library/react";
 
 const { Title } = Typography;
 
 export function QuestListComponent() {
     const state = useSelector((state: AppState) => state.quest.listComp);
     const user = useSelector((state: AppState) => state.user.user);
+    const navigate = useNavigate();
     const { list, loading } = state;
+
+    console.log(list);
 
     const now = new Date(Date.now());
 
     useEffect(() => {
-        store.dispatch(changePageTitle("목록"));
-        store.dispatch(fetchQuestsByUserId(user?.userId));
+        if (user) {
+            store.dispatch(fetchQuestsByUserId(user.userId));
+        } else {
+            store.dispatch(fetchAllQuests());
+        }
     }, []);
 
     const onClick = (e: any) => {
@@ -43,7 +50,9 @@ export function QuestListComponent() {
     const columns = [
         {
             title: "제목",
-            dataIndex: "title",
+            render: (record: UserQuestDetail) => (
+                <Link to={`view/${record.questId}`}>{record.title}</Link>
+            ),
         },
         {
             title: "만든이",
@@ -106,10 +115,11 @@ export function QuestListComponent() {
 
     return (
         <div>
+            <Title level={3}>목록</Title>
             <Flex justify="flex-end" style={{ margin: 5 }}>
-                <Title level={3}>
+                {/* <Title level={3}>
                     <Link to={"/quest/create"}>CREATE</Link>
-                </Title>
+                </Title> */}
             </Flex>
             <Table
                 rowKey={(record) => record.questId}

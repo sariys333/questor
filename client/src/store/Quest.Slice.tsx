@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import QuestRepository from "../repositories/Quest.Repository";
 import {
-    CreateQuestParams,
+    CreateQuestParam,
     EditableObjective,
     Objective,
     Quest,
@@ -13,21 +13,17 @@ import {
 } from "../routes/app/quest/types/Quest.types";
 
 export type QuestState = {
-    pageTitle: string;
     listComp: {
         loading: boolean;
         list?: UserQuestDetail[];
     };
     viewComp: {
-        quest?: Quest;
-        objectives: EditableObjective[];
-        editable: boolean;
+        quest?: UserQuestDetail;
+        editing: boolean;
         loading: boolean;
-        show: boolean;
-        time?: {
-            from?: Date | number;
-            to?: Date | number;
-        };
+    };
+    createComp: {
+        quest?: Partial<CreateQuestParam>;
     };
     calendarComp: {
         list: UserQuestDetail[];
@@ -36,16 +32,24 @@ export type QuestState = {
 };
 
 const initialState = {
-    pageTitle: "목록",
     listComp: {
         loading: true,
         list: [],
     },
+    createComp: {
+        quest: {
+            objectives: [
+                {
+                    content: "",
+                    category: "",
+                    targetReps: 1,
+                },
+            ],
+        },
+    },
     viewComp: {
-        objectives: [{}],
-        editable: true,
-        loading: true,
-        show: false,
+        editing: false,
+        loading: false,
     },
     calendarComp: {
         list: [],
@@ -58,37 +62,27 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
     initialState: initialState,
     reducers: {
         createAddObjective: (state, action) => {
-            state.viewComp.objectives.push(action.payload);
+            state.viewComp.quest?.objectives.push(action.payload);
         },
         changeObjective: (state, action) => {
-            state.viewComp.objectives = action.payload;
+            state.viewComp.quest &&
+                (state.viewComp.quest.objectives = action.payload);
             console.log(action.payload);
         },
-        editableQuest: (state, action) => {
-            state.viewComp.editable = action.payload;
-            state.viewComp.loading = false;
-        },
-        changeTime: (state, action) => {
-            console.log(action.payload);
-            state.viewComp.time = {
-                from: action.payload.from,
-                to: action.payload.to,
-            };
-        },
-        changePageTitle: (state, action) => {
-            state.pageTitle = action.payload;
-        },
-        showDetail: (state, action) => {
-            state.viewComp.show = action.payload;
+        toggleEditQuest: (state) => {
+            state.viewComp.editing = !!state.viewComp.editing;
         },
     },
     extraReducers: (builder) => {
+        builder.addCase(fetchAllQuests.fulfilled, (state, action) => {
+            state.listComp.list = action.payload;
+        });
         builder
             .addCase(fetchQuestsByUserId.pending, (state, action) => {
                 state.listComp.loading = true;
             })
             .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
-                console.log(action.payload);
+                // console.log(action.payload);
                 state.listComp.list = action.payload;
             })
             .addCase(fetchQuestsByUserId.rejected, (state, action) => {
@@ -100,8 +94,8 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             })
             .addCase(fetchQuestByQuestId.fulfilled, (state, action) => {
                 if (action.payload) {
-                    state.viewComp.quest = action.payload.quest;
-                    state.viewComp.objectives = action.payload.objectives;
+                    state.viewComp.quest = action.payload;
+                    // state.viewComp.objectives = action.payload.objectives;
                     state.viewComp.loading = false;
                 }
             })
@@ -113,9 +107,13 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         builder.addCase(getQuestsByPersonal.fulfilled, (state, action) => {
             console.log(action);
         });
-        builder.addCase(fetchObjectivesByQuest.fulfilled, (state, action) => {
-            state.viewComp.objectives = action.payload;
-        });
+        builder
+            .addCase(increaseObjectiveReps.pending, (state, action) => {
+                state.viewComp.loading = true;
+            })
+            .addCase(increaseObjectiveReps.fulfilled, (state, action) => {
+                state.viewComp.loading = false;
+            });
     },
 });
 
@@ -126,7 +124,6 @@ export const {
     editableQuest,
     changeTime,
     changeObjective,
-    changePageTitle,
     showDetail,
 } = questSlice.actions;
 
@@ -152,37 +149,15 @@ export const fetchQuestByQuestId = createAsyncThunk(
     "quest/fetchQuestByQuestId",
     async (questId: string) => {
         const quest = await QuestRepository.getQuestById(questId);
-        console.log(quest);
+        // console.log(quest);
         return quest;
-    }
-);
-
-export const fetchObjectivesByQuest = createAsyncThunk(
-    "quest/fetchObjectivesByQuest",
-    async (questId: string, thunkApi) => {
-        const objectives = await QuestRepository.getObjectivesByQuest(questId);
-        return objectives;
     }
 );
 
 export const createQuest = createAsyncThunk(
     "quest/createQuest",
-    async (
-        {
-            params,
-            objectives,
-        }: {
-            params: CreateQuestParams;
-            objectives: EditableObjective[];
-        },
-        thunkApi
-    ) => {
-        console.log(objectives);
-
-        if (!objectives) {
-            return;
-        }
-        const response = await QuestRepository.create({ params, objectives });
+    async (param: CreateQuestParam, thunkApi) => {
+        const response = await QuestRepository.create(param);
 
         // if (response.result) {
         //     await thunkApi.dispatch(fetchQuestsByUserId());
@@ -199,16 +174,12 @@ export const getQuestsByPersonal = createAsyncThunk(
     }
 );
 
-// const obj = {
-//     questid : {
-//         from,
-//         to,
-//         isPrivate,
-//         ...
-//         objectId: {
-//             content,
-//             category
-//         },
-//         ...
-//     }
-// }
+export const increaseObjectiveReps = createAsyncThunk(
+    "quest/increaseObjectiveReps",
+    async (objectiveId: string) => {
+        const response = await QuestRepository.increaseObjectiveReps(
+            objectiveId
+        );
+        return response;
+    }
+);

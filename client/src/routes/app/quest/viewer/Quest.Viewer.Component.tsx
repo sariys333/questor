@@ -13,71 +13,31 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
-    changePageTitle,
     changeTime,
     createQuest,
-    editableQuest,
     fetchQuestByQuestId,
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
-import { CreateQuestParams, EditableObjective } from "../types/Quest.types";
+import { CreateQuestParam, EditableObjective } from "../types/Quest.types";
 import { QuestViewerObjectiveComponent } from "./Quest.Viewer.Objective.Component";
 
 const { Title } = Typography;
 
-export function QuestViewerComponent({ create }: { create: boolean }) {
+export function QuestViewerComponent() {
     const { questId } = useParams();
     const user = useSelector((state: AppState) => state.user.user);
     const state = useSelector((state: AppState) => state.quest.viewComp);
-    const { editable, quest, time, loading } = state;
+    const { quest, loading, editing } = state;
+
+    const editable = user && user.userId == quest?.userId;
 
     useEffect(() => {
-        if (!create && questId) {
+        if (questId) {
             store.dispatch(fetchQuestByQuestId(questId));
-            console.log(quest);
-            checkUserId();
         }
     }, [questId]);
 
-    const checkUserId = () => {
-        console.log(user);
-        if (user && user.userId == quest?.userId) {
-            store.dispatch(editableQuest(true));
-            store.dispatch(changePageTitle("수정"));
-        } else {
-            store.dispatch(editableQuest(false));
-            store.dispatch(changePageTitle("상세"));
-        }
-    };
-
-    if (create) {
-        console.log(create);
-        store.dispatch(editableQuest(true));
-        store.dispatch(changePageTitle("생성"));
-    }
-
-    const timeChange = (e: any) => {
-        const time = {
-            from: e[0].valueOf(),
-            to: e[1].valueOf(),
-        };
-        store.dispatch(changeTime(time));
-    };
-
-    const onFinish = (e: any) => {
-        console.log(e);
-        const objectives: EditableObjective[] = Object.keys(e)
-            .filter((key) => key.startsWith("objectives"))
-            .map((key) => e[key]);
-        console.log(objectives);
-
-        const params: CreateQuestParams = {
-            from: e.time[0].toDate(),
-            to: e.time[1].toDate(),
-        };
-        console.log(params);
-        store.dispatch(createQuest({ params: params, objectives: objectives }));
-    };
+    const onFinish = (e: any) => {};
 
     const disabledDate = (days: Dayjs) => {
         if (!editable) {
@@ -86,7 +46,7 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
         return days.year() < dayjs().year();
     };
 
-    if (loading) {
+    if (loading || !quest) {
         return (
             <Spin tip="Loading" size="large">
                 <div className="content" />
@@ -96,24 +56,24 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
 
     return (
         <div>
-            {!editable ? (
-                <Flex gap={"large"} justify="flex-end">
+            {!editing ? (
+                <Flex gap={"large"} justify="space-between">
+                    <Typography.Title level={2}>
+                        {quest?.title}
+                    </Typography.Title>
                     <Breadcrumb
                         items={[
-                            //
                             {
                                 title: (
                                     <Tooltip placement="top" title={"작성자"}>
-                                        <a href="#">
-                                            {quest ? user?.username : ""}
-                                        </a>
+                                        <a>{quest?.username}</a>
                                     </Tooltip>
                                 ),
                             },
                             {
                                 title: (
                                     <Tooltip placement="top" title={"작성일"}>
-                                        <a href="#">
+                                        <a>
                                             {quest?.createdAt
                                                 ? dayjs(
                                                       quest?.createdAt
@@ -126,28 +86,15 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
                         ]}
                     />
                 </Flex>
-            ) : (
-                <></>
-            )}
-
+            ) : undefined}
             <Form name="quest" layout="vertical" onFinish={onFinish}>
                 <Flex gap={"large"}>
                     <Form.Item name={"time"}>
                         <DatePicker.RangePicker
-                            bordered={editable}
+                            bordered={editing}
                             size="small"
                             format="YYYY-MM-DD"
-                            onChange={timeChange}
-                            value={
-                                quest
-                                    ? [dayjs(quest.from), dayjs(quest.to)]
-                                    : undefined
-                            }
-                            defaultValue={
-                                quest
-                                    ? [dayjs(quest.from), dayjs(quest.to)]
-                                    : undefined
-                            }
+                            value={[dayjs(quest?.from), dayjs(quest?.to)]}
                             inputReadOnly={true}
                             disabledDate={disabledDate}
                             allowClear={false}
@@ -158,11 +105,9 @@ export function QuestViewerComponent({ create }: { create: boolean }) {
                 <QuestViewerObjectiveComponent />
 
                 {editable ? (
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                        <Button type="primary" htmlType="submit">
-                            {create ? "생성" : "수정"}
-                        </Button>
-                    </div>
+                    <Flex justify="end">
+                        <Button> 수정</Button>
+                    </Flex>
                 ) : (
                     <></>
                 )}

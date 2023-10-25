@@ -1,8 +1,7 @@
 export type Quest = {
     questId: string;
     userId: string;
-    masterId: string;
-    mastername: string;
+    username: string;
     title: string;
     from: Date;
     to: Date;
@@ -19,8 +18,6 @@ export type UserQuest = {
 };
 
 export type GetQuestListQuery = Pick<Quest, "userId">;
-
-export type CreateQuestParams = Pick<Quest, "from" | "to">;
 
 export type Objective = {
     questId: string;
@@ -78,3 +75,7 @@ export const CategoryEmojiMap = new Map<Category, string>([
 export type UserQuestDetail = Quest & UserQuest & { objectives: Objective[] };
 
 export type QuestDetail = Quest & Objective[];
+
+export type CreateQuestParam = Pick<Quest, "to" | "from" | "title"> & {
+    objectives: Pick<Objective, "category" | "content" | "targetReps">[];
+};

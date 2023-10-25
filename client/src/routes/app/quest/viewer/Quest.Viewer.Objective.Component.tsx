@@ -6,41 +6,41 @@ import {
     InputNumber,
     List,
     Select,
+    Space,
     Spin,
+    Tag,
+    theme,
 } from "antd";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
     createAddObjective,
-    fetchObjectivesByQuest,
+    increaseObjectiveReps,
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
 import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
 import { Typography } from "antd";
+import { CheckOutlined } from "@ant-design/icons";
 
 export function QuestViewerObjectiveComponent() {
     const state = useSelector((state: AppState) => state.quest.viewComp);
-    const user = useSelector((state: AppState) => state.user.user);
 
-    const { editable, objectives, loading, quest } = state;
+    const { editing, loading, quest } = state;
 
     const onLoadMore = () => {
         const newObjective: EditableObjective = {};
         store.dispatch(createAddObjective(newObjective));
     };
 
-    useEffect(() => {
-        if (user && quest) {
-            const questId = quest.questId;
-            store.dispatch(fetchObjectivesByQuest(questId));
-        }
-    }, [quest]);
-
-    const loadMore = editable ? (
+    const loadMore = editing ? (
         <Button size="small" type="text" onClick={onLoadMore}>
             +
         </Button>
     ) : null;
+
+    const increaseReps = (e: any) => {
+        store.dispatch(increaseObjectiveReps(e.target.id));
+    };
 
     if (loading) {
         return (
@@ -54,18 +54,18 @@ export function QuestViewerObjectiveComponent() {
         <>
             <List
                 className="objective"
-                itemLayout="horizontal"
+                itemLayout="vertical"
                 split={false}
                 grid={{
                     gutter: 0,
-                    column: 0,
+                    column: 1,
                 }}
                 loadMore={loadMore}
-                dataSource={objectives}
-                renderItem={(data, index) => (
-                    <List.Item>
-                        <Flex gap={"large"}>
-                            {editable ? (
+                dataSource={quest?.objectives}
+                renderItem={(data, index) =>
+                    editing ? (
+                        <List.Item>
+                            <Flex gap={"large"}>
                                 <Form.Item
                                     name={["objectives" + index, "category"]}
                                     style={{ marginBottom: 0 }}
@@ -85,11 +85,7 @@ export function QuestViewerObjectiveComponent() {
                                         }))}
                                     />
                                 </Form.Item>
-                            ) : (
-                                <Typography>{data.category}</Typography>
-                            )}
 
-                            {editable ? (
                                 <Form.Item
                                     name={["objectives" + index, "content"]}
                                     style={{ marginBottom: 0 }}
@@ -99,11 +95,7 @@ export function QuestViewerObjectiveComponent() {
                                         value={data ? data.content : ""}
                                     />
                                 </Form.Item>
-                            ) : (
-                                <Typography>{data.content}</Typography>
-                            )}
 
-                            {editable ? (
                                 <Form.Item
                                     name={["objectives" + index, "targetReps"]}
                                     style={{ marginBottom: 0 }}
@@ -115,15 +107,47 @@ export function QuestViewerObjectiveComponent() {
                                         size="small"
                                     />
                                 </Form.Item>
-                            ) : (
-                                <>
-                                    <Typography>{data.currentReps}</Typography>
-                                    <Typography>{data.targetReps}</Typography>
-                                </>
-                            )}
-                        </Flex>
-                    </List.Item>
-                )}
+                            </Flex>
+                        </List.Item>
+                    ) : (
+                        <List.Item>
+                            <Flex style={{ maxWidth: 480 }}>
+                                <Tag style={{ textAlign: "center", width: 60 }}>
+                                    {data.category}
+                                </Tag>
+                                <Typography.Text style={{ flex: 1 }}>
+                                    {data.content}
+                                </Typography.Text>
+
+                                <Typography.Text
+                                    type={
+                                        data.currentReps === 0
+                                            ? "secondary"
+                                            : "success"
+                                    }
+                                    style={{
+                                        width: 32,
+                                        textAlign: "end",
+                                        paddingRight: 8,
+                                    }}
+                                >
+                                    {data.currentReps}
+                                </Typography.Text>
+                                <Typography.Text style={{ width: 32 }}>
+                                    / {data.targetReps}
+                                </Typography.Text>
+                                <Button
+                                    size="small"
+                                    style={{ width: 32 }}
+                                    onClick={increaseReps}
+                                    id={`${data.objectiveId}`}
+                                >
+                                    <CheckOutlined id={`${data.objectiveId}`} />
+                                </Button>
+                            </Flex>
+                        </List.Item>
+                    )
+                }
             />
         </>
     );

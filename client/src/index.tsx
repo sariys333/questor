@@ -18,6 +18,7 @@ import { UserSettingPage } from "./routes/settings/User.Setting.Page";
 import { Signup } from "./routes/signup/Signup.Page";
 import { StartPage } from "./routes/start/Start.Page";
 import store from "./store/Store";
+import { QuestCreateComponent } from "./routes/app/quest/create/Quest.Create.Component";
 
 // dayjs().locale('de').format()
 dayjs.locale("ko");
@@ -93,13 +94,11 @@ root.render(
                                 <Route index element={<QuestListComponent />} />
                                 <Route
                                     path="create"
-                                    element={<QuestViewerComponent create />}
+                                    element={<QuestCreateComponent />}
                                 />
                                 <Route
                                     path="view/:questId"
-                                    element={
-                                        <QuestViewerComponent create={false} />
-                                    }
+                                    element={<QuestViewerComponent />}
                                 />
                             </Route>
                         </Route>

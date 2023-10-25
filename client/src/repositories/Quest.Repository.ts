@@ -1,5 +1,5 @@
 import {
-    CreateQuestParams,
+    CreateQuestParam,
     EditableObjective,
     Objective,
     Quest,
@@ -21,25 +21,18 @@ class QuestRepository extends Repository {
                     "Content-Type": "application/json",
                 },
             });
+            // console.log(response);
             return response;
         } catch (e) {
             return [];
         }
     }
 
-    async create({
-        params,
-        objectives,
-    }: {
-        params: CreateQuestParams;
-        objectives: EditableObjective[];
-    }): Promise<{
+    async create(params: CreateQuestParam): Promise<{
         status: "ok" | "err";
         result: boolean;
         msg?: string;
     }> {
-        console.log(params);
-        console.log(objectives);
         try {
             const response = await this.fetch(`${this.url}/create`, {
                 method: "post",
@@ -47,7 +40,7 @@ class QuestRepository extends Repository {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ params, objectives }),
+                body: JSON.stringify(params),
             });
             if (response.statusCode == 401) {
                 return {
@@ -72,9 +65,7 @@ class QuestRepository extends Repository {
         };
     }
 
-    async getQuestById(
-        questId: string
-    ): Promise<{ quest: Quest; objectives: EditableObjective[] } | undefined> {
+    async getQuestById(questId: string): Promise<UserQuestDetail | undefined> {
         try {
             const response = await this.fetch(`${this.url}/detail/${questId}`, {
                 method: "get",
@@ -84,18 +75,16 @@ class QuestRepository extends Repository {
                 },
             });
             if (response) {
-                console.log(response);
-                return {
-                    quest: response.quest,
-                    objectives: response.objectives,
-                };
+                // console.log(response);
+                return response;
             }
         } catch (error) {
             console.error(error);
+            return;
         }
     }
 
-    async edit(params: CreateQuestParams): Promise<boolean> {
+    async edit(params: CreateQuestParam): Promise<boolean> {
         try {
             const response = await this.fetch(`${this.url}/edit`, {
                 method: "post",
@@ -117,13 +106,12 @@ class QuestRepository extends Repository {
 
     async getAllByUserId(userId: string): Promise<UserQuestDetail[]> {
         try {
-            const response = await this.fetch(`${this.url}/list`, {
-                method: "post",
+            const response = await this.fetch(`${this.url}/userQuest`, {
+                method: "get",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ userId }),
             });
             return response;
         } catch (e) {
@@ -155,6 +143,24 @@ class QuestRepository extends Repository {
                 `${this.url}/${questId}/objectives`,
                 {
                     method: "get",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            return response;
+        } catch (e) {
+            return [];
+        }
+    }
+
+    async increaseObjectiveReps(objectiveId: string) {
+        try {
+            const response = await this.fetch(
+                `${this.url}/objective/${objectiveId}`,
+                {
+                    method: "put",
                     credentials: "include",
                     headers: {
                         "Content-Type": "application/json",

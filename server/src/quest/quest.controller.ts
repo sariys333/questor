@@ -74,7 +74,6 @@ export class QuestController {
     return;
   }
 
-  // 퀘스트 상세페이지
   @Public()
   @Get("detail/:questId")
   async getQuestById(@Param("questId") questId: string) {
@@ -94,12 +93,33 @@ export class QuestController {
     return questObjectives;
   }
 
+  @Get("user/:questId")
+  async getUserQuestByQuestId(
+    @Param("questId") questId: string,
+    @ReqUser() user: User,
+  ) {
+    const userQuest = await this.questService.getUserQuestByQuestId({
+      questId,
+      user,
+    });
+    console.log(userQuest);
+    return userQuest;
+  }
+
+  @Get("objective/:questId")
+  async getUserObjectiveByQuest(
+    @Param("questId") questId: string,
+    @ReqUser() user: User,
+  ) {
+    return await this.questService.getUserObjectivesByQuest({ questId, user });
+  }
+
   @Post("edit")
   async editQuest(@Body() form: Quest) {
     return await this.questService.editQuest(form);
   }
 
-  @Get("/userQuest")
+  @Get("/userQuests")
   async getQuestListByUserId(@ReqUser() user: User) {
     const quests = await this.questService.getQuestsByUserId(user.userId);
 
@@ -169,16 +189,14 @@ export class QuestController {
     return Object.values(userQuestsObject);
   }
 
-  @Get("/:questId/objectives")
-  async getObjectivesByQuest(
-    @Param("questId") questId: string,
-    @ReqUser() user: User,
-  ) {
-    return await this.questService.getObjectivesByUser({ questId, user });
+  @Put("/objective/reps")
+  async increaseObjectiveReps(@Body() objective: Objective) {
+    return await this.questService.increaseObjectiveReps(objective);
   }
 
-  @Put("/objective/:objectiveId")
-  async increaseObjetiveReps(@Param() objectiveId: string) {
-    return await this.questService.increaseObjetiveReps(objectiveId);
+  @Put("/completing")
+  async putCompleteQuest(@Body() quest: Quest, @ReqUser() user: User) {
+    const { userId } = user;
+    this.questService.completeQuest({ quest, userId });
   }
 }

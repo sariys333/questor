@@ -6,11 +6,11 @@ import {
 import QuestRepository from "../repositories/Quest.Repository";
 import {
     CreateQuestParam,
-    EditableObjective,
     Objective,
     Quest,
     UserQuestDetail,
 } from "../routes/app/quest/types/Quest.types";
+import store from "./Store";
 
 export type QuestState = {
     listComp: {
@@ -63,6 +63,19 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
     reducers: {
         createAddObjective: (state, action) => {
             state.viewComp.quest?.objectives.push(action.payload);
+            state.createComp.quest?.objectives?.push(action.payload);
+        },
+        deleteObjective: (state, action) => {
+            if (
+                state.createComp.quest?.objectives &&
+                state.createComp.quest.objectives.length > 1
+            ) {
+                const deleted = state.createComp.quest.objectives.filter(
+                    (obj, index) => index !== action.payload
+                );
+                console.log(deleted);
+                state.createComp.quest.objectives = deleted;
+            }
         },
         changeObjective: (state, action) => {
             state.viewComp.quest &&
@@ -70,7 +83,7 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             console.log(action.payload);
         },
         toggleEditQuest: (state) => {
-            state.viewComp.editing = !!state.viewComp.editing;
+            state.viewComp.editing = !state.viewComp.editing;
         },
     },
     extraReducers: (builder) => {
@@ -78,28 +91,36 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             state.listComp.list = action.payload;
         });
         builder
-            .addCase(fetchQuestsByUserId.pending, (state, action) => {
+            .addCase(fetchUserQuestsByUserId.pending, (state, action) => {
                 state.listComp.loading = true;
             })
-            .addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
-                // console.log(action.payload);
+            .addCase(fetchUserQuestsByUserId.fulfilled, (state, action) => {
                 state.listComp.list = action.payload;
             })
-            .addCase(fetchQuestsByUserId.rejected, (state, action) => {
+            .addCase(fetchUserQuestsByUserId.rejected, (state, action) => {
                 state.listComp.loading = false;
             });
+
         builder
             .addCase(fetchQuestByQuestId.pending, (state, action) => {
                 state.viewComp.loading = true;
             })
             .addCase(fetchQuestByQuestId.fulfilled, (state, action) => {
                 if (action.payload) {
+                    // console.log(action.payload);
                     state.viewComp.quest = action.payload;
-                    // state.viewComp.objectives = action.payload.objectives;
                     state.viewComp.loading = false;
                 }
-            })
-            .addCase(fetchQuestByQuestId.rejected, (state, action) => {});
+            });
+        builder.addCase(fetchUserQuestByQuestId.fulfilled, (state, action) => {
+            if (state.viewComp.quest) {
+                const userQuest = {
+                    ...state.viewComp.quest,
+                    ...action.payload,
+                };
+                state.viewComp.quest = userQuest;
+            }
+        });
         builder
             .addCase(createQuest.pending, (state, action) => {})
             .addCase(createQuest.fulfilled, (state, action) => {})
@@ -114,6 +135,33 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             .addCase(increaseObjectiveReps.fulfilled, (state, action) => {
                 state.viewComp.loading = false;
             });
+        builder
+            .addCase(fetchUserObjetives.pending, (state, action) => {
+                state.viewComp.loading = true;
+            })
+            .addCase(fetchUserObjetives.fulfilled, (state, action) => {
+                if (state.viewComp.quest) {
+                    const userObjectives = state.viewComp.quest.objectives.map(
+                        (objective) => {
+                            const { objectiveId, ...others } = objective;
+                            const userObj = action.payload.find(
+                                (obj) => objectiveId === obj.objectiveId
+                            );
+                            const userObjective = {
+                                objectiveId,
+                                ...others,
+                                ...userObj,
+                            };
+                            return userObjective;
+                        }
+                    );
+                    state.viewComp.quest = {
+                        ...state.viewComp.quest,
+                        objectives: userObjectives,
+                    };
+                }
+                state.viewComp.loading = false;
+            });
     },
 });
 
@@ -125,6 +173,8 @@ export const {
     changeTime,
     changeObjective,
     showDetail,
+    toggleEditQuest,
+    deleteObjective,
 } = questSlice.actions;
 
 export const fetchAllQuests = createAsyncThunk(
@@ -135,7 +185,7 @@ export const fetchAllQuests = createAsyncThunk(
     }
 );
 
-export const fetchQuestsByUserId = createAsyncThunk(
+export const fetchUserQuestsByUserId = createAsyncThunk(
     "quest/fetchByUserId",
     async (userId: string | undefined) => {
         if (userId) {
@@ -149,6 +199,15 @@ export const fetchQuestByQuestId = createAsyncThunk(
     "quest/fetchQuestByQuestId",
     async (questId: string) => {
         const quest = await QuestRepository.getQuestById(questId);
+        // console.log(quest);
+        return quest;
+    }
+);
+
+export const fetchUserQuestByQuestId = createAsyncThunk(
+    "quest/fetchUserQuestByQuestId",
+    async (questId: string) => {
+        const quest = await QuestRepository.getUserQuestById(questId);
         // console.log(quest);
         return quest;
     }
@@ -176,10 +235,24 @@ export const getQuestsByPersonal = createAsyncThunk(
 
 export const increaseObjectiveReps = createAsyncThunk(
     "quest/increaseObjectiveReps",
-    async (objectiveId: string) => {
-        const response = await QuestRepository.increaseObjectiveReps(
-            objectiveId
-        );
+    async (objective: Objective) => {
+        const response = await QuestRepository.increaseObjectiveReps(objective);
+        return response;
+    }
+);
+
+export const fetchUserObjetives = createAsyncThunk(
+    "quest/fetchUserObjetives",
+    async (questId: string) => {
+        const response = await QuestRepository.getUserObjetives(questId);
+        return response;
+    }
+);
+
+export const completingQuest = createAsyncThunk(
+    "quest/completingQuest",
+    async (quest: Quest) => {
+        const response = await QuestRepository.completingQuest(quest);
         return response;
     }
 );

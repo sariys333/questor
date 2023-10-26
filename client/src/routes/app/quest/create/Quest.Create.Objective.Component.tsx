@@ -1,34 +1,21 @@
-import {
-    Button,
-    Flex,
-    Form,
-    Input,
-    InputNumber,
-    List,
-    Select,
-    Space,
-    Spin,
-    Tag,
-    theme,
-} from "antd";
-import { useEffect } from "react";
+import { Button, Flex, Form, Input, InputNumber, List, Select } from "antd";
 import { useSelector } from "react-redux";
-import { createAddObjective } from "../../../../store/Quest.Slice";
-import store, { AppState } from "../../../../store/Store";
 import {
-    CategoryEmojiMap,
-    EditableObjective,
-    Objective,
-} from "../types/Quest.types";
-import { Typography } from "antd";
-import { CheckOutlined } from "@ant-design/icons";
+    createAddObjective,
+    deleteObjective,
+} from "../../../../store/Quest.Slice";
+import store, { AppState } from "../../../../store/Store";
+import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
+import { CloseOutlined } from "@ant-design/icons";
 
 export function QuestCreateObjectiveComponent() {
     const state = useSelector((state: AppState) => state.quest.createComp);
     const { quest } = state;
 
     const onLoadMore = () => {
-        const newObjective: Partial<Objective> = {};
+        const newObjective: EditableObjective = {
+            targetReps: 1,
+        };
         store.dispatch(createAddObjective(newObjective));
     };
 
@@ -38,7 +25,9 @@ export function QuestCreateObjectiveComponent() {
         </Button>
     );
 
-    const deleteRow = (e: any) => {};
+    const deleteObjectiveRow = (index: number) => {
+        store.dispatch(deleteObjective(index));
+    };
 
     return (
         <>
@@ -54,7 +43,7 @@ export function QuestCreateObjectiveComponent() {
                 dataSource={quest?.objectives}
                 renderItem={(data, index) => (
                     <List.Item>
-                        <Flex gap={"large"}>
+                        <Flex gap={"large"} align="center">
                             <Form.Item
                                 name={["objectives" + index, "category"]}
                                 style={{ marginBottom: 0 }}
@@ -83,11 +72,19 @@ export function QuestCreateObjectiveComponent() {
                             <Form.Item
                                 name={["objectives" + index, "targetReps"]}
                                 style={{ marginBottom: 0 }}
+                                initialValue={data.targetReps}
                             >
-                                <InputNumber size="small" />
+                                <InputNumber
+                                    size="small"
+                                    placeholder="반복횟수"
+                                />
                             </Form.Item>
-                            <Button onClick={deleteRow} id={`${index}`}>
-                                -
+                            <Button
+                                size="small"
+                                style={{ width: 32 }}
+                                onClick={(e) => deleteObjectiveRow(index)}
+                            >
+                                <CloseOutlined />
                             </Button>
                         </Flex>
                     </List.Item>

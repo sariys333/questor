@@ -47,8 +47,10 @@ export class UserQuest {
     this.completedAt =
       obj && obj.completed_at instanceof Date
         ? obj?.completed_at.getTime()
+        : obj && typeof obj.completed_at == "number"
+        ? new Date(obj?.completed_at).getTime()
         : null;
-    this.acceptedAt = obj?.accepted_at | new Date().getTime();
+    this.acceptedAt = obj?.accepted_at | +new Date().getTime();
   }
 
   questId: string;
@@ -71,8 +73,6 @@ export class UserQuest {
 export class UserQuestDetail {
   constructor(obj?: any) {
     this.questId = obj?.quest_id;
-    this.masterId = obj?.user_id;
-    this.mastername = obj?.username;
     this.userId = obj?.user_id;
     this.title = obj?.title;
     this.from =
@@ -97,8 +97,6 @@ export class UserQuestDetail {
   }
 
   questId: string;
-  masterId: string;
-  mastername: string;
   userId: string;
   title: string;
   createdAt: Date | number;
@@ -171,6 +169,32 @@ export class Objective {
       category: this.category,
       content: this.content,
       target_reps: this.targetReps,
+      current_reps: this.currentReps,
+      completed_at: this.completedAt,
+    };
+  }
+}
+
+export class UserObjective {
+  constructor(obj?: any) {
+    this.questId = obj?.quest_id;
+    this.userId = obj?.user_id;
+    this.objectiveId = obj?.objective_id;
+    this.currentReps = obj?.current_reps || 0;
+    this.completedAt = obj?.completed_at || null;
+  }
+
+  questId: string;
+  userId: string;
+  objectiveId: string;
+  currentReps: number;
+  completedAt: Date | number;
+
+  asObj() {
+    return {
+      quest_id: this.questId,
+      user_id: this.userId,
+      objective_id: this.objectiveId,
       current_reps: this.currentReps,
       completed_at: this.completedAt,
     };

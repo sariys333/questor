@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
     fetchAllQuests,
     fetchQuestByQuestId,
-    fetchQuestsByUserId,
+    fetchUserQuestsByUserId,
 } from "../../../store/Quest.Slice";
 import store, { AppState } from "../../../store/Store";
 import { Objective, UserQuestDetail } from "./types/Quest.types";
@@ -26,7 +26,7 @@ export function QuestListComponent() {
 
     useEffect(() => {
         if (user) {
-            store.dispatch(fetchQuestsByUserId(user.userId));
+            store.dispatch(fetchUserQuestsByUserId(user.userId));
         } else {
             store.dispatch(fetchAllQuests());
         }

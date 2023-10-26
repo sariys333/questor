@@ -2,6 +2,7 @@ import {
     Breadcrumb,
     Button,
     DatePicker,
+    Divider,
     Flex,
     Form,
     Spin,
@@ -13,12 +14,13 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
-    changeTime,
-    createQuest,
+    completingQuest,
     fetchQuestByQuestId,
+    fetchUserObjetives,
+    fetchUserQuestByQuestId,
+    toggleEditQuest,
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
-import { CreateQuestParam, EditableObjective } from "../types/Quest.types";
 import { QuestViewerObjectiveComponent } from "./Quest.Viewer.Objective.Component";
 
 const { Title } = Typography;
@@ -33,9 +35,14 @@ export function QuestViewerComponent() {
 
     useEffect(() => {
         if (questId) {
-            store.dispatch(fetchQuestByQuestId(questId));
+            store.dispatch(fetchQuestByQuestId(questId)).then(() => {
+                if (user) {
+                    store.dispatch(fetchUserQuestByQuestId(questId));
+                    store.dispatch(fetchUserObjetives(questId));
+                }
+            });
         }
-    }, [questId]);
+    }, [questId, user]);
 
     const onFinish = (e: any) => {};
 
@@ -54,13 +61,35 @@ export function QuestViewerComponent() {
         );
     }
 
+    const checkObjectivesStatus = () => {
+        const checked = quest.objectives.filter((obj) => {
+            return obj.currentReps === obj.targetReps;
+        });
+        if (checked.length == quest.objectives.length) {
+            return true;
+        }
+        return false;
+    };
+
+    const completeQuest = () => {
+        store.dispatch(completingQuest(quest));
+    };
+
+    const toggleEditing = () => {
+        store.dispatch(toggleEditQuest(""));
+    };
+
     return (
         <div>
-            {!editing ? (
-                <Flex gap={"large"} justify="space-between">
-                    <Typography.Title level={2}>
-                        {quest?.title}
-                    </Typography.Title>
+            <Flex gap={"large"} justify="space-between">
+                <Typography.Title
+                    editable={editing ? true : false}
+                    level={2}
+                    style={{ margin: 0 }}
+                >
+                    {quest?.title || "제목"}
+                </Typography.Title>
+                {!editing ? (
                     <Breadcrumb
                         items={[
                             {
@@ -85,16 +114,20 @@ export function QuestViewerComponent() {
                             },
                         ]}
                     />
-                </Flex>
-            ) : undefined}
+                ) : undefined}
+            </Flex>
+            <Divider style={{ marginTop: 8 }} />
+
             <Form name="quest" layout="vertical" onFinish={onFinish}>
                 <Flex gap={"large"}>
-                    <Form.Item name={"time"}>
+                    <Form.Item
+                        name={"time"}
+                        initialValue={[dayjs(quest.from), dayjs(quest.to)]}
+                    >
                         <DatePicker.RangePicker
                             bordered={editing}
                             size="small"
                             format="YYYY-MM-DD"
-                            value={[dayjs(quest?.from), dayjs(quest?.to)]}
                             inputReadOnly={true}
                             disabledDate={disabledDate}
                             allowClear={false}
@@ -104,13 +137,30 @@ export function QuestViewerComponent() {
 
                 <QuestViewerObjectiveComponent />
 
-                {editable ? (
-                    <Flex justify="end">
-                        <Button> 수정</Button>
-                    </Flex>
-                ) : (
-                    <></>
-                )}
+                <Flex justify="end" gap={"small"}>
+                    {quest.completed ? (
+                        <Button type="dashed">완료됨</Button>
+                    ) : (
+                        <Button
+                            disabled={checkObjectivesStatus() ? false : true}
+                            onClick={completeQuest}
+                        >
+                            완료
+                        </Button>
+                    )}
+                    {editable ? (
+                        editing ? (
+                            <>
+                                <Button>완료</Button>
+                                <Button onClick={toggleEditing}>취소</Button>
+                            </>
+                        ) : (
+                            <Button onClick={toggleEditing}>수정</Button>
+                        )
+                    ) : (
+                        <></>
+                    )}
+                </Flex>
             </Form>
         </div>
     );

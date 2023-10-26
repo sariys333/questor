@@ -1,6 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
+  GetCommand,
   PutCommand,
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
@@ -13,6 +14,7 @@ import {
   CreateQuestParams,
   Objective,
   Quest,
+  UserObjective,
   UserQuest,
   UserQuestDetail,
 } from "./types/quest.type";
@@ -144,6 +146,27 @@ export class QuestService {
     return new UserQuestDetail(response.Items[0]);
   }
 
+  async getUserQuestByQuestId({
+    questId,
+    user,
+  }: {
+    questId: string;
+    user: User;
+  }): Promise<UserQuest> {
+    const { userId } = user;
+    const command = new ScanCommand({
+      TableName: "user_quests",
+      FilterExpression: "quest_id = :questId AND user_id = :userId",
+      ExpressionAttributeValues: {
+        ":questId": questId,
+        ":userId": userId,
+      },
+    });
+
+    const response = await docClient.send(command);
+    return new UserQuest(response.Items[0]);
+  }
+
   async getObjectivesByQuest(questId: string): Promise<Objective[]> {
     const command = new ScanCommand({
       TableName: "objectives",
@@ -158,26 +181,25 @@ export class QuestService {
     return obejctives;
   }
 
-  async getObjectivesByUser({
+  async getUserObjectivesByQuest({
     questId,
     user,
   }: {
     questId: string;
     user: User | UserCredentials;
-  }): Promise<Objective[]> {
+  }): Promise<UserObjective[]> {
+    const { userId } = user;
     const command = new ScanCommand({
       TableName: "user_objectives",
       FilterExpression: "quest_id = :questId AND user_id = :userId",
       ExpressionAttributeValues: {
         ":questId": questId,
-        ":userId": user.userId,
+        ":userId": userId,
       },
     });
 
     const response = await docClient.send(command);
-    const obejctives = response.Items.map((obj) => new Objective(obj));
-
-    // console.log(obejctives);
+    const obejctives = response.Items.map((obj) => new UserObjective(obj));
 
     return obejctives;
   }
@@ -206,8 +228,10 @@ export class QuestService {
     return objectives;
   }
 
-  async increaseObjetiveReps(objectiveId: string): Promise<{ result: string }> {
-    console.log(objectiveId);
+  async increaseObjectiveReps(
+    objective: Objective,
+  ): Promise<{ result: string }> {
+    const { objectiveId } = objective;
     const command = new ScanCommand({
       TableName: "user_objectives",
       FilterExpression: "objective_id = :objectiveId",
@@ -216,26 +240,64 @@ export class QuestService {
       },
     });
     const response = await docClient.send(command);
-    const objective = new Objective(response.Items[0]);
+    const item = response.Items[0];
 
-    console.log(response);
-
-    const incresed = {
-      ...objective,
-      currentReps: objective.currentReps + 1,
-    };
-
-    console.log(incresed);
+    const userObjective = new UserObjective({
+      ...item,
+      current_reps: item.current_reps + 1,
+      completed_at:
+        item.current_reps + 1 === objective.targetReps
+          ? new Date().getTime()
+          : null,
+    }).asObj();
 
     const putCommand = new PutCommand({
       TableName: "user_objectives",
-      Item: incresed,
+      Item: userObjective,
     });
 
-    await docClient.send(putCommand);
-    return {
-      result: "ok",
-    };
+    const putResponse = await docClient.send(putCommand);
+    console.log(putResponse.$metadata.httpStatusCode);
+
+    if (putResponse.$metadata.httpStatusCode === 200) {
+      return {
+        result: "ok",
+      };
+    }
+  }
+
+  async completeQuest({ quest, userId }: { quest: Quest; userId: string }) {
+    // const command = new ScanCommand({
+    //   TableName: "user_quests",
+    //   FilterExpression: "quest_id = :questId AND user_id = :userId",
+    //   ExpressionAttributeValues: {
+    //     ":questId": questId,
+    //     ":userId": userId,
+    //   },
+    // });
+    // const response = await docClient.send(command);
+    // console.log(response);
+
+    // const item = response.Items[0];
+
+    console.log(quest);
+
+    const completedQuest = new UserQuest({
+      user_id: quest.userId,
+      quest_id: quest.questId,
+      completed: true,
+      completed_at: new Date(),
+    }).asObj();
+
+    console.log(completedQuest);
+
+    const putCommand = new PutCommand({
+      TableName: "user_quests",
+      Item: completedQuest,
+    });
+
+    const putResponse = await docClient.send(putCommand);
+    console.log(putResponse);
   }
 
   async getUserObjectivesByIds({

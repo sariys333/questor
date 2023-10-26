@@ -1,14 +1,7 @@
-import { createContext, useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
-import { Progress, Layout, Flex, Typography } from "antd";
-import { error } from "console";
-import { useSelector } from "react-redux";
-import store from "../../../store/Store";
+import { Flex, Layout, Typography } from "antd";
+import { useEffect } from "react";
 import { DashboardContent } from "./Dashboard.Content";
-import { getQuestsByPersonal } from "../../../store/Quest.Slice";
 const { Header, Content } = Layout;
-
-const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
 
 export function DashboardPage() {
     useEffect(() => {}, []);

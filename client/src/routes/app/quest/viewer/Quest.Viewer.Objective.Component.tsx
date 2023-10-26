@@ -1,3 +1,4 @@
+import { CheckOutlined, LikeFilled } from "@ant-design/icons";
 import {
     Button,
     Flex,
@@ -6,12 +7,10 @@ import {
     InputNumber,
     List,
     Select,
-    Space,
     Spin,
     Tag,
-    theme,
+    Typography,
 } from "antd";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
     createAddObjective,
@@ -19,11 +18,10 @@ import {
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
 import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
-import { Typography } from "antd";
-import { CheckOutlined } from "@ant-design/icons";
 
 export function QuestViewerObjectiveComponent() {
     const state = useSelector((state: AppState) => state.quest.viewComp);
+    const user = useSelector((state: AppState) => state.user.user);
 
     const { editing, loading, quest } = state;
 
@@ -38,8 +36,12 @@ export function QuestViewerObjectiveComponent() {
         </Button>
     ) : null;
 
-    const increaseReps = (e: any) => {
-        store.dispatch(increaseObjectiveReps(e.target.id));
+    const increaseReps = (index: number) => {
+        const { objectives } = { ...quest };
+        if (objectives) {
+            const targetObjective = objectives[index];
+            store.dispatch(increaseObjectiveReps(targetObjective));
+        }
     };
 
     if (loading) {
@@ -62,6 +64,7 @@ export function QuestViewerObjectiveComponent() {
                 }}
                 loadMore={loadMore}
                 dataSource={quest?.objectives}
+                id="objectiveId"
                 renderItem={(data, index) =>
                     editing ? (
                         <List.Item>
@@ -69,14 +72,11 @@ export function QuestViewerObjectiveComponent() {
                                 <Form.Item
                                     name={["objectives" + index, "category"]}
                                     style={{ marginBottom: 0 }}
+                                    initialValue={data.category}
                                 >
                                     <Select
                                         size="small"
-                                        defaultValue={
-                                            data ? data.category : "-"
-                                        }
                                         style={{ width: 120 }}
-                                        value={data.category}
                                         options={Array.from(
                                             CategoryEmojiMap.entries()
                                         ).map(([cat, emoji]) => ({
@@ -89,23 +89,17 @@ export function QuestViewerObjectiveComponent() {
                                 <Form.Item
                                     name={["objectives" + index, "content"]}
                                     style={{ marginBottom: 0 }}
+                                    initialValue={data.content}
                                 >
-                                    <Input
-                                        size="small"
-                                        value={data ? data.content : ""}
-                                    />
+                                    <Input size="small" />
                                 </Form.Item>
 
                                 <Form.Item
                                     name={["objectives" + index, "targetReps"]}
                                     style={{ marginBottom: 0 }}
+                                    initialValue={data.targetReps}
                                 >
-                                    <InputNumber
-                                        defaultValue={
-                                            data ? data.targetReps : ""
-                                        }
-                                        size="small"
-                                    />
+                                    <InputNumber size="small" />
                                 </Form.Item>
                             </Flex>
                         </List.Item>
@@ -136,14 +130,21 @@ export function QuestViewerObjectiveComponent() {
                                 <Typography.Text style={{ width: 32 }}>
                                     / {data.targetReps}
                                 </Typography.Text>
-                                <Button
-                                    size="small"
-                                    style={{ width: 32 }}
-                                    onClick={increaseReps}
-                                    id={`${data.objectiveId}`}
-                                >
-                                    <CheckOutlined id={`${data.objectiveId}`} />
-                                </Button>
+                                {user ? (
+                                    data.currentReps === data.targetReps ? (
+                                        <LikeFilled style={{ width: 32 }} />
+                                    ) : (
+                                        <Button
+                                            size="small"
+                                            style={{ width: 32 }}
+                                            onClick={(e) => increaseReps(index)}
+                                        >
+                                            <CheckOutlined />
+                                        </Button>
+                                    )
+                                ) : (
+                                    <></>
+                                )}
                             </Flex>
                         </List.Item>
                     )

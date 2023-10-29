@@ -1,21 +1,8 @@
-import {
-    Breadcrumb,
-    Button,
-    DatePicker,
-    Divider,
-    Flex,
-    Form,
-    Spin,
-    Tooltip,
-    Typography,
-} from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import { Button, DatePicker, Divider, Flex, Form, Typography } from "antd";
 import { useSelector } from "react-redux";
-import { createQuest } from "../../../../store/Quest.Slice";
-import store, { AppState } from "../../../../store/Store";
-import { CreateQuestParam, Objective } from "../types/Quest.types";
+import { AppState } from "../../../../store/Store";
+import { CreateQuestParam } from "../types/Quest.types";
 import { QuestCreateObjectiveComponent } from "./Quest.Create.Objective.Component";
-import { useEffect } from "react";
 
 export function QuestCreateComponent() {
     const state = useSelector((state: AppState) => state.quest.viewComp);
@@ -23,10 +10,7 @@ export function QuestCreateComponent() {
 
     const onFinish = (e: any) => {
         console.log(e);
-        const objectives: Pick<
-            Objective,
-            "category" | "content" | "targetReps"
-        >[] = Object.keys(e)
+        const objectives = Object.keys(e)
             .filter((key) => key.startsWith("objectives"))
             .map((key) => e[key]);
         console.log(objectives);
@@ -35,16 +19,20 @@ export function QuestCreateComponent() {
             title: e.title,
             from: e.time[0].toDate(),
             to: e.time[1].toDate(),
-            objectives,
+            objectives: objectives,
         };
-        store.dispatch(createQuest(params));
+
+        console.log(params);
+        // store.dispatch(createQuest(params));
     };
+
+    const titleChange = () => {};
 
     return (
         <div>
             <Flex gap={"large"} justify="space-between">
                 <Typography.Title
-                    editable={{ editing: true }}
+                    editable={{ editing: true, onChange: titleChange }}
                     level={2}
                     style={{ margin: 0 }}
                 >
@@ -67,7 +55,7 @@ export function QuestCreateComponent() {
                 <QuestCreateObjectiveComponent />
 
                 <Flex justify="end">
-                    <Button>생성</Button>
+                    <Button htmlType="submit">생성</Button>
                 </Flex>
             </Form>
         </div>

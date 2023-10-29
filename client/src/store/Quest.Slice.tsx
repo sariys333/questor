@@ -66,15 +66,8 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             state.createComp.quest?.objectives?.push(action.payload);
         },
         deleteObjective: (state, action) => {
-            if (
-                state.createComp.quest?.objectives &&
-                state.createComp.quest.objectives.length > 1
-            ) {
-                const deleted = state.createComp.quest.objectives.filter(
-                    (obj, index) => index !== action.payload
-                );
-                console.log(deleted);
-                state.createComp.quest.objectives = deleted;
+            if (action.payload.length > 1) {
+                state.createComp.quest?.objectives?.pop();
             }
         },
         changeObjective: (state, action) => {
@@ -84,6 +77,9 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
         },
         toggleEditQuest: (state) => {
             state.viewComp.editing = !state.viewComp.editing;
+        },
+        questTitleChange: (state, action) => {
+            state.createComp.quest = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -175,6 +171,7 @@ export const {
     showDetail,
     toggleEditQuest,
     deleteObjective,
+    questTitleChange,
 } = questSlice.actions;
 
 export const fetchAllQuests = createAsyncThunk(

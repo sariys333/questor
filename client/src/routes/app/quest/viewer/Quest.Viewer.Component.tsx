@@ -22,6 +22,7 @@ import {
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
 import { QuestViewerObjectiveComponent } from "./Quest.Viewer.Objective.Component";
+import { CloseOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 

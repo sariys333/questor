@@ -19,15 +19,20 @@ export function QuestCreateObjectiveComponent() {
         store.dispatch(createAddObjective(newObjective));
     };
 
-    const loadMore = (
-        <Button size="small" type="text" onClick={onLoadMore}>
-            +
-        </Button>
-    );
-
-    const deleteObjectiveRow = (index: number) => {
-        store.dispatch(deleteObjective(index));
+    const deleteObjectiveRow = () => {
+        store.dispatch(deleteObjective(quest?.objectives));
     };
+
+    const loadMore = (
+        <Flex justify="space-between" style={{ maxWidth: 430 }}>
+            <Button size="small" type="text" onClick={onLoadMore}>
+                +
+            </Button>
+            <Button size="small" type="text" onClick={deleteObjectiveRow}>
+                x
+            </Button>
+        </Flex>
+    );
 
     return (
         <>
@@ -79,13 +84,6 @@ export function QuestCreateObjectiveComponent() {
                                     placeholder="반복횟수"
                                 />
                             </Form.Item>
-                            <Button
-                                size="small"
-                                style={{ width: 32 }}
-                                onClick={(e) => deleteObjectiveRow(index)}
-                            >
-                                <CloseOutlined />
-                            </Button>
                         </Flex>
                     </List.Item>
                 )}

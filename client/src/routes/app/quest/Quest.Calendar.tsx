@@ -1,11 +1,20 @@
-import { Badge, BadgeProps, Calendar, CalendarProps, Tooltip } from "antd";
+import {
+    Badge,
+    BadgeProps,
+    Button,
+    Calendar,
+    CalendarProps,
+    Tooltip,
+} from "antd";
 import { Dayjs } from "dayjs";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../store/Store";
-import { Category, Quest, UserQuestDetail } from "./types/Quest.types";
+import { UserQuestDetail } from "./types/Quest.types";
+import { useNavigate } from "react-router-dom";
 
 export function QuestCalendar() {
-    const state = useSelector((state: AppState) => state.quest.calendarComp);
+    const state = useSelector((state: AppState) => state.quest.listComp);
+    const navigate = useNavigate();
 
     const getListData = (value: Dayjs) => {
         if (state.list) {
@@ -19,12 +28,12 @@ export function QuestCalendar() {
 
             const toList = questsTo.map((quest) => {
                 const type = setEventType(quest);
-                // const content = quest.category;
+                const title = quest.title;
                 const tooltip = "만료";
                 const questId = quest.questId;
                 return {
                     type,
-                    // content,
+                    title,
                     tooltip,
                     questId,
                 };
@@ -32,12 +41,12 @@ export function QuestCalendar() {
 
             const fromList = questsFrom.map((quest) => {
                 const type = setEventType(quest);
-                // const content = quest.category;
+                const title = quest.title;
                 const tooltip = "시작";
                 const questId = quest.questId;
                 return {
                     type,
-                    // content,
+                    title,
                     tooltip,
                     questId,
                 };
@@ -60,10 +69,6 @@ export function QuestCalendar() {
         return type;
     };
 
-    const onClick = (e: any) => {
-        console.log(e.target);
-    };
-
     const dateCellRender = (value: Dayjs) => {
         const listData = getListData(value);
         return (
@@ -72,8 +77,8 @@ export function QuestCalendar() {
                     className="events"
                     style={{ listStyleType: "none", paddingLeft: 0 }}
                 >
-                    {/* {listData ? listToData(listData.fromList) : ""}
-                    {listData ? listToData(listData.toList) : ""} */}
+                    {listData ? listToData(listData.fromList) : ""}
+                    {listData ? listToData(listData.toList) : ""}
                 </ul>
             </>
         );
@@ -82,23 +87,33 @@ export function QuestCalendar() {
     const listToData = (
         list: {
             type: string;
-            content: Category;
+            title: string;
             tooltip: string;
+            questId: string;
         }[]
     ) => {
         return list.map((item, index) => (
-            <li key={index} onClick={onClick}>
-                <Tooltip
+            <li
+                key={index}
+                onClick={() => navigate(`/quest/view/${item.questId}`)}
+            >
+                {/* <Tooltip
                     placement="top"
                     title={item.tooltip}
                     style={{ top: "3%" }}
+                > */}
+                <Button
+                    size="small"
+                    style={{
+                        width: "100%",
+                        border: 0,
+                        boxShadow: "none",
+                        marginBottom: 1,
+                    }}
                 >
-                    <Badge
-                        style={{ marginRight: 5 }}
-                        status={item.type as BadgeProps["status"]}
-                        text={item.content}
-                    />
-                </Tooltip>
+                    {item.title}
+                </Button>
+                {/* </Tooltip> */}
             </li>
         ));
     };

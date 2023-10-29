@@ -29,16 +29,6 @@ const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
 );
 
-export const MyTheme = {
-    primary: "#8788ee",
-    error: "#cf6679",
-    success: "#00ff98",
-    warning: "#fff468",
-    info: "#bb86fc",
-    link: "#8788ee",
-    bgBase: "#181818",
-};
-
 root.render(
     <React.StrictMode>
         <ConfigProvider
@@ -72,15 +62,16 @@ root.render(
                     Avatar: {
                         fontFamily: "'Young Serif'",
                     },
+                    Calendar: {},
                 },
                 token: {
-                    colorPrimary: MyTheme.primary,
-                    colorError: MyTheme.error,
-                    colorSuccess: MyTheme.success,
-                    colorWarning: MyTheme.warning,
-                    colorInfo: MyTheme.info,
-                    colorLink: MyTheme.link,
-                    colorBgBase: MyTheme.bgBase,
+                    colorPrimary: "#8788ee",
+                    colorError: "#cf6679",
+                    colorSuccess: "#00ff98",
+                    colorWarning: "#fff468",
+                    colorInfo: "#bb86fc",
+                    colorLink: "#8788ee",
+                    colorBgBase: "#181818",
                 },
                 algorithm: theme.darkAlgorithm,
             }}

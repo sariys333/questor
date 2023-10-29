@@ -12,10 +12,8 @@ import {
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { MyTheme } from "../../..";
 import { fetchQuestsByUserId, selectChange } from "../../../store/Dash.Slice";
 import store, { AppState } from "../../../store/Store";
-import { userQuests } from "../../../store/User.Slice";
 
 export const DashboardStats = () => {
     const user = useSelector((state: AppState) => state.user);
@@ -123,7 +121,6 @@ export const DashboardStats = () => {
                                                 active
                                             )}
                                             showInfo={false}
-                                            strokeColor={[MyTheme.warning]}
                                         />
                                         <Flex justify="space-evenly">
                                             <Space>
@@ -158,7 +155,6 @@ export const DashboardStats = () => {
                                             success={{
                                                 percent: completed,
                                             }}
-                                            strokeColor={[MyTheme.error]}
                                             showInfo={false}
                                         />
                                     </Flex>

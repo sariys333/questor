@@ -94,7 +94,7 @@ export function QuestViewerComponent() {
                             bordered={editing}
                             size="small"
                             format="YYYY-MM-DD"
-                            value={[dayjs(quest?.from), dayjs(quest?.to)]}
+                            value={[dayjs(quest.from), dayjs(quest.to)]}
                             inputReadOnly={true}
                             disabledDate={disabledDate}
                             allowClear={false}

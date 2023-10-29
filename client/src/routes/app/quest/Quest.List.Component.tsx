@@ -11,6 +11,7 @@ import {
 import store, { AppState } from "../../../store/Store";
 import { Objective, UserQuestDetail } from "./types/Quest.types";
 import { render } from "@testing-library/react";
+import { QuestCalendar } from "./Quest.Calendar";
 
 const { Title } = Typography;
 
@@ -115,6 +116,7 @@ export function QuestListComponent() {
 
     return (
         <div>
+            <QuestCalendar />
             <Title level={3}>목록</Title>
             <Flex justify="flex-end" style={{ margin: 5 }}>
                 {/* <Title level={3}>
@@ -126,7 +128,7 @@ export function QuestListComponent() {
                 loading={loading == undefined}
                 dataSource={list}
                 pagination={{
-                    defaultPageSize: 5,
+                    defaultPageSize: 10,
                 }}
                 columns={columns}
                 expandable={{

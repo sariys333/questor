@@ -103,7 +103,6 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
             })
             .addCase(fetchQuestByQuestId.fulfilled, (state, action) => {
                 if (action.payload) {
-                    // console.log(action.payload);
                     state.viewComp.quest = action.payload;
                     state.viewComp.loading = false;
                 }
@@ -129,6 +128,21 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
                 state.viewComp.loading = true;
             })
             .addCase(increaseObjectiveReps.fulfilled, (state, action) => {
+                if (state.viewComp.quest?.objectives && action.payload) {
+                    const { objectiveId, currentReps } = action.payload;
+                    const updated = state.viewComp.quest.objectives.map(
+                        (obj) => {
+                            if (objectiveId == obj.objectiveId) {
+                                return {
+                                    ...obj,
+                                    currentReps: currentReps,
+                                };
+                            }
+                            return obj;
+                        }
+                    );
+                    state.viewComp.quest.objectives = [...updated];
+                }
                 state.viewComp.loading = false;
             });
         builder
@@ -184,11 +198,10 @@ export const fetchAllQuests = createAsyncThunk(
 
 export const fetchUserQuestsByUserId = createAsyncThunk(
     "quest/fetchByUserId",
-    async (userId: string | undefined) => {
-        if (userId) {
-            const questList = await QuestRepository.getAllByUserId(userId);
-            return questList;
-        }
+    async () => {
+        const questList = await QuestRepository.getAllByUserId();
+        console.log(questList);
+        return questList;
     }
 );
 

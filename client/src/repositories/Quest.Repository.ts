@@ -124,7 +124,7 @@ class QuestRepository extends Repository {
         return false;
     }
 
-    async getAllByUserId(userId: string): Promise<UserQuestDetail[]> {
+    async getAllByUserId(): Promise<UserQuestDetail[]> {
         try {
             const response = await this.fetch(`${this.url}/userQuests`, {
                 method: "get",
@@ -133,6 +133,7 @@ class QuestRepository extends Repository {
                     "Content-Type": "application/json",
                 },
             });
+            console.log(response)
             return response;
         } catch (e) {
             return [];
@@ -175,7 +176,7 @@ class QuestRepository extends Repository {
         }
     }
 
-    async increaseObjectiveReps(objective: Objective) {
+    async increaseObjectiveReps(objective: Objective): Promise<Objective | undefined> {
         try {
             const response = await this.fetch(`${this.url}/objective/reps`, {
                 method: "put",
@@ -187,7 +188,7 @@ class QuestRepository extends Repository {
             });
             return response;
         } catch (e) {
-            return [];
+            console.error(e)
         }
     }
 

@@ -40,6 +40,7 @@ export function QuestViewerObjectiveComponent() {
         const { objectives } = { ...quest };
         if (objectives) {
             const targetObjective = objectives[index];
+            console.log(targetObjective);
             store.dispatch(increaseObjectiveReps(targetObjective));
         }
     };
@@ -130,7 +131,7 @@ export function QuestViewerObjectiveComponent() {
                                 <Typography.Text style={{ width: 32 }}>
                                     / {data.targetReps}
                                 </Typography.Text>
-                                {user ? (
+                                {data.userId == user?.userId ? (
                                     data.currentReps === data.targetReps ? (
                                         <LikeFilled style={{ width: 32 }} />
                                     ) : (

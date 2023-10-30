@@ -25,7 +25,7 @@ export const DashboardStats = () => {
     useEffect(() => {
         // console.log(user);
         if (user.user != undefined) {
-            store.dispatch(fetchQuestsByUserId(user.user.userId));
+            store.dispatch(fetchQuestsByUserId());
             // store.dispatch(userQuests());
         }
     }, [stats.quests == undefined]);

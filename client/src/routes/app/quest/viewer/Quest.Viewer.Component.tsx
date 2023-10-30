@@ -56,7 +56,7 @@ export function QuestViewerComponent() {
 
     if (loading || !quest) {
         return (
-            <Spin tip="Loading" size="large">
+            <Spin tip="Loading" size="large" style={{ top: "40%" }}>
                 <div className="content" />
             </Spin>
         );
@@ -140,27 +140,40 @@ export function QuestViewerComponent() {
 
                 <Flex justify="end" gap={"small"}>
                     {quest.completed ? (
-                        <Button type="dashed">완료됨</Button>
-                    ) : (
-                        <Button
-                            disabled={checkObjectivesStatus() ? false : true}
-                            onClick={completeQuest}
-                        >
-                            완료
+                        <Button type="dashed" disabled>
+                            완료됨
                         </Button>
-                    )}
-                    {editable ? (
+                    ) : editable ? (
                         editing ? (
                             <>
                                 <Button>완료</Button>
                                 <Button onClick={toggleEditing}>취소</Button>
                             </>
                         ) : (
-                            <Button onClick={toggleEditing}>수정</Button>
+                            <>
+                                <Button
+                                    disabled={
+                                        checkObjectivesStatus() ? false : true
+                                    }
+                                    onClick={completeQuest}
+                                >
+                                    완료
+                                </Button>
+                                <Button onClick={toggleEditing}>수정</Button>
+                            </>
                         )
                     ) : (
                         <></>
                     )}
+                    {/* {editable ? (
+                        editing ? (
+                            
+                        ) : (
+                            
+                        )
+                    ) : (
+                        <></>
+                    )} */}
                 </Flex>
             </Form>
         </div>

@@ -1,4 +1,4 @@
-import { Flex, Table, TableColumnsType, Typography } from "antd";
+import { Flex, Progress, Table, TableColumnsType, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import {
 } from "../../../store/Quest.Slice";
 import store, { AppState } from "../../../store/Store";
 import { Objective, UserQuestDetail } from "./types/Quest.types";
-import { render } from "@testing-library/react";
 
 const { Title } = Typography;
 
@@ -26,17 +25,25 @@ export function QuestListComponent() {
 
     useEffect(() => {
         if (user) {
-            store.dispatch(fetchUserQuestsByUserId(user.userId));
+            store.dispatch(fetchUserQuestsByUserId());
         } else {
-            store.dispatch(fetchAllQuests());
+            // store.dispatch(fetchAllQuests());
         }
-    }, []);
+    }, [user]);
 
     const onClick = (e: any) => {
         const questId: string = e.target.id;
         if (questId) {
             store.dispatch(fetchQuestByQuestId(questId));
         }
+    };
+
+    const getPercetage = (record: UserQuestDetail) => {
+        const current = Object.values(record.objectives).filter(
+            (obj) => obj.currentReps === obj.targetReps
+        ).length;
+        const target = Object.values(record.objectives).length;
+        return (current / target) * 100;
     };
 
     const time = (to: Date) => {
@@ -62,24 +69,47 @@ export function QuestListComponent() {
             title: "만료여부",
             width: 130,
             render: (record: UserQuestDetail) =>
-                record && record.to < now
-                    ? `${time(record.to)} 만료`
-                    : `${time(record.to)} 만료`,
+                record && record.completed ? (
+                    <Typography.Text type="success">
+                        {time(record.completedAt)} 달성
+                    </Typography.Text>
+                ) : record.to < now ? (
+                    <Typography.Text type="danger">
+                        {time(record.to)} 만료
+                    </Typography.Text>
+                ) : (
+                    <Typography.Text type="warning">
+                        {time(record.to)} 만료
+                    </Typography.Text>
+                ),
         },
         {
-            title: "완료한 목표",
-            width: 110,
-            render: (record: UserQuestDetail) =>
-                Object.values(record.objectives).filter(
-                    (obj) => obj.currentReps === obj.targetReps
-                ).length,
+            title: "목표까지",
+            width: 350,
+            render: (record: UserQuestDetail) => (
+                <Progress
+                    type="line"
+                    percent={getPercetage(record)}
+                    format={(percent) =>
+                        percent == 100
+                            ? "완료"
+                            : percent
+                            ? `${Math.floor(percent)}%`
+                            : ""
+                    }
+                />
+            ),
+
+            // Object.values(record.objectives).filter(
+            //     (obj) => obj.currentReps === obj.targetReps
+            // ).length,
         },
-        {
-            title: "목표개수",
-            width: 110,
-            render: (record: UserQuestDetail) =>
-                Object.values(record.objectives).length,
-        },
+        // {
+        //     title: "목표개수",
+        //     width: 110,
+        //     render: (record: UserQuestDetail) =>
+        //         Object.values(record.objectives).length,
+        // },
     ];
 
     // 역할: 확장되는 로우를 만들어줌.

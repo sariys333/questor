@@ -32,7 +32,7 @@ const dashSlice = createSlice<DashState, SliceCaseReducers<DashState>>({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchQuestsByUserId.fulfilled, (state, action) => {
-            // state.dashStats.quests = action.payload;
+            state.dashStats.quests = action.payload;
         });
     },
 });

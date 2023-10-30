@@ -100,17 +100,7 @@ export function QuestListComponent() {
                     }
                 />
             ),
-
-            // Object.values(record.objectives).filter(
-            //     (obj) => obj.currentReps === obj.targetReps
-            // ).length,
         },
-        // {
-        //     title: "목표개수",
-        //     width: 110,
-        //     render: (record: UserQuestDetail) =>
-        //         Object.values(record.objectives).length,
-        // },
     ];
 
     // 역할: 확장되는 로우를 만들어줌.
@@ -136,6 +126,7 @@ export function QuestListComponent() {
                 dataSource={data}
                 pagination={false}
                 key={record.questId}
+                size="small"
             />
         );
     };
@@ -149,16 +140,9 @@ export function QuestListComponent() {
 
     return (
         <div>
-<<<<<<< HEAD
-            <QuestCalendar />
-            <Title level={3}>목록</Title>
-            <Flex justify="flex-end" style={{ margin: 5 }}>
-                {/* <Title level={3}>
-=======
             <Flex justify="space-between" style={{ margin: 5 }}>
                 <Title level={3}>목록</Title>
                 <Title level={3}>
->>>>>>> a158a01f6a2fbba0dd37e8bc70274f1b579edfb3
                     <Link to={"/quest/create"}>CREATE</Link>
                 </Title>
             </Flex>

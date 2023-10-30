@@ -10,6 +10,7 @@ import {
 } from "../../../store/Quest.Slice";
 import store, { AppState } from "../../../store/Store";
 import { Objective, UserQuestDetail } from "./types/Quest.types";
+import { QuestCalendar } from "./Quest.Calendar";
 
 const { Title } = Typography;
 
@@ -69,7 +70,7 @@ export function QuestListComponent() {
             title: "만료여부",
             width: 130,
             render: (record: UserQuestDetail) =>
-                record && record.completed ? (
+                record.completed ? (
                     <Typography.Text type="success">
                         {time(record.completedAt)} 달성
                     </Typography.Text>
@@ -117,8 +118,11 @@ export function QuestListComponent() {
         const columns: TableColumnsType<Objective> = [
             { title: "종류", dataIndex: "category" },
             { title: "내용", dataIndex: "content" },
-            { title: "현재", dataIndex: "currentReps", width: 110 },
-            { title: "목표", dataIndex: "targetReps", width: 110 },
+            {
+                title: "목표",
+                width: 250,
+                render: (r: Objective) => `${r.currentReps} / ${r.targetReps}`,
+            },
         ];
         const data: Objective[] = [];
 
@@ -145,11 +149,11 @@ export function QuestListComponent() {
 
     return (
         <div>
-            <Title level={3}>목록</Title>
-            <Flex justify="flex-end" style={{ margin: 5 }}>
-                {/* <Title level={3}>
+            <Flex justify="space-between" style={{ margin: 5 }}>
+                <Title level={3}>목록</Title>
+                <Title level={3}>
                     <Link to={"/quest/create"}>CREATE</Link>
-                </Title> */}
+                </Title>
             </Flex>
             <Table
                 rowKey={(record) => record.questId}
@@ -162,9 +166,10 @@ export function QuestListComponent() {
                 expandable={{
                     expandedRowRender,
                     rowExpandable,
-                    defaultExpandedRowKeys: ["0"],
+                    // defaultExpandedRowKeys: ["0"],
                 }}
             />
+            <QuestCalendar />
         </div>
     );
 }

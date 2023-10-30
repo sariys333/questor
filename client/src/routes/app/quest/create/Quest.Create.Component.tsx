@@ -3,10 +3,13 @@ import { useSelector } from "react-redux";
 import { AppState } from "../../../../store/Store";
 import { CreateQuestParam } from "../types/Quest.types";
 import { QuestCreateObjectiveComponent } from "./Quest.Create.Objective.Component";
+import { useNavigate } from "react-router-dom";
 
 export function QuestCreateComponent() {
     const state = useSelector((state: AppState) => state.quest.viewComp);
     const { quest } = state;
+
+    const navigate = useNavigate();
 
     const onFinish = (e: any) => {
         console.log(e);
@@ -56,6 +59,9 @@ export function QuestCreateComponent() {
 
                 <Flex justify="end">
                     <Button htmlType="submit">생성</Button>
+                    <Button type="link" onClick={() => navigate("/quest")}>
+                        취소
+                    </Button>
                 </Flex>
             </Form>
         </div>

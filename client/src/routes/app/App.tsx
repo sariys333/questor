@@ -36,15 +36,11 @@ export function App() {
     } = theme.useToken();
 
     const getMenu = () => {
-        // console.log(user);
         if (user.user == undefined) {
-            // console.log("publicMenu");
             return publicMenu;
         }
-        // console.log("userMenu");
         return userMenu;
     };
-    // console.log(user);
 
     const createMenuItem = (title: string, key: string, icon: JSX.Element) => {
         return {
@@ -78,11 +74,6 @@ export function App() {
             "내 퀘스트",
             "/quest",
             <QuestionCircleOutlined style={iconStyle} />
-        ),
-        createMenuItem(
-            "퀘스트 생성",
-            "/quest/create",
-            <PlusCircleOutlined style={iconStyle} />
         ),
     ];
 

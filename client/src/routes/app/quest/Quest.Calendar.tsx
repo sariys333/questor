@@ -4,69 +4,41 @@ import {
     Button,
     Calendar,
     CalendarProps,
+    Popover,
     Tooltip,
+    theme,
 } from "antd";
 import { Dayjs } from "dayjs";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../store/Store";
-import { UserQuestDetail } from "./types/Quest.types";
+import { Category, Quest, UserQuestDetail } from "./types/Quest.types";
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
 export function QuestCalendar() {
     const state = useSelector((state: AppState) => state.quest.listComp);
     const navigate = useNavigate();
+    const { list, loading } = state;
+
+    const {
+        token: { colorWarning, colorError, colorSuccess },
+    } = theme.useToken();
 
     const getListData = (value: Dayjs) => {
-        if (state.list) {
-            const questsTo = state.list.filter((quest) =>
-                value.isSame(quest.to, "day")
+        if (list) {
+            const end = list.filter((quest) => value.isSame(quest.to, "day"));
+
+            const start = list.filter(
+                (quest) =>
+                    value.isSame(quest.from, "day") &&
+                    dayjs() < dayjs(quest.from)
             );
-
-            const questsFrom = state.list.filter((quest) =>
-                value.isSame(quest.from, "day")
-            );
-
-            const toList = questsTo.map((quest) => {
-                const type = setEventType(quest);
-                const title = quest.title;
-                const tooltip = "만료";
-                const questId = quest.questId;
-                return {
-                    type,
-                    title,
-                    tooltip,
-                    questId,
-                };
-            });
-
-            const fromList = questsFrom.map((quest) => {
-                const type = setEventType(quest);
-                const title = quest.title;
-                const tooltip = "시작";
-                const questId = quest.questId;
-                return {
-                    type,
-                    title,
-                    tooltip,
-                    questId,
-                };
-            });
 
             return {
-                toList,
-                fromList,
+                start,
+                end,
             };
         }
-    };
-
-    const setEventType = (quest: UserQuestDetail) => {
-        let type = "warning";
-        if (quest.completed) {
-            type = "success";
-        } else if (!quest.completed && quest.to < new Date()) {
-            type = "error";
-        }
-        return type;
     };
 
     const dateCellRender = (value: Dayjs) => {
@@ -77,43 +49,36 @@ export function QuestCalendar() {
                     className="events"
                     style={{ listStyleType: "none", paddingLeft: 0 }}
                 >
-                    {listData ? listToData(listData.fromList) : ""}
-                    {listData ? listToData(listData.toList) : ""}
+                    {listData ? listToData(listData.start) : ""}
+                    {listData ? listToData(listData.end) : ""}
                 </ul>
             </>
         );
     };
 
-    const listToData = (
-        list: {
-            type: string;
-            title: string;
-            tooltip: string;
-            questId: string;
-        }[]
-    ) => {
+    const listToData = (list: UserQuestDetail[]) => {
         return list.map((item, index) => (
             <li
-                key={index}
+                key={item.questId}
                 onClick={() => navigate(`/quest/view/${item.questId}`)}
             >
-                {/* <Tooltip
-                    placement="top"
-                    title={item.tooltip}
-                    style={{ top: "3%" }}
-                > */}
                 <Button
                     size="small"
                     style={{
-                        width: "100%",
-                        border: 0,
-                        boxShadow: "none",
-                        marginBottom: 1,
+                        width: "90%",
+                        margin: 3,
+                        backgroundColor: `${
+                            item.completed
+                                ? colorSuccess
+                                : dayjs(item.to) < dayjs()
+                                ? colorError
+                                : colorWarning
+                        }`,
+                        color: "black",
                     }}
                 >
                     {item.title}
                 </Button>
-                {/* </Tooltip> */}
             </li>
         ));
     };

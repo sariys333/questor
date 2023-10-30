@@ -42,8 +42,8 @@ export const { selectChange } = dashSlice.actions;
 
 export const fetchQuestsByUserId = createAsyncThunk(
     "dashboard/fetchQuests",
-    async (userId: string) => {
-        const questList = await QuestRepository.getAllByUserId(userId);
+    async () => {
+        const questList = await QuestRepository.getAllByUserId();
         console.log(questList);
         return questList;
     }

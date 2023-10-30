@@ -1,9 +1,9 @@
 import {
     CreateQuestParam,
-    EditableObjective,
     Objective,
     Quest,
     QuestByPersonal,
+    UserObjective,
     UserQuestDetail,
 } from "../routes/app/quest/types/Quest.types";
 import { Repository } from "./Repository";
@@ -84,6 +84,26 @@ class QuestRepository extends Repository {
         }
     }
 
+    async getUserQuestById(
+        questId: string
+    ): Promise<UserQuestDetail | undefined> {
+        try {
+            const response = await this.fetch(`${this.url}/user/${questId}`, {
+                method: "get",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response) {
+                return response;
+            }
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
     async edit(params: CreateQuestParam): Promise<boolean> {
         try {
             const response = await this.fetch(`${this.url}/edit`, {
@@ -104,15 +124,16 @@ class QuestRepository extends Repository {
         return false;
     }
 
-    async getAllByUserId(userId: string): Promise<UserQuestDetail[]> {
+    async getAllByUserId(): Promise<UserQuestDetail[]> {
         try {
-            const response = await this.fetch(`${this.url}/userQuest`, {
+            const response = await this.fetch(`${this.url}/userQuests`, {
                 method: "get",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
+            console.log(response)
             return response;
         } catch (e) {
             return [];
@@ -155,18 +176,50 @@ class QuestRepository extends Repository {
         }
     }
 
-    async increaseObjectiveReps(objectiveId: string) {
+    async increaseObjectiveReps(objective: Objective): Promise<Objective | undefined> {
+        try {
+            const response = await this.fetch(`${this.url}/objective/reps`, {
+                method: "put",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(objective),
+            });
+            return response;
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    async getUserObjetives(questId: string): Promise<UserObjective[]> {
         try {
             const response = await this.fetch(
-                `${this.url}/objective/${objectiveId}`,
+                `${this.url}/objective/${questId}`,
                 {
-                    method: "put",
+                    method: "get",
                     credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
                 }
             );
+            return response;
+        } catch (e) {
+            return [];
+        }
+    }
+
+    async completingQuest(quest: Quest): Promise<UserObjective[]> {
+        try {
+            const response = await this.fetch(`${this.url}/completing`, {
+                method: "put",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(quest),
+            });
             return response;
         } catch (e) {
             return [];

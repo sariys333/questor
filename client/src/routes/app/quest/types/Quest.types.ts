@@ -79,3 +79,8 @@ export type QuestDetail = Quest & Objective[];
 export type CreateQuestParam = Pick<Quest, "to" | "from" | "title"> & {
     objectives: Pick<Objective, "category" | "content" | "targetReps">[];
 };
+
+export type UserObjective = Pick<
+    Objective,
+    "currentReps" | "userId" | "objectiveId" | "completedAt" | "questId"
+>;

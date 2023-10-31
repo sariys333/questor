@@ -94,7 +94,7 @@ export function QuestListComponent() {
                     format={(percent) =>
                         percent == 100
                             ? "완료"
-                            : percent
+                            : percent && percent != 0
                             ? `${Math.floor(percent)}%`
                             : ""
                     }
@@ -107,10 +107,17 @@ export function QuestListComponent() {
     const expandedRowRender = (record: UserQuestDetail, index: number) => {
         const columns: TableColumnsType<Objective> = [
             { title: "종류", dataIndex: "category" },
-            { title: "내용", dataIndex: "content" },
+            {
+                title: "내용",
+                dataIndex: "content",
+                ellipsis: {
+                    showTitle: false,
+                },
+            },
             {
                 title: "목표",
-                width: 250,
+                align: "center",
+                // width: 250,
                 render: (r: Objective) => `${r.currentReps} / ${r.targetReps}`,
             },
         ];
@@ -149,7 +156,7 @@ export function QuestListComponent() {
             <Table
                 rowKey={(record) => record.questId}
                 loading={loading == undefined}
-                dataSource={list}
+                dataSource={list && list.length > 0 ? list : []}
                 pagination={{
                     defaultPageSize: 10,
                 }}

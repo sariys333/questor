@@ -4,8 +4,10 @@ import {
     Button,
     Calendar,
     CalendarProps,
+    Flex,
     Popover,
     Tooltip,
+    Typography,
     theme,
 } from "antd";
 import { Dayjs } from "dayjs";
@@ -14,6 +16,8 @@ import { AppState } from "../../../store/Store";
 import { Category, Quest, UserQuestDetail } from "./types/Quest.types";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+
+const { Text } = Typography;
 
 export function QuestCalendar() {
     const state = useSelector((state: AppState) => state.quest.listComp);
@@ -26,17 +30,60 @@ export function QuestCalendar() {
 
     const getListData = (value: Dayjs) => {
         if (list) {
-            const end = list.filter((quest) => value.isSame(quest.to, "day"));
+            const end =
+                list && list.length > 0
+                    ? list.filter((quest) => value.isSame(quest.to, "day"))
+                    : [];
 
-            const start = list.filter(
-                (quest) =>
-                    value.isSame(quest.from, "day") &&
-                    dayjs() < dayjs(quest.from)
-            );
+            const start =
+                list && list.length > 0
+                    ? list.filter(
+                          (quest) => value.isSame(quest.from, "day")
+                          // && dayjs() < dayjs(quest.from)
+                      )
+                    : [];
 
             return {
                 start,
                 end,
+            };
+        }
+    };
+
+    const getMonthData = (value: Dayjs) => {
+        if (list) {
+            const expired =
+                list && list.length > 0
+                    ? list.filter(
+                          (quest) =>
+                              !quest.completed &&
+                              value.isSame(quest.to, "month") &&
+                              dayjs(quest.to).isBefore(dayjs())
+                      )
+                    : [];
+            const active =
+                list && list.length > 0
+                    ? list.filter(
+                          (quest) =>
+                              !quest.completed &&
+                              value.isSame(quest.to, "month") &&
+                              dayjs(quest.to).isAfter(dayjs())
+                      )
+                    : [];
+
+            const compelted =
+                list && list.length > 0
+                    ? list.filter(
+                          (quest) =>
+                              quest.completed &&
+                              value.isSame(quest.completedAt, "month")
+                      )
+                    : [];
+
+            return {
+                expired,
+                active,
+                compelted,
             };
         }
     };
@@ -54,6 +101,53 @@ export function QuestCalendar() {
                 </ul>
             </>
         );
+    };
+
+    const monthCellRender = (value: Dayjs) => {
+        const monthData = getMonthData(value);
+        return monthData ? (
+            <Flex vertical>
+                {monthData.active.length != 0 && (
+                    <Button
+                        size="small"
+                        style={{
+                            width: "90%",
+                            margin: 3,
+                            backgroundColor: colorWarning,
+                            color: "black",
+                        }}
+                    >
+                        {monthData.active.length} 진행중
+                    </Button>
+                )}
+                {monthData.expired.length != 0 && (
+                    <Button
+                        size="small"
+                        style={{
+                            width: "90%",
+                            margin: 3,
+                            backgroundColor: colorError,
+                            color: "black",
+                        }}
+                    >
+                        {monthData.expired.length} 만료
+                    </Button>
+                )}
+                {monthData.compelted.length != 0 && (
+                    <Button
+                        size="small"
+                        style={{
+                            width: "90%",
+                            margin: 3,
+                            backgroundColor: colorSuccess,
+                            color: "black",
+                        }}
+                    >
+                        {monthData.compelted.length} 성공
+                    </Button>
+                )}
+            </Flex>
+        ) : null;
     };
 
     const listToData = (list: UserQuestDetail[]) => {
@@ -85,11 +179,12 @@ export function QuestCalendar() {
 
     const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
         if (info.type === "date") return dateCellRender(current);
+        if (info.type === "month") return monthCellRender(current);
         return info.originNode;
     };
 
     return (
-        <div style={{ marginBottom: 30 }}>
+        <div style={{ marginBottom: 30, marginTop: 30 }}>
             <Calendar cellRender={cellRender} />
         </div>
     );

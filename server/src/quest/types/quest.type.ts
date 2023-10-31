@@ -50,7 +50,9 @@ export class UserQuest {
                 : obj && typeof obj.completed_at == "number"
                     ? new Date(obj?.completed_at).getTime()
                     : null;
-        this.acceptedAt = obj?.accepted_at | +new Date().getTime();
+        this.acceptedAt = obj && obj.accepted_at instanceof Date
+            ? obj?.accepted_at.getTime()
+            : new Date().getTime();
     }
 
     questId: string;
@@ -114,17 +116,21 @@ export type QuestObj = {
 
 export type GetQuestListQuery = Pick<Quest, "userId">;
 
-export type CreateQuestParams = Pick<Quest, "from" | "to" | "isPrivate">;
+export type CreateQuestParams = Pick<Quest, "title" | "from" | "to" | "isPrivate" | "userId"> & {
+    objectives: Pick<
+        Objective,
+        "category" | "content" | "targetReps"
+    >[]
+};
 
-export class CreateForm {
-    constructor(userId: number, questId: number) {
-        this.userId = userId;
-        this.questId = questId;
-    }
+export type EditQuestParams = Pick<Quest, "questId" | "title" | "from" | "to" | "userId" | "createdAt"> & {
+    objectives: Pick<
+        Objective,
+        "objectiveId" | "category" | "content" | "targetReps"
+    >[]
+};
 
-    questId: number;
-    userId: number;
-}
+export type UserQuestParmas = Pick<UserQuest, "questId" | "userId">
 
 export class EditForm {
     constructor(obj?: any) {
@@ -140,6 +146,7 @@ export class EditForm {
     to: Date;
 }
 
+
 export class Objective {
     constructor(obj?: any) {
         this.questId = obj?.quest_id;
@@ -148,8 +155,6 @@ export class Objective {
         this.category = obj?.category;
         this.content = obj?.content;
         this.targetReps = obj?.targetReps || obj?.target_reps;
-        this.currentReps = obj?.current_reps || 0;
-        this.completedAt = obj?.completed_at || null;
     }
 
     questId: string;
@@ -158,8 +163,6 @@ export class Objective {
     category: string;
     content: string;
     targetReps: number;
-    currentReps: number;
-    completedAt: Date | number;
 
     asObj() {
         return {
@@ -169,8 +172,6 @@ export class Objective {
             category: this.category,
             content: this.content,
             target_reps: this.targetReps,
-            current_reps: this.currentReps,
-            completed_at: this.completedAt,
         };
     }
 }
@@ -181,6 +182,7 @@ export class UserObjective {
         this.userId = obj?.user_id;
         this.objectiveId = obj?.objective_id;
         this.currentReps = obj?.current_reps || 0;
+        this.completed = obj?.completed || false
         this.completedAt = obj?.completed_at || null;
     }
 
@@ -188,6 +190,7 @@ export class UserObjective {
     userId: string;
     objectiveId: string;
     currentReps: number;
+    completed: boolean;
     completedAt: Date | number;
 
     asObj() {
@@ -196,12 +199,29 @@ export class UserObjective {
             user_id: this.userId,
             objective_id: this.objectiveId,
             current_reps: this.currentReps,
+            completed: this.completed,
             completed_at: this.completedAt,
         };
     }
 }
 
-export type CreateObjParam = Pick<
-    Objective,
-    "category" | "content" | "targetReps"
->;
+export type CreateObjParams = {
+    userId: string, questId: string, objectives: Pick<
+        Objective,
+        "category" | "content" | "targetReps"
+    >[]
+};
+
+export type CreateUserObjParams = {
+    userId: string,
+    questId: string,
+    objectiveIds: string[]
+}
+
+export type EditObjParams = {
+    userId: string,
+    questId: string,
+    objectives: Pick<Objective, "objectiveId" | "category" | "content" | "targetReps">[]
+}
+
+

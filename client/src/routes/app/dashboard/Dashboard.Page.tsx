@@ -4,8 +4,6 @@ import { DashboardContent } from "./Dashboard.Content";
 const { Header, Content } = Layout;
 
 export function DashboardPage() {
-    useEffect(() => {}, []);
-
     return (
         <>
             <Layout>

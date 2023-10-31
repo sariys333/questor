@@ -28,10 +28,8 @@ export const DashboardStats = () => {
     } = theme.useToken();
 
     useEffect(() => {
-        // console.log(user);
         if (user.user) {
             store.dispatch(fetchQuestsByUserId());
-            // store.dispatch(userQuests());
         }
     }, [stats.quests == undefined, user.user]);
 
@@ -41,38 +39,48 @@ export const DashboardStats = () => {
     const today = dayjs().valueOf();
 
     const nonActiveByDay = () => {
-        return stats?.quests?.filter(
-            (q) =>
-                q.completed ||
-                dayjs(q.to).add(stats.dayOption, "day").isBefore(today)
-        );
+        return stats.quests && stats.quests.length > 0
+            ? stats.quests.filter(
+                  (q) =>
+                      q.completed ||
+                      dayjs(q.to).add(stats.dayOption, "day").isBefore(today)
+              )
+            : [];
     };
     const nonActive = nonActiveByDay()?.length;
 
     const activeByDay = () => {
-        return stats?.quests?.filter(
-            (q) =>
-                !q.completed &&
-                dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
-        );
+        return stats.quests && stats.quests.length > 0
+            ? stats.quests.filter(
+                  (q) =>
+                      !q.completed &&
+                      dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
+              )
+            : [];
     };
     const active = activeByDay()?.length;
 
     const completedByDay = () => {
-        return stats?.quests?.filter(
-            (q) =>
-                q.completed &&
-                dayjs(q.completedAt).add(stats.dayOption, "day").isAfter(today)
-        );
+        return stats.quests && stats.quests.length > 0
+            ? stats.quests.filter(
+                  (q) =>
+                      q.completed &&
+                      dayjs(q.completedAt)
+                          .add(stats.dayOption, "day")
+                          .isAfter(today)
+              )
+            : [];
     };
     const completed = completedByDay()?.length;
 
     const expiredByDay = () => {
-        return stats?.quests?.filter(
-            (q) =>
-                !q.completed &&
-                dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
-        );
+        return stats.quests && stats.quests.length > 0
+            ? stats.quests.filter(
+                  (q) =>
+                      !q.completed &&
+                      dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
+              )
+            : [];
     };
     const expired = expiredByDay()?.length;
 

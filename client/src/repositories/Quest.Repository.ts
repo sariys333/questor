@@ -1,5 +1,6 @@
 import {
     CreateQuestParam,
+    EditQuestParam,
     Objective,
     Quest,
     QuestByPersonal,
@@ -28,11 +29,12 @@ class QuestRepository extends Repository {
         }
     }
 
-    async create(params: CreateQuestParam): Promise<{
+    async createQuest(params: CreateQuestParam): Promise<{
         status: "ok" | "err";
         result: boolean;
         msg?: string;
     }> {
+        console.log(params)
         try {
             const response = await this.fetch(`${this.url}/create`, {
                 method: "post",
@@ -42,6 +44,7 @@ class QuestRepository extends Repository {
                 },
                 body: JSON.stringify(params),
             });
+            console.log(response)
             if (response.statusCode == 401) {
                 return {
                     status: "err",
@@ -49,7 +52,7 @@ class QuestRepository extends Repository {
                     msg: "로그인이 필요한 서비스입니다.",
                 };
             }
-            if (response) {
+            if (response.result) {
                 return {
                     status: "ok",
                     result: true,
@@ -84,6 +87,24 @@ class QuestRepository extends Repository {
         }
     }
 
+    async deleteQuest(questId: string): Promise<boolean> {
+        try {
+            const response = await this.fetch(`${this.url}/${questId}`, {
+                method: "delete",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response) {
+                return true;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        return false;
+    }
+
     async getUserQuestById(
         questId: string
     ): Promise<UserQuestDetail | undefined> {
@@ -104,10 +125,14 @@ class QuestRepository extends Repository {
         }
     }
 
-    async edit(params: CreateQuestParam): Promise<boolean> {
+    async editQuest(params: EditQuestParam): Promise<{
+        status: "ok" | "err";
+        result: boolean;
+        msg?: string;
+    }> {
         try {
             const response = await this.fetch(`${this.url}/edit`, {
-                method: "post",
+                method: "put",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
@@ -115,13 +140,27 @@ class QuestRepository extends Repository {
                 body: JSON.stringify(params),
             });
 
+            if (response.statusCode == 401) {
+                return {
+                    status: "err",
+                    result: false,
+                    msg: "로그인이 필요한 서비스입니다.",
+                };
+            }
             if (response) {
-                return true;
+                return {
+                    status: "ok",
+                    result: true,
+                };
             }
         } catch (error) {
             console.error(error);
         }
-        return false;
+        return {
+            status: "err",
+            result: false,
+            msg: "퀘스트 수정에 실패하였습니다. 다시 시도해주세요.",
+        };
     }
 
     async getAllByUserId(): Promise<UserQuestDetail[]> {

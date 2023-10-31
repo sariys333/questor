@@ -14,6 +14,7 @@ import {
 import { useSelector } from "react-redux";
 import {
     createAddObjective,
+    deleteObjective,
     increaseObjectiveReps,
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
@@ -26,21 +27,33 @@ export function QuestViewerObjectiveComponent() {
     const { editing, loading, quest } = state;
 
     const onLoadMore = () => {
-        const newObjective: EditableObjective = {};
+        const newObjective: EditableObjective = {
+            targetReps: 1,
+        };
         store.dispatch(createAddObjective(newObjective));
     };
 
+    const deleteObjectiveRow = () => {
+        quest &&
+            quest.objectives.length > 1 &&
+            store.dispatch(deleteObjective("view"));
+    };
+
     const loadMore = editing ? (
-        <Button size="small" type="text" onClick={onLoadMore}>
-            +
-        </Button>
+        <Flex gap={"middle"}>
+            <Button size="small" type="text" onClick={onLoadMore}>
+                +
+            </Button>
+            <Button size="small" type="text" onClick={deleteObjectiveRow}>
+                x
+            </Button>
+        </Flex>
     ) : null;
 
     const increaseReps = (index: number) => {
         const { objectives } = { ...quest };
         if (objectives) {
             const targetObjective = objectives[index];
-            console.log(targetObjective);
             store.dispatch(increaseObjectiveReps(targetObjective));
         }
     };
@@ -102,6 +115,12 @@ export function QuestViewerObjectiveComponent() {
                                 >
                                     <InputNumber size="small" />
                                 </Form.Item>
+
+                                <Form.Item
+                                    hidden
+                                    name={["objectives" + index, "objectiveId"]}
+                                    initialValue={data.objectiveId}
+                                ></Form.Item>
                             </Flex>
                         </List.Item>
                     ) : (

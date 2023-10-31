@@ -6,7 +6,6 @@ import {
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
 import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
-import { CloseOutlined } from "@ant-design/icons";
 
 export function QuestCreateObjectiveComponent() {
     const state = useSelector((state: AppState) => state.quest.createComp);
@@ -20,7 +19,10 @@ export function QuestCreateObjectiveComponent() {
     };
 
     const deleteObjectiveRow = () => {
-        store.dispatch(deleteObjective(quest?.objectives));
+        quest &&
+            quest.objectives &&
+            quest.objectives.length > 1 &&
+            store.dispatch(deleteObjective("create"));
     };
 
     const loadMore = (

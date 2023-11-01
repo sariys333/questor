@@ -2,23 +2,21 @@
 <html>
   <head>
     <script>
-        function loadDoc() {
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function() {
-    document.getElementById("demo").innerHTML = this.responseText;
-    }
-  xhttp.open("GET", "localhost:3001/quest/*/list", true);
-  xhttp.send();
-}
-
+      function loadDoc() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function () {
+          document.getElementById("demo").innerHTML = this.responseText;
+        };
+        xhttp.open("GET", "localhost:3001/quest/*/list", true);
+        xhttp.send();
+      }
     </script>
     <title>This is the title of the webpage!</title>
   </head>
   <body>
-
     <div id="demo">
-        <h2>Let AJAX change this text</h2>
-        <button type="button" onclick="loadDoc()">Change Content</button>
-      </div>
-    </body>
+      <h2>Let AJAX change this text</h2>
+      <button type="button" onclick="loadDoc()">Change Content</button>
+    </div>
+  </body>
 </html>

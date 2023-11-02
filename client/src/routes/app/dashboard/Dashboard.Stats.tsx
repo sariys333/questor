@@ -35,9 +35,6 @@ export const DashboardStats = () => {
         }
     }, [quests == undefined, user.user]);
 
-    console.log(user.quests);
-    console.log(quests);
-
     const today = dayjs();
 
     const nonActiveByDay = () => {

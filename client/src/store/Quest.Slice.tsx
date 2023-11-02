@@ -142,9 +142,6 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
                     msg: "퀘스트 생성에 실패하였습니다.",
                 };
             });
-        builder.addCase(getQuestsByPersonal.fulfilled, (state, action) => {
-            console.log(action);
-        });
         builder
             .addCase(increaseObjectiveReps.pending, (state, action) => {
                 state.viewComp.loading = true;
@@ -228,7 +225,7 @@ export const fetchUserQuestsByUserId = createAsyncThunk(
     "quest/fetchByUserId",
     async () => {
         const questList = await QuestRepository.getAllByUserId();
-        console.log(questList);
+        // console.log(questList);
         return questList;
     }
 );
@@ -255,7 +252,7 @@ export const createQuest = createAsyncThunk(
     "quest/createQuest",
     async (param: CreateQuestParam) => {
         const response = await QuestRepository.createQuest(param);
-        console.log(response);
+        // console.log(response);
         return response;
     }
 );
@@ -288,7 +285,7 @@ export const increaseObjectiveReps = createAsyncThunk(
     "quest/increaseObjectiveReps",
     async (objective: UserObjective) => {
         const response = await QuestRepository.increaseObjectiveReps(objective);
-        console.log(response);
+        // console.log(response);
         return response;
     }
 );
@@ -305,7 +302,7 @@ export const completingQuest = createAsyncThunk(
     "quest/completingQuest",
     async (quest: UserQuest) => {
         const response = await QuestRepository.completingQuest(quest);
-        console.log(response);
+        // console.log(response);
         return response;
     }
 );

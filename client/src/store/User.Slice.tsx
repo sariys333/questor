@@ -73,9 +73,6 @@ export const userQuests = createAsyncThunk(
         const state = thunkApi.getState();
         console.log("user/quests", state);
         const response = await QuestRepository.getAll();
-        // if (!response.user) {
-        //     throw "failed to sign in";
-        // }
         return response;
     }
 );

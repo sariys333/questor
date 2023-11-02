@@ -44,7 +44,6 @@ export const fetchQuestsByUserId = createAsyncThunk(
     "dashboard/fetchQuests",
     async () => {
         const questList = await QuestRepository.getAllByUserId();
-        console.log(questList);
         return questList;
     }
 );

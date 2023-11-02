@@ -3,14 +3,9 @@ import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import {
-    fetchAllQuests,
-    fetchQuestByQuestId,
-    fetchUserQuestsByUserId,
-} from "../../../store/Quest.Slice";
+import { fetchUserQuestsByUserId } from "../../../store/Quest.Slice";
 import store, { AppState } from "../../../store/Store";
 import { Objective, UserQuestDetail } from "./types/Quest.types";
-import { QuestCalendar } from "./Quest.Calendar";
 
 const { Title } = Typography;
 
@@ -20,15 +15,13 @@ export function QuestListComponent() {
     const navigate = useNavigate();
     const { list, loading } = state;
 
-    console.log(list);
-
     const now = new Date(Date.now());
 
     useEffect(() => {
         if (user) {
             store.dispatch(fetchUserQuestsByUserId());
         } else {
-            // store.dispatch(fetchAllQuests());
+            navigate("/login");
         }
     }, [user]);
 
@@ -47,8 +40,6 @@ export function QuestListComponent() {
             return dayjs(to).from(now.getTime());
         }
     };
-
-    console.log(list);
 
     const columns = [
         {

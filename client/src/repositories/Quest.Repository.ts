@@ -35,7 +35,6 @@ class QuestRepository extends Repository {
         result: boolean;
         msg?: string;
     }> {
-        console.log(params)
         try {
             const response = await this.fetch(`${this.url}/create`, {
                 method: "post",
@@ -45,7 +44,6 @@ class QuestRepository extends Repository {
                 },
                 body: JSON.stringify(params),
             });
-            console.log(response)
             if (response.statusCode == 401) {
                 return {
                     status: "err",
@@ -261,7 +259,6 @@ class QuestRepository extends Repository {
                 },
                 body: JSON.stringify(quest),
             });
-            console.log(response)
             return response;
         } catch (e) {
             return

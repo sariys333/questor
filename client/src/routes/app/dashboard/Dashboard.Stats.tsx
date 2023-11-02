@@ -23,6 +23,8 @@ export const DashboardStats = () => {
     const stats = useSelector((state: AppState) => state.dash.dashStats);
     const dispatch = useDispatch();
 
+    const { dayOption, quests } = stats;
+
     const {
         token: { colorWarning, colorError, colorSuccess },
     } = theme.useToken();
@@ -31,58 +33,57 @@ export const DashboardStats = () => {
         if (user.user) {
             store.dispatch(fetchQuestsByUserId());
         }
-    }, [stats.quests == undefined, user.user]);
+    }, [quests == undefined, user.user]);
 
     console.log(user.quests);
-    console.log(stats.quests);
+    console.log(quests);
 
-    const today = dayjs().valueOf();
+    const today = dayjs();
 
     const nonActiveByDay = () => {
-        return stats.quests && stats.quests.length > 0
-            ? stats.quests.filter(
+        return quests && quests.length > 0
+            ? quests.filter(
                   (q) =>
                       q.completed ||
-                      dayjs(q.to).add(stats.dayOption, "day").isBefore(today)
+                      dayjs(q.to).add(dayOption, "day").isBefore(today)
               )
             : [];
     };
-    const nonActive = nonActiveByDay()?.length;
+    const nonActive = nonActiveByDay().length;
 
     const activeByDay = () => {
-        return stats.quests && stats.quests.length > 0
-            ? stats.quests.filter(
+        return quests && quests.length > 0
+            ? quests.filter(
                   (q) =>
-                      !q.completed &&
-                      dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
+                      dayjs(q.to).add(dayOption, "day").isAfter(today) &&
+                      !q.completed
               )
             : [];
     };
-    const active = activeByDay()?.length;
+    const active = activeByDay().length;
 
     const completedByDay = () => {
-        return stats.quests && stats.quests.length > 0
-            ? stats.quests.filter(
+        return quests && quests.length > 0
+            ? quests.filter(
                   (q) =>
                       q.completed &&
-                      dayjs(q.completedAt)
-                          .add(stats.dayOption, "day")
-                          .isAfter(today)
+                      dayjs(q.completedAt).add(dayOption, "day").isAfter(today)
               )
             : [];
     };
-    const completed = completedByDay()?.length;
+    const completed = completedByDay().length;
 
     const expiredByDay = () => {
-        return stats.quests && stats.quests.length > 0
-            ? stats.quests.filter(
+        return quests && quests.length > 0
+            ? quests.filter(
                   (q) =>
                       !q.completed &&
-                      dayjs(q.to).add(stats.dayOption, "day").isAfter(today)
+                      dayjs(q.to).add(dayOption, "day").isBefore(today)
               )
             : [];
     };
-    const expired = expiredByDay()?.length;
+    console.log(expiredByDay());
+    const expired = expiredByDay().length;
 
     const getPercent = (n1?: number, n2?: number) => {
         if (n1 && n2) {
@@ -130,9 +131,7 @@ export const DashboardStats = () => {
                                                         level={3}
                                                         type="secondary"
                                                     >
-                                                        {active &&
-                                                            nonActive &&
-                                                            active + nonActive}
+                                                        {active + nonActive}
                                                     </Title>
                                                     <Title level={3}>중</Title>
                                                     <Title

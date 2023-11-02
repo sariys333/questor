@@ -7,11 +7,11 @@ import { useEffect } from "react";
 export const DashboardContent = () => {
     const user = useSelector((state: AppState) => state.user);
 
-    useEffect(() => {
-        if (user.user) {
-            store.dispatch(getQuestsByPersonal(user.user.userId));
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (user.user) {
+    //         store.dispatch(getQuestsByPersonal(user.user.userId));
+    //     }
+    // }, []);
 
     return (
         <>

@@ -9,6 +9,7 @@ import {
     Select,
     Spin,
     Tag,
+    Tooltip,
     Typography,
 } from "antd";
 import { useSelector } from "react-redux";
@@ -18,13 +19,20 @@ import {
     increaseObjectiveReps,
 } from "../../../../store/Quest.Slice";
 import store, { AppState } from "../../../../store/Store";
-import { CategoryEmojiMap, EditableObjective } from "../types/Quest.types";
+import dayjs from "dayjs";
+import {
+    CategoryEmojiMap,
+    EditableObjective,
+    UserObjective,
+} from "../types/Quest.types";
+import { isAfter } from "date-fns";
 
 export function QuestViewerObjectiveComponent() {
     const state = useSelector((state: AppState) => state.quest.viewComp);
     const user = useSelector((state: AppState) => state.user.user);
 
     const { editing, loading, quest } = state;
+    const startDate = dayjs(quest?.from);
 
     const onLoadMore = () => {
         const newObjective: EditableObjective = {
@@ -53,7 +61,7 @@ export function QuestViewerObjectiveComponent() {
     const increaseReps = (index: number) => {
         const { objectives } = { ...quest };
         if (objectives) {
-            const targetObjective = objectives[index];
+            const targetObjective: UserObjective = objectives[index];
             store.dispatch(increaseObjectiveReps(targetObjective));
         }
     };
@@ -154,13 +162,26 @@ export function QuestViewerObjectiveComponent() {
                                     data.currentReps === data.targetReps ? (
                                         <LikeFilled style={{ width: 32 }} />
                                     ) : (
-                                        <Button
-                                            size="small"
-                                            style={{ width: 32 }}
-                                            onClick={(e) => increaseReps(index)}
+                                        <Tooltip
+                                            title={
+                                                dayjs().isBefore(startDate)
+                                                    ? "퀘스트 시작 전"
+                                                    : undefined
+                                            }
                                         >
-                                            <CheckOutlined />
-                                        </Button>
+                                            <Button
+                                                size="small"
+                                                style={{ width: 32 }}
+                                                onClick={(e) =>
+                                                    increaseReps(index)
+                                                }
+                                                disabled={dayjs().isBefore(
+                                                    startDate
+                                                )}
+                                            >
+                                                <CheckOutlined />
+                                            </Button>
+                                        </Tooltip>
                                     )
                                 ) : (
                                     <></>

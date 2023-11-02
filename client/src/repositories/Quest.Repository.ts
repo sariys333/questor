@@ -5,6 +5,7 @@ import {
     Quest,
     QuestByPersonal,
     UserObjective,
+    UserQuest,
     UserQuestDetail,
 } from "../routes/app/quest/types/Quest.types";
 import { Repository } from "./Repository";
@@ -164,7 +165,6 @@ class QuestRepository extends Repository {
     }
 
     async getAllByUserId(): Promise<UserQuestDetail[]> {
-        console.log("getall");
         try {
             const response = await this.fetch(`${this.url}/userQuests`, {
                 method: "get",
@@ -173,7 +173,6 @@ class QuestRepository extends Repository {
                     "Content-Type": "application/json",
                 },
             });
-            console.log(response);
             return response;
         } catch (e) {
             return [];
@@ -217,8 +216,8 @@ class QuestRepository extends Repository {
     }
 
     async increaseObjectiveReps(
-        objective: Objective
-    ): Promise<Objective | undefined> {
+        objective: UserObjective
+    ): Promise<UserObjective | undefined> {
         try {
             const response = await this.fetch(`${this.url}/objective/reps`, {
                 method: "put",
@@ -252,7 +251,7 @@ class QuestRepository extends Repository {
         }
     }
 
-    async completingQuest(quest: Quest): Promise<UserObjective[]> {
+    async completingQuest(quest: UserQuest): Promise<UserQuest | undefined> {
         try {
             const response = await this.fetch(`${this.url}/completing`, {
                 method: "put",
@@ -262,9 +261,10 @@ class QuestRepository extends Repository {
                 },
                 body: JSON.stringify(quest),
             });
+            console.log(response)
             return response;
         } catch (e) {
-            return [];
+            return
         }
     }
 }

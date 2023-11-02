@@ -94,8 +94,8 @@ root.render(
                             </Route>
                         </Route>
                         <Route path="login" element={<Login />} />
-                        <Route path="signup" element={<Signup />} />
-                        <Route path="start" element={<StartPage />} />
+                        {/* <Route path="signup" element={<Signup />} /> */}
+                        {/* <Route path="start" element={<StartPage />} /> */}
                         <Route path="setting" element={<UserSettingPage />} />
                     </Routes>
                 </Router>

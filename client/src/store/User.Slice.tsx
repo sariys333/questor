@@ -59,19 +59,13 @@ export const userSignIn = createAsyncThunk(
     }
 );
 
-export const getCurrentUser = createAsyncThunk(
-    "user/current",
-    async (arg, thunkApi) => {
-        const response = await UserRepository.findCurrentUser();
-        if (response == undefined) {
-            throw "failed to find current user";
-        }
-        // if (!response.user) {
-        //     throw "failed to sign in";
-        // }
-        return response;
+export const getCurrentUser = createAsyncThunk("user/current", async () => {
+    const response = await UserRepository.findCurrentUser();
+    if (response == undefined) {
+        throw "failed to find current user";
     }
-);
+    return response;
+});
 
 export const userQuests = createAsyncThunk(
     "user/quests",

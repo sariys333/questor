@@ -4,23 +4,24 @@ import { useEffect, useState } from "react";
 import cookie from "react-cookie";
 import UserRepository from "../../repositories/User.Repository";
 import { User } from "../login/types/User.typs";
+import { useSelector } from "react-redux";
+import { AppState } from "../../store/Store";
 
 const { Title } = Typography;
 
 export function UserSettingComponent() {
-    const [user, setUser] = useState<User>();
+    const state = useSelector((state: AppState) => state.user);
     const [index, setIndex] = useState<number>(0);
     const [open, setOpen] = useState(false);
 
-    // 컴포넌트 불러지면 실행하는 함수
+    const { user } = state;
+
     useEffect(() => {
         getApi();
     }, []);
 
     const getApi = async () => {
-        const response = await UserRepository.findCurrentUser();
-        setUser(response);
-        console.log(response);
+        await UserRepository.findCurrentUser();
     };
 
     const onClickEdit = () => {
@@ -41,7 +42,9 @@ export function UserSettingComponent() {
                         <Title level={1} style={{ marginLeft: 20 }}>
                             {user?.name}
                         </Title>
-                        <Title level={3}>{user?.username}</Title>
+                        <Title level={3} style={{ marginLeft: 20 }}>
+                            {user?.username}
+                        </Title>
                     </>
                 }
                 style={{ width: "100%", maxWidth: 500 }}

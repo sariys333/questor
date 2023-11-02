@@ -297,26 +297,49 @@ export class QuestService {
         return objectives;
     }
 
-    async increaseObjectiveReps(objective: Objective): Promise<Objective> {
-        const { objectiveId } = objective;
-        const command = new ScanCommand({
-            TableName: "user_objectives",
+    async increaseObjectiveReps({ objective, user }: { objective: UserObjective, user: User }): Promise<UserObjective> {
+        const { objectiveId, userId } = objective;
+
+        const scanCmd = new ScanCommand({
+            TableName: "objectives",
             FilterExpression: "objective_id = :objectiveId",
             ExpressionAttributeValues: {
                 ":objectiveId": objectiveId,
+            }
+        })
+
+        const scanRes = await docClient.send(scanCmd);
+        const questObjective = scanRes.Items[0];
+
+        console.log(scanRes)
+
+        const command = new ScanCommand({
+            TableName: "user_objectives",
+            FilterExpression: "objective_id = :objectiveId AND user_id = :userId",
+            ExpressionAttributeValues: {
+                ":objectiveId": objectiveId,
+                ":userId": userId
             },
         });
         const response = await docClient.send(command);
         const item = response.Items[0];
+        const incresed = item.current_reps + 1
+
+        console.log("scand", questObjective)
 
         const userObjective = new UserObjective({
             ...item,
-            current_reps: item.current_reps + 1,
+            current_reps: incresed,
             completed_at:
-                item.current_reps + 1 === objective.targetReps
+                incresed === questObjective.target_reps
                     ? new Date().getTime()
                     : null,
+            completed: incresed === questObjective.target_reps
+                ? true
+                : false,
         }).asObj();
+
+        console.log("new", userObjective)
 
         const putCommand = new PutCommand({
             TableName: "user_objectives",
@@ -326,7 +349,8 @@ export class QuestService {
         const putResponse = await docClient.send(putCommand);
         console.log(putResponse);
 
-        const updated = new Objective(userObjective);
+        const updated = new UserObjective(userObjective);
+        console.log("updated", updated)
 
         if (putResponse.$metadata.httpStatusCode === 200) {
             return updated;
@@ -334,19 +358,6 @@ export class QuestService {
     }
 
     async completeQuest({ quest, userId }: { quest: Quest; userId: string }) {
-        // const command = new ScanCommand({
-        //   TableName: "user_quests",
-        //   FilterExpression: "quest_id = :questId AND user_id = :userId",
-        //   ExpressionAttributeValues: {
-        //     ":questId": questId,
-        //     ":userId": userId,
-        //   },
-        // });
-        // const response = await docClient.send(command);
-        // console.log(response);
-
-        // const item = response.Items[0];
-
         console.log(quest);
 
         const completedQuest = new UserQuest({
@@ -363,8 +374,11 @@ export class QuestService {
             Item: completedQuest,
         });
 
-        const putResponse = await docClient.send(putCommand);
-        console.log(putResponse);
+        const response = await docClient.send(putCommand);
+        if (response.$metadata.httpStatusCode === 200) {
+            return completedQuest
+        }
+
     }
 
     async getUserObjectivesByIds({
@@ -374,19 +388,27 @@ export class QuestService {
         questIds: string[];
         userId: string;
     }): Promise<UserObjective[]> {
-        const expressionAttributeValues = {};
-        const questIdParams = questIds
-            .map((u, i) => {
-                const questParam = `:q${i}`;
-                expressionAttributeValues[questParam] = u;
-                return questParam;
-            })
-            .join(",");
-        expressionAttributeValues[":userId"] = userId;
+        // const expressionAttributeValues = {};
+        // const questIdParams = questIds
+        //     .map((u, i) => {
+        //         const questParam = `:q${i}`;
+        //         expressionAttributeValues[questParam] = u;
+        //         return questParam;
+        //     })
+        //     .join(",");
+        // expressionAttributeValues[":userId"] = userId;
+        // const command = new ScanCommand({
+        //     TableName: "user_objectives",
+        //     FilterExpression: `user_id = :userId AND quest_id In (${questIdParams})`,
+        //     ExpressionAttributeValues: expressionAttributeValues,
+        // });
+
         const command = new ScanCommand({
             TableName: "user_objectives",
-            FilterExpression: `user_id = :userId AND quest_id In (${questIdParams})`,
-            ExpressionAttributeValues: expressionAttributeValues,
+            FilterExpression: `user_id = :userId`,
+            ExpressionAttributeValues: {
+                ":userId": userId
+            }
         });
         const response = await docClient.send(command);
         const objectives = response.Items.map(

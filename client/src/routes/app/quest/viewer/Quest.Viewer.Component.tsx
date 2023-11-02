@@ -35,7 +35,7 @@ export function QuestViewerComponent() {
     const { questId } = useParams();
     const user = useSelector((state: AppState) => state.user.user);
     const state = useSelector((state: AppState) => state.quest.viewComp);
-    const { quest, loading, editing, editSuccess } = state;
+    const { quest, loading, editing, success } = state;
     const [form] = Form.useForm();
     const [modal, contextHolder] = Modal.useModal();
     const navigate = useNavigate();
@@ -44,7 +44,7 @@ export function QuestViewerComponent() {
 
     useEffect(() => {
         dispatchAll();
-    }, [questId, user]);
+    }, [questId, user, success]);
 
     const dispatchAll = () => {
         if (questId) {

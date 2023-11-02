@@ -8,6 +8,7 @@ import {
     EditQuestParams,
     Objective,
     Quest,
+    UserObjective,
 } from "./types/quest.type";
 
 @Controller("api/quest")
@@ -254,13 +255,15 @@ export class QuestController {
     }
 
     @Put("/objective/reps")
-    async increaseObjectiveReps(@Body() objective: Objective) {
-        return await this.questService.increaseObjectiveReps(objective);
+    async increaseObjectiveReps(@Body() objective: UserObjective, @ReqUser() user: User) {
+        console.log(objective)
+        return await this.questService.increaseObjectiveReps({ objective, user });
     }
 
     @Put("/completing")
     async putCompleteQuest(@Body() quest: Quest, @ReqUser() user: User) {
         const { userId } = user;
-        this.questService.completeQuest({ quest, userId });
+        return await this.questService.completeQuest({ quest, userId });
     }
+
 }

@@ -9,6 +9,8 @@ import {
     EditQuestParam,
     Objective,
     Quest,
+    UserObjective,
+    UserQuest,
     UserQuestDetail,
 } from "../routes/app/quest/types/Quest.types";
 
@@ -21,7 +23,7 @@ export type QuestState = {
         quest?: UserQuestDetail;
         editing: boolean;
         loading: boolean;
-        editSuccess: boolean;
+        success: boolean;
     };
     createComp: {
         quest?: Partial<CreateQuestParam>;
@@ -58,7 +60,7 @@ const initialState = {
     viewComp: {
         editing: false,
         loading: false,
-        editSuccess: false,
+        success: false,
     },
     calendarComp: {
         list: [],
@@ -193,7 +195,10 @@ const questSlice = createSlice<QuestState, SliceCaseReducers<QuestState>>({
                 state.viewComp.loading = false;
             });
         builder.addCase(editQuest.fulfilled, (state, action) => {
-            if (action.payload.result) state.viewComp.editSuccess = true;
+            if (action.payload.result) state.viewComp.success = true;
+        });
+        builder.addCase(completingQuest.fulfilled, (state, action) => {
+            if (action.payload?.completed) state.viewComp.success = true;
         });
     },
 });
@@ -281,8 +286,9 @@ export const getQuestsByPersonal = createAsyncThunk(
 
 export const increaseObjectiveReps = createAsyncThunk(
     "quest/increaseObjectiveReps",
-    async (objective: Objective) => {
+    async (objective: UserObjective) => {
         const response = await QuestRepository.increaseObjectiveReps(objective);
+        console.log(response);
         return response;
     }
 );
@@ -297,8 +303,9 @@ export const fetchUserObjetives = createAsyncThunk(
 
 export const completingQuest = createAsyncThunk(
     "quest/completingQuest",
-    async (quest: Quest) => {
+    async (quest: UserQuest) => {
         const response = await QuestRepository.completingQuest(quest);
+        console.log(response);
         return response;
     }
 );

@@ -56,11 +56,11 @@ export function App() {
     };
 
     const publicMenu = [
-        createMenuItem(
-            "시작",
-            "/start",
-            <PlayCircleOutlined style={iconStyle} />
-        ),
+        // createMenuItem(
+        //     "시작",
+        //     "/start",
+        //     <PlayCircleOutlined style={iconStyle} />
+        // ),
         createMenuItem(
             "퀘스트",
             "/quest",

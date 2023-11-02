@@ -32,13 +32,6 @@ export function QuestListComponent() {
         }
     }, [user]);
 
-    const onClick = (e: any) => {
-        const questId: string = e.target.id;
-        if (questId) {
-            store.dispatch(fetchQuestByQuestId(questId));
-        }
-    };
-
     const getPercetage = (record: UserQuestDetail) => {
         const current = Object.values(record.objectives).filter(
             (obj) => obj.currentReps === obj.targetReps
@@ -54,6 +47,8 @@ export function QuestListComponent() {
             return dayjs(to).from(now.getTime());
         }
     };
+
+    console.log(list);
 
     const columns = [
         {
@@ -85,7 +80,7 @@ export function QuestListComponent() {
                 ),
         },
         {
-            title: "목표까지",
+            title: "완료한 목표",
             width: 350,
             render: (record: UserQuestDetail) => (
                 <Progress
@@ -117,7 +112,6 @@ export function QuestListComponent() {
             {
                 title: "목표",
                 align: "center",
-                // width: 250,
                 render: (r: Objective) => `${r.currentReps} / ${r.targetReps}`,
             },
         ];
@@ -164,10 +158,8 @@ export function QuestListComponent() {
                 expandable={{
                     expandedRowRender,
                     rowExpandable,
-                    // defaultExpandedRowKeys: ["0"],
                 }}
             />
-            <QuestCalendar />
         </div>
     );
 }

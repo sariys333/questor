@@ -39,16 +39,19 @@ export function QuestCreateComponent() {
         };
 
         console.log(params);
-        store.dispatch(createQuest(params)).then(() => {
-            if (success) {
-                navigate("/quest");
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: msg,
-                });
-            }
-        });
+        store
+            .dispatch(createQuest(params))
+            .unwrap()
+            .then((response) => {
+                if (success || response.result) {
+                    navigate("/quest");
+                } else {
+                    messageApi.open({
+                        type: "error",
+                        content: msg,
+                    });
+                }
+            });
     };
 
     const titleChange = (e: any) => {

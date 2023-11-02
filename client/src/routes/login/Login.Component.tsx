@@ -42,7 +42,7 @@ export function LoginComponent() {
     return (
         <Card
             title="로그인"
-            extra={<a href="/signup">SIGNUP</a>}
+            // extra={<a href="/signup">SIGNUP</a>}
             style={{ width: "100%" }}
         >
             {contextHolder}
@@ -83,7 +83,7 @@ export function LoginComponent() {
                     valuePropName="checked"
                     wrapperCol={{ span: 16 }}
                 >
-                    <Checkbox>로그인 상태 유지</Checkbox>
+                    {/* <Checkbox>로그인 상태 유지</Checkbox> */}
                 </Form.Item>
 
                 <Form.Item>

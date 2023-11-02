@@ -9,16 +9,16 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 
 @Module({
-  imports: [
-    QuestModule,
-    UserModule,
-    AuthModule,
-    UtilsModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, "../../", "client", "build"),
-    }),
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        QuestModule,
+        UserModule,
+        AuthModule,
+        UtilsModule,
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, "../../", "client", "build"),
+        }),
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

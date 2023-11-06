@@ -77,9 +77,12 @@ export function QuestListComponent() {
                 <Progress
                     type="line"
                     percent={getPercetage(record)}
+                    trailColor={record.to < now ? "red" : ""}
                     format={(percent) =>
                         percent == 100
                             ? "완료"
+                            : record.to < now
+                            ? "실패"
                             : percent && percent != 0
                             ? `${Math.floor(percent)}%`
                             : ""

@@ -1,4 +1,11 @@
-import { Flex, Progress, Table, TableColumnsType, Typography } from "antd";
+import {
+    Flex,
+    Progress,
+    Table,
+    TableColumnsType,
+    Typography,
+    theme,
+} from "antd";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -16,6 +23,10 @@ export function QuestListComponent() {
     const { list, loading } = state;
 
     const now = new Date(Date.now());
+
+    const {
+        token: { colorWarning, colorError, colorSuccess },
+    } = theme.useToken();
 
     useEffect(() => {
         if (user) {
@@ -77,7 +88,7 @@ export function QuestListComponent() {
                 <Progress
                     type="line"
                     percent={getPercetage(record)}
-                    trailColor={record.to < now ? "red" : ""}
+                    trailColor={record.to < now ? colorError : ""}
                     format={(percent) =>
                         percent == 100
                             ? "완료"

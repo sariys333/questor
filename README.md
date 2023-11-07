@@ -1,3 +1,3 @@
 # Questor
 
-## [Questor PPT](/Questor-ppt.pdf)
+<a class="link" href="/Questor-ppt.pdf" target="_blank">PPT</a>

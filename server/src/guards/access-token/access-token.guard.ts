@@ -7,9 +7,8 @@ import {
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import { REFRESH_KEY, SECRET_KEY } from "src/Constants";
+import { SECRET_KEY } from "src/Constants";
 import { IS_PUBLIC_KEY } from "../../auth/public.decorator";
-import { Response as Res } from "express";
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {

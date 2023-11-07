@@ -13,9 +13,9 @@ export function Login() {
     return (
         <Layout style={{ minHeight: "100vh" }}>
             <Header style={{ backgroundColor: colorBgBase }}>
-                <Title level={5}>
+                {/* <Title level={5}>
                     <Link to="/">&lt; 메인으로</Link>
-                </Title>
+                </Title> */}
             </Header>
             <Content
                 style={{

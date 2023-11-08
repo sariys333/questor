@@ -1,3 +1,3 @@
 # Questor
 
-<a href="/Questor-ppt.pdf" target="_blank">PPT</a>
+<a href="https://sariys33.github.io/questor/Questor-ppt.pdf" target="_blank">PPT</a>
